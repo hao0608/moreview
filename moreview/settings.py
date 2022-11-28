@@ -25,13 +25,16 @@ SECRET_KEY = "django-insecure-ndqf64s8k+bv$fr+g87ts(u84u+^jw*^oe6^lgot#%d_6f+t8^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost'
+]
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
+    # "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -75,8 +78,12 @@ WSGI_APPLICATION = "moreview.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "HOST": "postgres",
+        "PORT": 5432,
+        "NAME": "django",
+        "USER": "django",
+        "PASSWORD": "secret"
     }
 }
 
@@ -103,9 +110,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "zh-TW"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Taipei"
 
 USE_I18N = True
 
@@ -116,6 +123,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "static/"
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
