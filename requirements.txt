@@ -4,3 +4,6 @@ django-crispy-forms>=1.13.0
 crispy-bootstrap5
 
 black
+
+Faker
+selenium
