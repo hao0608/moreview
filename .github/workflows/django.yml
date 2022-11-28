@@ -37,3 +37,22 @@ jobs:
     - name: Run Tests
       run: |
         python manage.py test
+
+  lint:
+    needs: ["build"]
+
+    permissions:
+      contents: write
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: psf/black@stable
+        with:
+          options: ""
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "style: apply linting changes"
+          branch: ${{ github.head_ref }}
