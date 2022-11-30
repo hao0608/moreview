@@ -18,6 +18,6 @@ from django.urls import path
 from django.views.generic.base import TemplateView
 
 urlpatterns = [
-    path('base', TemplateView.as_view(template_name='base.html'))
+    path("base", TemplateView.as_view(template_name="base.html"))
     # path("admin/", admin.site.urls),
 ]
