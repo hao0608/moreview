@@ -4,18 +4,21 @@
     font-size: 0.75rem;
 }
 
-.content-pad-top {
-    padding-top: 5rem;
+.navbar {
+    flex-wrap: nowrap;
+    align-items: baseline;
 }
 
-footer {
-    background-color: #7DCE94;
+.navbar>.container {
+    flex-direction: column;
+    align-items: flex-start;
 }
 
-.footer_text {
-    color: #000 !important;
+#login-btn {
+    align-items: flex-end;
 }
 
-#mainNav {
-    background-color: #7DCE94;
+@media (max-width: 992px) !important
+.navbar {
+    align-items: flex-start;
 }
