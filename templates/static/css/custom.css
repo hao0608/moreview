@@ -1,0 +1,21 @@
+.btn-login {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #4b7a59;
+    font-size: 0.75rem;
+}
+
+.content-pad-top {
+    padding-top: 5rem;
+}
+
+footer {
+    background-color: #7DCE94;
+}
+
+.footer_text {
+    color: #000 !important;
+}
+
+#mainNav {
+    background-color: #7DCE94;
+}
