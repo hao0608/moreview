@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="content-pad-top container px-4 px-lg-5">
+	<div class="row gx-4 gx-lg-5 justify-content-center">
+		<div class="col-md-10 col-lg-8 col-xl-7">
+			<h1>登入</h1>
+			<form action="" method="POST">
+				{% csrf_token %}
+				{{ form }}
+				<input class="btn btn-primary" type="submit" value="" />
+				<p>還沒有帳號嗎? <a href="#">註冊</a></p>
+			</form>
+		</div>
+	</div>
+</div>
+
+{% endblock  %}    

@@ -18,6 +18,11 @@ from django.urls import path
 from django.views.generic.base import TemplateView
 
 urlpatterns = [
-    path("base", TemplateView.as_view(template_name="base.html"))
+    path("base", TemplateView.as_view(template_name="base.html")),
+    path("login", TemplateView.as_view(template_name="login.html")),
+    path("user_list", TemplateView.as_view(template_name="user_list.html")),
+    path("profile", TemplateView.as_view(template_name="profile.html")),
+    path("register", TemplateView.as_view(template_name="register.html")),
+    path("user_create_form", TemplateView.as_view(template_name="user_create_form.html"))
     # path("admin/", admin.site.urls),
 ]
