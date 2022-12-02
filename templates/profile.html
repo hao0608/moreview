@@ -3,41 +3,58 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form action="" enctype="multipart/form-data" method="POST">
-    {% csrf_token %}
-    <br />
-    <div class="form-row">
-        <div class="form-group col-md-4">
-        </div>
-        <div class="form-group col-md-4">
-            <input class="btn btn-primary" type="submit" value="上傳" />
-        </div>
-        <div class="form-group col-md-4">
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-md-4">
-        </div>
-        <div class="form-group col-md-4">
-            {{ form.image }}
-        </div>
-        <div class="form-group col-md-4">
-        </div>
-    </div>
-</form>
+<div class="content-pad-top container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                        <h1>個人頁面</h1>
+                        <form action="" enctype="multipart/form-data" method="POST">
+                                {% csrf_token %}
+				<div class="mb-3 row">
+                                        <label class="col-sm-2 col-form-label">用戶ID{{ form.id.label }}</label>
+                                        <div class="col-sm-10">
+						 <input class="form-control" type="text" value="aaa12459780" disabled readonly>
+						{{ form.id }} <!-- readonly -->
+                                        </div>
+                                </div>
 
-
-<div class="row">
-    {% for photo in photos %}
-
-    <br />
-    <div class="col-md-4">
-        <div class="card mb-4 shadow-sm">
-            <img class="card-img-top" src="{{ photo.image.url }}" />
+                                <div class="mb-3 row">
+                                        <label class="col-sm-2 col-form-label">暱稱{{ form.username.label }}</label>
+                                        <div class="col-sm-10">
+						<input class="form-control" type="text" value="王大明">
+                                                {{ form.username }}
+                                        </div>
+                                </div>
+				<!-- 有要顯示信箱嗎？要能改嗎？  -->
+                                <div class="mb-3 row">
+                                        <label class="col-sm-2 col-form-label">信箱{{ form.email.label }}</label>
+                                        <div class="col-sm-10">
+						<input class="form-control" type="text" value="aaa@example.com" disabled readonly>
+                                                {{ form.email }}
+                                        </div>
+                                </div>
+				<!-- 有要另外做更改密碼的按鈕嗎？還是不用？  -->
+                                <div class="mb-3 row">
+                                        <label class="col-sm-2 col-form-label">密碼{{ form.password.label }}</label>
+                                        <div class="col-sm-10">
+						<input class="form-control" type="password" value="helloMing">
+                                                {{ form.password }}
+                                        </div>
+                                </div>
+				<!-- 還有要上傳圖片嗎？在ER沒找到對應欄位  -->
+				<div class="mb-3 row">
+					<label class="col-sm-2 col-form-label">頭像{{ form.image.label }}</label>
+                                        <div class="col-sm-10">
+                                                <img class="img-fluid" src="#">
+						<button class="btn btn-success" type="submit" >上傳</button>
+                                        </div>
+                                </div>
+				<div class="container text-center">
+					<button class="btn btn-success" type="submit">儲存</button>
+					<button class="btn btn-success" href="#">停用帳號</button>
+				</div>
+                        </form>
+                </div>
         </div>
-    </div>
-    {% endfor %}
 </div>
-
 
 {% endblock  %}
