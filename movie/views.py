@@ -27,3 +27,8 @@ class MovieListView(ListView):
     model = Movie
     template_name='movie/movie_list.html'
 
+class MovieEditView(UpdateView):
+    form_class = MovieModelForm
+    template_name = 'movie/movie_edit_form.html'
+    queryset = Movie.objects.all()
+

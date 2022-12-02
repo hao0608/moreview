@@ -12,7 +12,8 @@
         <p>{{movie.date_released}}</p>
         <p>{{movie.date_created}}</p>
         <p>{{movie.date_updated}}</p>
-        <hr>
+        <p><a href="{% url 'movie_edit' movie.id %}">修改</a></p> 
+        
     </div>
 
 {% endblock %}
