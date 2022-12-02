@@ -20,6 +20,7 @@ class Movie(models.Model):
     date_updated=models.DateTimeField(auto_now=True)
 
     def get_absolute_url(self):
+        # return reverse("movie_detail", kwargs={"id": self.id})
         return reverse("movie_list")
 
 

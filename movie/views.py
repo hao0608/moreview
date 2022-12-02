@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.urls import reverse
 
 from django.views.generic import (
     CreateView,
@@ -31,4 +32,11 @@ class MovieEditView(UpdateView):
     form_class = MovieModelForm
     template_name = 'movie/movie_edit_form.html'
     queryset = Movie.objects.all()
+
+class MovieDeleteView(DeleteView):
+    model=Movie
+
+    def get_success_url(self):
+        return reverse("movie_list")
+    
 
