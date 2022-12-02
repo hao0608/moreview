@@ -18,7 +18,3 @@
     align-items: flex-end;
 }
 
-@media (max-width: 992px) !important
-.navbar {
-    align-items: flex-start;
-}
