@@ -5,7 +5,7 @@ from django.views.generic import (
     DetailView,
     ListView,
     UpdateView,
-    DeleteView
+    DeleteView,
 )
 
 from .forms import MovieModelForm
@@ -13,17 +13,16 @@ from movie.models import Movie
 
 # Create your views here.
 class MovieCreateView(CreateView):
-    model=Movie
-    template_name='movie/movie_create_form.html'
-    form_class= MovieModelForm
+    model = Movie
+    template_name = "movie/movie_create_form.html"
+    form_class = MovieModelForm
 
 
 class MovieDetailView(DetailView):
-    model=Movie
-    template_name='movie/movie_detail.html'
-    
+    model = Movie
+    template_name = "movie/movie_detail.html"
+
 
 class MovieListView(ListView):
     model = Movie
-    template_name='movie/movie_list.html'
-
+    template_name = "movie/movie_list.html"
