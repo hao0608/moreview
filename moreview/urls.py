@@ -16,10 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.views.generic.base import TemplateView
-from movie.views import MovieCreateView
+from movie.views import (
+    MovieListView,
+    MovieCreateView,
+    MovieDetailView
+)
 
 urlpatterns = [
     path("base", TemplateView.as_view(template_name="base.html")),
     path("admin/", admin.site.urls),
-    path("movies/create",MovieCreateView),
+    path("movies/create", MovieCreateView.as_view(), name='movie_create_form'),
+    path("", MovieListView.as_view(), name='movie_list'),
+    path("movies/<int:pk>", MovieDetailView.as_view(), name='movie_detail'),
 ]
