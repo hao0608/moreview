@@ -18,3 +18,6 @@
     align-items: flex-end;
 }
 
+.content-pad-top {
+    padding-top: 8rem;
+}
