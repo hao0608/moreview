@@ -30,7 +30,6 @@ urlpatterns = [
     path("users/user_list", TemplateView.as_view(template_name="users/user_list.html")),
     path("users/profile", TemplateView.as_view(template_name="users/profile.html")),
     path("users/register", TemplateView.as_view(template_name="users/register.html")),
-    
     path("admin/", admin.site.urls),
     path("movies/create", MovieCreateView.as_view(), name="movie_create_form"),
     path("", MovieListView.as_view(), name="movie_list"),
