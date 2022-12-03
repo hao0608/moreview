@@ -26,10 +26,10 @@ from movie.views import (
 
 urlpatterns = [
     path("base", TemplateView.as_view(template_name="base.html")),
-    path("users/login", TemplateView.as_view(template_name="login.html")),
-    path("users/user_list", TemplateView.as_view(template_name="user_list.html")),
-    path("users/profile", TemplateView.as_view(template_name="profile.html")),
-    path("users/register", TemplateView.as_view(template_name="register.html")),
+    path("login", TemplateView.as_view(template_name="users/login.html")),
+    path("user_list", TemplateView.as_view(template_name="users/user_list.html")),
+    path("profile", TemplateView.as_view(template_name="users/profile.html")),
+    path("register", TemplateView.as_view(template_name="users/register.html")),
     
     path("admin/", admin.site.urls),
     path("movies/create", MovieCreateView.as_view(), name="movie_create_form"),
