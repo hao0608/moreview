@@ -26,17 +26,17 @@ class MovieDetailView(DetailView):
 
 class MovieListView(ListView):
     model = Movie
-    template_name='movie/movie_list.html'
+    template_name = "movie/movie_list.html"
+
 
 class MovieEditView(UpdateView):
     form_class = MovieModelForm
-    template_name = 'movie/movie_edit_form.html'
+    template_name = "movie/movie_edit_form.html"
     queryset = Movie.objects.all()
 
+
 class MovieDeleteView(DeleteView):
-    model=Movie
+    model = Movie
 
     def get_success_url(self):
         return reverse("movie_list")
-    
-

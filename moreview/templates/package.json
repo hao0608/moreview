@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "css-compile": "sass --load-path node_modules --style compressed --source-map scss:static/css/"
+  },
+  "dependencies": {
+    "bootstrap": "^5.2.3",
+    "sass": "^1.56.1"
+  }
+}
