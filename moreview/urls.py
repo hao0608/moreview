@@ -13,8 +13,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path
+# from django.contrib import admin
+from django.urls import path, include
 from django.views.generic.base import TemplateView
 from movie.views import (
     MovieListView,
@@ -26,14 +26,10 @@ from movie.views import (
 
 urlpatterns = [
     path("base", TemplateView.as_view(template_name="base.html")),
-    path("users/login", TemplateView.as_view(template_name="users/login.html")),
-    path("users/user_list", TemplateView.as_view(template_name="users/user_list.html")),
-    path("users/profile", TemplateView.as_view(template_name="users/profile.html")),
-    path("users/register", TemplateView.as_view(template_name="users/register.html")),
-    path("admin/", admin.site.urls),
-    path("movies/create", MovieCreateView.as_view(), name="movie_create_form"),
+    path("", include("users.urls")),
     path("", MovieListView.as_view(), name="movie_list"),
     path("movies/<int:pk>", MovieDetailView.as_view(), name="movie_detail"),
     path("movies/<int:pk>/edit", MovieEditView.as_view(), name="movie_edit"),
     path("movies/<int:pk>/delete", MovieDeleteView.as_view(), name="movie_delete"),
+    # path("admin/", admin.site.urls),
 ]

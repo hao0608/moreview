@@ -31,7 +31,8 @@ ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
+    "users.apps.UserConfig",
+    # "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -140,3 +141,7 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTH_USER_MODEL = "users.User"
+
+LOGIN_REDIRECT_URL = "/"
