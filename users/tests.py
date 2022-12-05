@@ -12,6 +12,7 @@ from .forms import RegisterForm, AdminCreateForm
 from .models import User
 from .views import (
     UserRegisterView,
+    UserLoginView,
     UserLogoutView,
     UserListView,
     UserProfileView,
@@ -143,6 +144,42 @@ class UserRegisterViewTest(TestCase):
         self.assertRedirects(response, expected_url=reverse("movie:list"))
         self.assertEqual(1, User.objects.filter(**user).count())
         self.assertTrue(auth.get_user(self.client).is_authenticated)
+
+
+class UserLoginViewTest(TestCase):
+    def setUp(self) -> None:
+        self.view = UserLoginView()
+        self.client = Client()
+        self.user = UserFactory().create()
+
+    def test_url_is_correct(self):
+        self.assertURLEqual("/login", reverse("users:login"))
+
+    def test_template_is_correct(self):
+        self.assertEqual("login.html", self.view.template_name)
+
+    def test_login_page_can_render(self):
+        response = self.client.get(reverse("users:login"))
+
+        self.assertIs(200, response.status_code)
+
+    def test_user_can_login_and_redirect_to_movies_list(self):
+        response = self.client.post(
+            reverse("users:login"),
+            {"username": self.user.username, "password": "Passw0rd!"},
+        )
+
+        self.assertRedirects(response, expected_url=reverse("movie:list"))
+
+    def test_inactive_user_cannot_login(self):
+        inactive_user = UserFactory().inactive().create()
+
+        response = self.client.post(
+            reverse("users:login"),
+            {"username": inactive_user.username, "password": "password"},
+        )
+
+        self.assertNotEqual(0, len(response.context["form"].errors))
 
 
 class UserLogoutViewTest(TestCase):
