@@ -11,6 +11,4 @@ class BaseFactory:
         pass
 
     def create(self):
-        model = self.model(**self.data)
-        model.save()
-        return model
+        return self.model.objects.create(**self.data)
