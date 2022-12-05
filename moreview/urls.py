@@ -26,6 +26,7 @@ from movie.views import (
 
 from review.views import (
     ReviewCreateView,
+    # ReviewCreate
 )
 
 urlpatterns = [

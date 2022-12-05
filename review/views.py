@@ -1,11 +1,9 @@
 from django.shortcuts import render
+from django.urls import reverse
 
+from .forms import ReviewModelForm
 from django.views.generic import (
     CreateView,
-    DetailView,
-    ListView,
-    UpdateView,
-    DeleteView,
 )
 
 from review.models import Review
@@ -17,3 +15,5 @@ class ReviewCreateView(CreateView):
     template_name = "review/review_create_form.html"
     form_class = ReviewModelForm
 
+
+    
