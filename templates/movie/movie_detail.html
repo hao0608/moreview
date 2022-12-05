@@ -1,6 +1,47 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style>
+    *{
+        margin:0;
+        padding: 0 ;
+        box-sizing: border-box;
+    }
+
+    #check{
+        display: none;
+    }
+    label{
+        display: inline-block;
+        text-decoration: underline;
+        cursor: pointer;
+        font-weight: 600;
+    }
+    #check:checked ~ .content{
+        display: block;
+    }
+    #check:checked ~ label{
+        visibility: hidden;    
+    }
+
+    #check:checked ~ label:after{
+        content: 'Show Less';
+        display: block;
+        visibility: visible;
+    }
+
+    #check:checked ~ p{
+    
+        visibility:hidden;
+    }
+    #check:checked ~ p:after{
+    
+        visibility:visible;
+    }
+    .content{
+        display: none;
+    }
+</style>
 <div class="content-pad-top container px-4 px-lg-5">
  
      <div class="row gx-4 gx-lg-5 justify-content-center">
@@ -46,8 +87,15 @@
 			</div>
             <div class="mb-3 row justify-content-between border-bottom border-secondary">
 				<div class="col-auto me-auto">
-					<p>{{movie.content | slice:85}}</p>
-                    
+					<!-- <p>{{movie.content | slice:85}}</p> -->
+                    <div class="container">
+                        <input type="checkbox" id="check">
+                         <p>{{movie.content | slice:85}}...</p>
+                        <div class="content">
+                            <p>{{movie.content}}</p>
+                        </div>
+                        <label for="check">Read more</label>
+                    </div>
 				</div>
 			</div>
 

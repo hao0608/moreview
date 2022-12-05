@@ -17,9 +17,12 @@ movie_grade = [
     ("限制級", "限制級"),
 ]
 
-
+tag_choices=[
+    (tag,tag.name)
+    for tag in Tag.objects.all()
+]
 class Movie(models.Model):
-    tag_id = models.ForeignKey(Tag, on_delete=models.CASCADE, default="1")
+    tag_id = models.ForeignKey(Tag, choices=tag_choices ,on_delete=models.CASCADE, default="1")
     name = models.CharField(default="a", max_length=20)
     content = models.TextField(default="a", max_length=500)
     official_site = models.TextField(default="a")
