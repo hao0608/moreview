@@ -1,0 +1,75 @@
+<!--list  user accounts -->
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="content-pad-top container px-4 px-lg-5">
+	<div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+			<h1 class="text-center">帳號列表</h1>
+		</div>
+	</div>
+        <div class="row gx-4 gx-lg-5 justify-content-center pt-3">
+                <div class="col-md-10 col-lg-8 col-xl-7 shadow-sm">
+			<div class="mb-3 row justify-content-between border-bottom border-secondary">
+				<div class="col-auto me-auto">
+					<p class="fs-2">管理員</p>
+				</div>
+				<div class="col-auto">
+					<button class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#create_admin_form" aria-expanded="false" aria-controls="create_admin_form">
+						<i class="fa-solid fa-user-plus"></i>
+					</button>
+				</div>
+			</div>
+			{% include 'users/user_create_form.html' %}
+			<div class="mb-3 row">
+				<ul class="list-group list-group-flush">
+				{% for user in users  %}
+					{% if user.is_staff %}
+						<li class="list-group-item">
+
+						{{ user.username }}
+					
+						</li>
+					{% endif %}
+                                {% endfor %}
+  				<li class="list-group-item">An item</li>
+  				<li class="list-group-item">A second item</li>
+  				<li class="list-group-item">A third item</li>
+  				<li class="list-group-item">A fourth item</li>
+  				<li class="list-group-item">And a fifth one</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="row gx-4 gx-lg-5 justify-content-center pt-3">
+                <div class="col-md-10 col-lg-8 col-xl-7 shadow-sm">
+			<div class="mb-3 row justify-content-between pt-3 border-bottom border-secondary">
+                                <div class="col-auto me-auto">
+                                        <p class="fs-2">使用者</p>
+                                </div>
+                        </div>
+			<div class="mb-3 row">
+				<ul class="list-group list-group-flush">
+                                {% for user in users  %}
+                                        {% if user.is_staff %}
+                                                <li class="list-group-item">
+
+                                                {{ user.username }}
+
+                                                </li>
+					{% endif %}
+                                {% endfor %}
+                                <li class="list-group-item">An item</li>
+                                <li class="list-group-item">A second item</li>
+                                <li class="list-group-item">A third item</li>
+                                <li class="list-group-item">A fourth item</li>
+                                <li class="list-group-item">And a fifth one</li>
+                                </ul>
+			</div>
+                </div>
+        </div>
+</div>
+
+{% endblock  %}
+

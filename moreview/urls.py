@@ -16,9 +16,20 @@ Including another URLconf
 # from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import TemplateView
+from movie.views import (
+    MovieListView,
+    MovieCreateView,
+    MovieDetailView,
+    MovieEditView,
+    MovieDeleteView,
+)
 
 urlpatterns = [
     path("base", TemplateView.as_view(template_name="base.html")),
-    path("", include("users.urls"))
+    path("", include("users.urls")),
+    path("", MovieListView.as_view(), name="movie_list"),
+    path("movies/<int:pk>", MovieDetailView.as_view(), name="movie_detail"),
+    path("movies/<int:pk>/edit", MovieEditView.as_view(), name="movie_edit"),
+    path("movies/<int:pk>/delete", MovieDeleteView.as_view(), name="movie_delete"),
     # path("admin/", admin.site.urls),
 ]
