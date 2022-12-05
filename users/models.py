@@ -9,5 +9,6 @@ class User(AbstractUser, DirtyFieldsMixin):
     date_updated = models.DateTimeField(default=timezone.now)
 
     def save(self, *args, **kwargs):
-        self.date_updated = timezone.now()
+        if self.pk is not None:
+            self.date_updated = timezone.now()
         super(User, self).save(*args, **kwargs)
