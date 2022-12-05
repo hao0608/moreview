@@ -15,7 +15,14 @@
         <p><a href="{% url 'movie_edit' movie.id %}">修改</a></p> 
         <form method="POST" action="{% url 'movie_delete' movie.id %}">
             {% csrf_token %}<input type="submit" value="DELETE">
-         </form>
+        </form>
+    </div>
+    </br>
+    <div>
+        {% for review in review_list %}
+            <p>內容：{{ review.content }}</p>
+            <p>評分：{{ review.rating }}</p>
+        {% endfor %}
     </div>
 
 {% endblock %}
