@@ -1,21 +1,89 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="content-pad-top container px-4 px-lg-5">
+ 
+     <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-8 col-md-8 col-lg-6 col-xl-5">
+                <h1>{{ movie.name }}  </h1>
+        </div>
+        <div class="col-1 col-md-1 col-lg-2 col-xl-2">
+            <h1><i class="fa fa-ellipsis-h" aria-hidden="true"></i></h1>
+    </div>
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            <h4>
+                <i class="fa fa-star" style="color:#7DCE94"aria-hidden="true"></i>平均星星:   
+            </h4>
+        </div>        
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            <h5><span class="badge rounded-pill text-bg-success"  >{{movie.tag_id.name}}</span> </h5>
 
-    <div>
-        <h1>{{ movie.name }}</h1> 
-        <p>{{movie.content}}</p>
-        <p>{{movie.tag_id.name}}</p>
-        <p>{{movie.official_site}}</p>
-        <p>{{movie.time}}</p>
-        <p>{{movie.grade}}</p>
-        <p>{{movie.date_released}}</p>
-        <p>{{movie.date_created}}</p>
-        <p>{{movie.date_updated}}</p>
-        <p><a href="{% url 'movie_edit' movie.id %}">修改</a></p> 
-        <form method="POST" action="{% url 'movie_delete' movie.id %}">
-            {% csrf_token %}<input type="submit" value="DELETE">
-         </form>
+        </div>
     </div>
 
+    <div class="row gx-4 gx-lg-5 justify-content-center pt-3">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            <div class="mb-3 row justify-content-between  ">
+				<div class="col-auto me-auto">
+					<p class="fs-4">上映日:  {{movie.date_released}}</p>
+				</div>
+			</div>
+            <div class="mb-3 row justify-content-between  ">
+				<div class="col-auto me-auto">
+					<p class="fs-4">時長:   {{movie.time}}</p>
+				</div>
+			</div>
+            <div class="mb-3 row justify-content-between  ">
+				<div class="col-auto me-auto">
+					<p class="fs-4">分級:   {{movie.grade}}</p>
+				</div>
+			</div>
+            <div class="mb-3 row justify-content-between  ">
+				<div class="col-auto me-auto">
+					<p class="fs-4"><a href='{{movie.official_site}}'class="text-custom-primary">官方網站</a><i class="fa fa-external-link fa-lg " style="color:#7DCE94"aria-hidden="true"></i>
+                    </p>
+				</div>
+			</div>
+            <div class="mb-3 row justify-content-between border-bottom border-secondary">
+				<div class="col-auto me-auto">
+					<p>{{movie.content | slice:85}}</p>
+                    
+				</div>
+			</div>
+
+            <div class="mb-3 row justify-content-between  ">
+                <div class="col-8">
+                    <p>電影新增時間: {{movie.date_created}}</p>
+                    <p>電影更新時間: {{movie.date_updated}}</p>
+                </div>
+                <div class="col-sm 10 col-md-8" >
+                    <div class="col">
+                        <form action="{% url 'movie_edit' movie.id %}">
+                            <button type="submit" class="btn btn-warning">修改</button>
+                         </form>
+                     </div>
+ 
+                </div>
+                <div class="col-2">
+    
+                    <div class="col">
+                        <form method="POST" action="{% url 'movie_delete' movie.id %}">{% csrf_token %}
+                            <input type="submit" class="btn btn-danger" value="刪除">
+                        </form>
+                     </div>
+                </div>
+                
+
+
+                
+                <!-- <p><a href="{% url 'movie_edit' movie.id %}">修改</a></p> 
+
+                <form method="POST" action="{% url 'movie_delete' movie.id %}">
+                    {% csrf_token %}<input type="submit" class="btn btn-danger" value="DELETE">
+                </form> -->
+            </div>
+ 
+        </div> 
+    </div>
+</div>
 {% endblock %}
