@@ -20,7 +20,7 @@ jobs:
         env:
           POSTGRES_DB: "django"
           POSTGRES_USER: "django"
-          POSTGRES_PASSWORD: "password"
+          POSTGRES_PASSWORD: "secret"
         ports:
           - "5432:5432"
 
