@@ -34,6 +34,10 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+    - name: Modify database connnection setting
+      run: |
+       sed -i 's_"HOST": "postgres"_"HOST": "localhost"_g' moreview/settings.py
+       sed -i -E 's_"PASSWORD": "(.*)"_"PASSWORD": "secret"_g' moreview/settings.py
     - name: Run Tests
       run: |
         python manage.py test
