@@ -3,7 +3,6 @@ from movie.models import Movie, Tag
 
 
 class MovieModelForm(forms.ModelForm):
-    
     class Meta:
         model = Movie
         # fields = "__all__"

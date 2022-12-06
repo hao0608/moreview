@@ -18,6 +18,7 @@ class MovieCreateView(CreateView):
     template_name = "movie_create_form.html"
     form_class = MovieModelForm
 
+
 class MovieDetailView(DetailView):
     model = Movie
     template_name = "movie_detail.html"
