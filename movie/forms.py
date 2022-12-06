@@ -16,6 +16,7 @@ class MovieModelForm(forms.ModelForm):
             "time",
             "grade",
             "date_released",
+            "image",
         ]
 
         widgets = {

@@ -16,17 +16,15 @@ Including another URLconf
 # from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import TemplateView
-from movie import views
-
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path("base", TemplateView.as_view(template_name="base.html")),
     path("", include("users.urls")),
-    path("", views.MovieListView.as_view(), name="movie_list"),
-    path("movies/<int:pk>", views.MovieDetailView.as_view(), name="movie_detail"),
-    path("movies/create", views.MovieCreateView.as_view(), name="movie_create"),
-    path("movies/<int:pk>/edit", views.MovieEditView.as_view(), name="movie_edit"),
-    path("movies/<int:pk>/delete", views.MovieDeleteView.as_view(), name="movie_delete")
-    
+    path("", include("movie.urls")),
+
     # path("admin/", admin.site.urls),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
