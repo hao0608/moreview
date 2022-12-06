@@ -10,6 +10,7 @@ class MovieListViewTest(TestCase):
     def test_template_is_correct(self):
         self.assertEquals("movie_list.html",self.view.template_name)
 
+'''
 class MovieDetailViewTest(TestCase):
     view=MovieDetailView()
     def test_template_is_correct(self):
@@ -28,3 +29,4 @@ class MovieEditViewTest(TestCase):
     view=MovieEditView()
     def test_template_is_correct(self):
         self.assertEquals("movie_edit_form.html",self.view.template_name)
+'''
