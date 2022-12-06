@@ -9,7 +9,7 @@ class UserLoginView(LoginView):
 
 
 class UserLogoutView(LogoutView):
-    http_method_names = ['post']
+    http_method_names = ["post"]
 
     def get_redirect_url(self):
         return ""

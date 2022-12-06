@@ -85,7 +85,7 @@ class UserLogoutViewTest(TestCase):
         self.user = UserFactory().create()
 
     def test_user_can_logout_and_redirect_to_movies_list(self):
-        self.client.login(username=self.user.username, password='password')
-        response = self.client.post(reverse('users:logout'))
+        self.client.login(username=self.user.username, password="password")
+        response = self.client.post(reverse("users:logout"))
 
-        self.assertRedirects(response, expected_url=reverse('movie_list'))
+        self.assertRedirects(response, expected_url=reverse("movie_list"))
