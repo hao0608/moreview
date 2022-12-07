@@ -23,7 +23,6 @@ urlpatterns = [
     path("base", TemplateView.as_view(template_name="base.html")),
     path("", include("users.urls")),
     path("", include("movie.urls")),
-
     # path("admin/", admin.site.urls),
 ]
 
