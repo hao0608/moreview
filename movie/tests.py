@@ -5,12 +5,14 @@ from faker import Faker
 from .views import MovieListView,MovieCreateView,MovieDeleteView,MovieDetailView,MovieEditView
 
 # Create your tests here.
+
+
+'''
 class MovieListViewTest(TestCase):
     view=MovieListView()
     def test_template_is_correct(self):
         self.assertEquals("movie_list.html",self.view.template_name)
-
-'''
+        
 class MovieDetailViewTest(TestCase):
     view=MovieDetailView()
     def test_template_is_correct(self):
