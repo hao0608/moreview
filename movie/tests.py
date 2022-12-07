@@ -13,12 +13,11 @@ from .views import (
 # Create your tests here.
 
 
-
 # class MovieListViewTest(TestCase):
 #     view=MovieListView()
 #     def test_template_is_correct(self):
 #         self.assertEquals("movie_list.html",self.view.template_name)
-        
+
 # class MovieDetailViewTest(TestCase):
 #     view=MovieDetailView()
 #     def test_template_is_correct(self):
@@ -37,4 +36,3 @@ from .views import (
 #     view=MovieEditView()
 #     def test_template_is_correct(self):
 #         self.assertEquals("movie_edit_form.html",self.view.template_name)
-

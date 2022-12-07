@@ -37,7 +37,8 @@ class MovieListView(ListView):
         if query is not None:  # 搜尋
             query = "%" + query + "%"
             movie_obj = Movie.objects.raw(
-                "SELECT * FROM movie_movie WHERE name LIKE %s AND image LIKE %s" , [query,"movies/%"]
+                "SELECT * FROM movie_movie WHERE name LIKE %s AND image LIKE %s",
+                [query, "movies/%"],
             )
         else:  # 沒有搜尋
             movie_obj = Movie.objects.raw(
