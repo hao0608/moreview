@@ -1,10 +1,67 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block content %}
+<div class="content-pad-top container px-4 px-lg-5">
 
-<form action'.' method="POST">{% csrf_token %}
-    {{form.as_p}}
-    <input type="submit" value='Save'/>
-</form>
+    <div class="row gx-4 gx-lg-5 justify-content-center pt-3">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            <form action'.' method="POST">{% csrf_token %}
+                <!-- {%crispy form%} -->
+                            
+
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label">評分</label>
+                    <div class="col-sm-4">
+                        {{ form.rating }}
+                    </div> 
+                </div>
+                <div class="mb-3 row">
+                    <label class="col-sm-6 col-form-label">請在此輸入您的評論</label>
+                    {{ form.content }}
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" value='新增' class="btn btn-custom-primary"/>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-10 col-lg-8 col-xl-7  ">
+            <div class="modal-footer"> 
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    排序方式    
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><a class="dropdown-item" href="#">依時間(由近至遠)</a></li>
+                    <li><a class="dropdown-item" href="#">依時間(由遠至近)</a></li>
+                    <li><a class="dropdown-item" href="#">依評分(由高到低)</a></li>
+                    <li><a class="dropdown-item" href="#">依評分(由低到高)</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-10 col-lg-8 col-xl-7  ">
+            <div class="card mb-3">
+                 <div class="card-body">
+                  <h5 class="card-title">使用者</h5>
+                  <p class="card-text">我是評論我是評論我是評論我是評論我是評論我是評論</p>
+                  <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">使用者</h5>
+                  <p class="card-text">我是評論我是評論我是評論我是評論我是評論我是評論</p>
+                  <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                </div>
+               </div>
+              
+        </div>
+
+
+    </div>
+ 
+
+</div>
 
 {% endblock %}
