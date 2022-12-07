@@ -149,5 +149,5 @@ LOGIN_REDIRECT_URL = reverse_lazy("movie:list")
 
 LOGOUT_REDIRECT_URL = reverse_lazy("movie:list")
 
-MEDIA_URL = '/'
-MEDIA_ROOT = BASE_DIR / 'static/images/'
+MEDIA_URL = "/"
+MEDIA_ROOT = BASE_DIR / "static/images/"

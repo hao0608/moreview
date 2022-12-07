@@ -18,6 +18,7 @@ class MovieCreateView(CreateView):
     template_name = "movie_create_form.html"
     form_class = MovieModelForm
 
+
 class MovieDetailView(DetailView):
     model = Movie
     template_name = "movie_detail.html"
@@ -36,10 +37,13 @@ class MovieListView(ListView):
         if query is not None:  # 搜尋
             query = "%" + query + "%"
             movie_obj = Movie.objects.raw(
-                "SELECT * FROM movie_movie WHERE name LIKE %s", [query]
+                "SELECT * FROM movie_movie WHERE name LIKE %s AND image LIKE %s",
+                [query, "movies/%"],
             )
         else:  # 沒有搜尋
-            movie_obj = Movie.objects.all()
+            movie_obj = Movie.objects.raw(
+                "SELECT * FROM movie_movie WHERE image LIKE %s ", ["movies/%"]
+            )
         context["object_list"] = movie_obj
         return context
 
