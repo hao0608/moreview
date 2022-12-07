@@ -2,6 +2,7 @@ import time
 
 from django.test import Client, RequestFactory, TestCase
 from django.urls import reverse
+from django.contrib.auth import authenticate, login
 
 from faker import Faker
 from users.factories import UserFactory
@@ -51,13 +52,13 @@ class UserLoginViewTest(TestCase):
 
         self.assertIs(200, response.status_code)
 
-    def test_user_can_login_and_redirect_to_home(self):
+    def test_user_can_login_and_redirect_to_movies_list(self):
         response = self.client.post(
             reverse("users:login"),
             {"username": self.user.username, "password": "password"},
         )
 
-        self.assertRedirects(response, expected_url="/")
+        self.assertRedirects(response, expected_url=reverse("movie:list"))
 
     def test_user_cannot_login_with_incorrect_certificate(self):
         response = self.client.post(
@@ -76,3 +77,15 @@ class UserLoginViewTest(TestCase):
         )
 
         self.assertNotEqual(0, len(response.context["form"].errors))
+
+
+class UserLogoutViewTest(TestCase):
+    def setUp(self) -> None:
+        self.client = Client()
+        self.user = UserFactory().create()
+
+    def test_user_can_logout_and_redirect_to_movies_list(self):
+        self.client.login(username=self.user.username, password="password")
+        response = self.client.post(reverse("users:logout"))
+
+        self.assertRedirects(response, expected_url=reverse("movie:list"))
