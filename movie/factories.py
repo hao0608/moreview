@@ -21,12 +21,13 @@ class MovieFactory(BaseFactory):
             "date_released": self.faker.date(),
         }
 
+
 class TagFactory(BaseFactory):
     model = Tag
 
     def __init__(self):
         super().__init__()
 
-        self.data={
-            "name":"幽默",
+        self.data = {
+            "name": "幽默",
         }
