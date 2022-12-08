@@ -8,7 +8,7 @@ from faker import Faker
 
 from users.factories import UserFactory
 from .models import User
-from .views import UserRegisterView, UserLoginView
+from .views import UserRegisterView, UserLoginView, UserLogoutView
 
 
 # Create your tests here.
@@ -142,7 +142,11 @@ class UserLoginViewTest(TestCase):
 class UserLogoutViewTest(TestCase):
     def setUp(self) -> None:
         self.client = Client()
+        self.view = UserLogoutView
         self.user = UserFactory().create()
+
+    def test_only_allow_post_method(self):
+        self.assertEqual(['post'], self.view.http_method_names)
 
     def test_user_can_logout_and_redirect_to_movies_list(self):
         self.client.login(username=self.user.username, password="password")
