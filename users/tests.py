@@ -1,12 +1,14 @@
 import time
 
+from django.contrib import auth
 from django.test import Client, RequestFactory, TestCase
 from django.urls import reverse
-from django.contrib.auth import authenticate, login
-
+from django.utils.translation import gettext as _
 from faker import Faker
+
 from users.factories import UserFactory
-from .views import UserLoginView
+from .models import User
+from .views import UserRegisterView, UserLoginView
 
 
 # Create your tests here.
@@ -27,6 +29,64 @@ class UserModelTest(TestCase):
         )
 
 
+class UserRegisterViewTest(TestCase):
+    def setUp(self) -> None:
+        self.view = UserRegisterView
+        self.client = Client()
+
+    def test_template_name_is_correct(self):
+        self.assertEqual("register.html", self.view.template_name)
+
+    def test_form_contains_correct_fields(self):
+        self.assertEqual(
+            [
+                "username",
+                "email",
+                "password",
+                "confirm_password",
+                "last_name",
+                "first_name",
+            ],
+            self.view.form_class.Meta.fields,
+        )
+
+    def test_success_url_is_correct(self):
+        self.assertEqual(reverse("movie:list"), self.view.success_url)
+
+    def test_register_page_can_render(self):
+        response = self.client.get(reverse("users:register"))
+
+        self.assertEqual(200, response.status_code)
+
+    def test_user_can_register_and_auto_login(self):
+        user = UserFactory().data.copy()
+        user.pop("password")
+
+        response = self.client.post(
+            reverse("users:register"),
+            {**user, "password": "Passw0rd!", "confirm_password": "Passw0rd!"},
+        )
+
+        self.assertRedirects(response, expected_url=reverse("movie:list"))
+        self.assertEqual(1, User.objects.filter(**user).count())
+        self.assertTrue(auth.get_user(self.client).is_authenticated)
+
+    def test_user_cannot_register_when_confirm_password_not_match_password(self):
+        user = UserFactory().data.copy()
+        user.pop("password")
+
+        response = self.client.post(
+            reverse("users:register"),
+            {**user, "password": "Passw0rd!", "confirm_password": "password"},
+        )
+
+        self.assertFormError(
+            response.context["form"],
+            field="password",
+            errors=[_("Password does not match confirm_password")],
+        )
+
+
 class UserLoginViewTest(TestCase):
     view = UserLoginView()
     client = Client()
@@ -41,7 +101,7 @@ class UserLoginViewTest(TestCase):
     def test_redirect_url_is_root(self):
         request = RequestFactory().post(
             reverse("users:login"),
-            {"username": self.user.username, "password": "password"},
+            {"username": self.user.username, "password": "Passw0rd!"},
         )
         self.view.setup(request)
 
@@ -55,7 +115,7 @@ class UserLoginViewTest(TestCase):
     def test_user_can_login_and_redirect_to_movies_list(self):
         response = self.client.post(
             reverse("users:login"),
-            {"username": self.user.username, "password": "password"},
+            {"username": self.user.username, "password": "Passw0rd!"},
         )
 
         self.assertRedirects(response, expected_url=reverse("movie:list"))
