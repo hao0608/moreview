@@ -39,9 +39,21 @@ class MovieCreateViewTest(TestCase):
         response = self.client.get(reverse("movie:create"))
         self.assertIs(200, response.status_code)
 
-    # def test_movie_post(self):
-    #     self.client.post('/movies/create', {'name':'test name', 'content': 'test content','official_site':'test url', 'time': 120 , 'image':'test.jpg', 'grade':'普遍級','date_released':datetime.date.today })
-    #     self.assertEqual(Movie.objects.get(name='test name').content, "test content")
+    def test_form_contains_correct_fields(self):
+        self.assertEqual(
+            [
+                "tag_id",
+                "name",
+                "content",
+                "official_site",
+                "time",
+                "grade",
+                "date_released",
+                "image"
+            ],
+            self.view.form_class.Meta.fields,
+        )
+
 
 class MovieListViewTest(TestCase):
     view = MovieListView()
@@ -67,7 +79,3 @@ class MovieDetailViewTest(TestCase):
 
     def test_template_is_correct(self):
         self.assertEqual("movie_detail.html", self.view.template_name)
-
-    # def test_movie_create_page_can_render(self):
-    #     response = self.client.get(reverse("movie:detail", self.movie.id))
-    #     self.assertIs(200, response.status_code)
