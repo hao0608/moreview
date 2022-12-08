@@ -27,9 +27,9 @@
 
 
         </div>
-	{% if not request.user.is_authenticated %}
+	{% if not request.user.is_authenticated and request.path != '/login' %}
 	 <div class="container px-4 px-lg-5" id="login-btn">
-            <a href="{% url 'users:login' %}">
+		 <a href="{% url 'users:login' %}">
                   <button class="navbar-brand btn btn-login text-uppercase" id="login-btn">登入</button>
 	    </a>
 	</div>
