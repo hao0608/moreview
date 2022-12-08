@@ -18,6 +18,10 @@
     align-items: flex-end;
 }
 
+.logout-btn{
+    border: none !important;
+}
+
 .content-pad-top {
     padding-top: 7rem;
 }

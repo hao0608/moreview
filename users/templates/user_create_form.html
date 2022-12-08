@@ -1,0 +1,36 @@
+
+{% if request.user.is_superuser %}
+{% load crispy_forms_tags %}
+
+<div class="collapse" id="create_admin_form">
+	<form action="{# url 'users:create_admin' #}" method="POST">
+		{% csrf_token %}
+		{{ form|crispy }}
+		<div class="mb-3 row">
+                	<label class="col-sm-2 col-form-label">暱稱{{ form.username.label }}</label>
+                        <div class="col-sm-10">
+                        	<input type="text" class="form-control">
+                                	{{ form.username }}
+                        </div>
+                </div>
+                <div class="mb-3 row">
+                        <label class="col-sm-2 col-form-label">信箱{{ form.email.label }}</label>
+                        <div class="col-sm-10">
+                                <input type="email" class="form-control">
+                                        {{ form.email }}
+                        </div>
+                </div>
+                <div class="mb-3 row">
+                        <label class="col-sm-2 col-form-label">密碼{{ form.password.label }}</label>
+                        <div class="col-sm-10">
+                                <input type="password" class="form-control">
+                                        {{ form.password }}
+                        </div>
+                </div>
+                <div class="container text-center">
+                        <button class="btn btn-success" type="submit">新增<i/button>
+                </div>
+	</form>
+</div>
+
+{% endif %}

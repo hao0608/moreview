@@ -1,6 +1,6 @@
 from moreview.factories import BaseFactory
 
-from .models import Movie
+from .models import Movie, Tag
 
 
 class MovieFactory(BaseFactory):
@@ -19,4 +19,15 @@ class MovieFactory(BaseFactory):
                 elements=("普遍級", "保護級", "輔12級", "輔15級", "限制級")
             ),
             "date_released": self.faker.date(),
+        }
+
+
+class TagFactory(BaseFactory):
+    model = Tag
+
+    def __init__(self):
+        super().__init__()
+
+        self.data = {
+            "name": "幽默",
         }
