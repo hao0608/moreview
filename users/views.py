@@ -22,8 +22,10 @@ class UserRegisterView(FormView):
 
         return super().form_valid(form)
 
+
 class UserLoginView(LoginView):
     template_name = "login.html"
+
 
 class UserLogoutView(LogoutView):
     http_method_names = ["post"]
