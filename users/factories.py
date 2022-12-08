@@ -12,7 +12,7 @@ class UserFactory(BaseFactory):
             **dict.fromkeys(["username", "first_name"], self.faker.first_name()),
             "last_name": self.faker.last_name(),
             "email": self.faker.safe_email(),
-            "password": make_password("password"),
+            "password": make_password("Passw0rd!"),
         }
 
     def is_superuser(self):
