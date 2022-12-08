@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from django.urls import reverse_lazy
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -119,6 +120,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "zh-Hant"
 
+LOCALE_PATHS = [BASE_DIR / "locale"]
+
 TIME_ZONE = "Asia/Taipei"
 
 USE_I18N = True
@@ -144,4 +147,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "users.User"
 
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = reverse_lazy("movie:list")
+
+LOGOUT_REDIRECT_URL = reverse_lazy("movie:list")
+
+MEDIA_URL = "/"
+MEDIA_ROOT = BASE_DIR / "static/images/"
