@@ -42,33 +42,6 @@
 			</div>
 		</div>
 	</div>
-	<div class="row gx-4 gx-lg-5 justify-content-center pt-3">
-                <div class="col-md-10 col-lg-8 col-xl-7 shadow-sm">
-			<div class="mb-3 row justify-content-between pt-3 border-bottom border-secondary">
-                                <div class="col-auto me-auto">
-                                        <p class="fs-2">使用者</p>
-                                </div>
-                        </div>
-			<div class="mb-3 row">
-				<ul class="list-group list-group-flush">
-                                {% for user in users  %}
-                                        {% if user.is_staff %}
-                                                <li class="list-group-item">
-
-                                                {{ user.username }}
-
-                                                </li>
-					{% endif %}
-                                {% endfor %}
-                                <li class="list-group-item">An item</li>
-                                <li class="list-group-item">A second item</li>
-                                <li class="list-group-item">A third item</li>
-                                <li class="list-group-item">A fourth item</li>
-                                <li class="list-group-item">And a fifth one</li>
-                                </ul>
-			</div>
-                </div>
-        </div>
 </div>
 
 {% endblock  %}
