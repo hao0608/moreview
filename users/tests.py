@@ -51,7 +51,7 @@ class UserRegisterViewTest(TestCase):
         )
 
     def test_success_url_is_correct(self):
-        self.assertEqual(reverse("movie_list"), self.view.success_url)
+        self.assertEqual(reverse("movie:list"), self.view.success_url)
 
     def test_register_page_can_render(self):
         response = self.client.get(reverse("users:register"))
@@ -67,7 +67,7 @@ class UserRegisterViewTest(TestCase):
             {**user, "password": "Passw0rd!", "confirm_password": "Passw0rd!"},
         )
 
-        self.assertRedirects(response, expected_url=reverse("movie_list"))
+        self.assertRedirects(response, expected_url=reverse("movie:list"))
         self.assertEqual(1, User.objects.filter(**user).count())
         self.assertTrue(auth.get_user(self.client).is_authenticated)
 
