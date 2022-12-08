@@ -120,9 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "zh-Hant"
 
-LOCALE_PATHS = [
-    BASE_DIR / 'locale'
-]
+LOCALE_PATHS = [BASE_DIR / "locale"]
 
 TIME_ZONE = "Asia/Taipei"
 
