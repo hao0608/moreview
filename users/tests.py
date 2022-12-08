@@ -118,7 +118,7 @@ class UserLoginViewTest(TestCase):
             {"username": self.user.username, "password": "Passw0rd!"},
         )
 
-        self.assertRedirects(response, expected_url=reverse("movie_list"))
+        self.assertRedirects(response, expected_url=reverse("movie:list"))
 
     def test_user_cannot_login_with_incorrect_certificate(self):
         response = self.client.post(
@@ -148,4 +148,4 @@ class UserLogoutViewTest(TestCase):
         self.client.login(username=self.user.username, password="password")
         response = self.client.post(reverse("users:logout"))
 
-        self.assertRedirects(response, expected_url=reverse("movie_list"))
+        self.assertRedirects(response, expected_url=reverse("movie:list"))

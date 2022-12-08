@@ -8,3 +8,5 @@ black
 
 Faker
 selenium
+
+Pillow

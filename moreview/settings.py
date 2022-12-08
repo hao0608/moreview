@@ -149,6 +149,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "users.User"
 
-LOGIN_REDIRECT_URL = reverse_lazy("movie_list")
+LOGIN_REDIRECT_URL = reverse_lazy("movie:list")
 
-LOGOUT_REDIRECT_URL = reverse_lazy("movie_list")
+LOGOUT_REDIRECT_URL = reverse_lazy("movie:list")
+
+MEDIA_URL = "/"
+MEDIA_ROOT = BASE_DIR / "static/images/"
