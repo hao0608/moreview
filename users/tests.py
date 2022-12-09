@@ -8,7 +8,7 @@ from faker import Faker
 
 from users.factories import UserFactory
 from .models import User
-from .views import UserRegisterView, UserLoginView, UserLogoutView
+from .views import UserRegisterView, UserLoginView, UserLogoutView, UserListView
 
 
 # Create your tests here.
@@ -153,3 +153,41 @@ class UserLogoutViewTest(TestCase):
         response = self.client.post(reverse("users:logout"))
 
         self.assertRedirects(response, expected_url=reverse("movie:list"))
+
+
+class UserListViewTest(TestCase):
+    def setUp(self) -> None:
+        self.client = Client()
+        self.view = UserListView
+        self.admin = UserFactory().is_superuser().create()
+        self.user = UserFactory().create()
+
+    def test_url_ic_correct(self):
+        self.assertEqual("/users", reverse('users:list'))
+
+    def test_model_is_user_model(self):
+        self.assertEqual(User, self.view.model)
+
+    def test_template_name_is_correct(self):
+        self.assertEqual("user_list.html", self.view.template_name)
+
+    def test_redirect_login_url_is_correct(self):
+        self.assertEqual(reverse('users:login'), self.view.login_url)
+
+    def test_unauthenticated_user_redirects_to_login(self):
+        response = self.client.get(reverse('users:list'))
+
+        self.assertRedirects(response, expected_url=f"{reverse('users:login')}?next={reverse('users:list')}")
+
+    def test_user_is_forbidden_to_access(self):
+        self.client.login(username=self.user.username, password="Passw0rd!")
+
+        response = self.client.get(reverse('users:list'))
+        self.assertEqual(403, response.status_code)
+
+    def test_admin_can_view_page(self):
+        self.client.login(username=self.admin.username, password='Passw0rd!')
+
+        response = self.client.get(reverse('users:list'))
+
+        self.assertEqual(200, response.status_code)
