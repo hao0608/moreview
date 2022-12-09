@@ -42,7 +42,7 @@ class UserLogoutView(LogoutView):
 class UserListView(UserPassesTestMixin, ListView):
     template_name = "user_list.html"
     model = User
-    login_url = reverse_lazy('users:login')
+    login_url = reverse_lazy("users:login")
 
     def test_func(self):
         return self.request.user.is_superuser

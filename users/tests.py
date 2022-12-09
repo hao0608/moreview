@@ -36,7 +36,7 @@ class UserRegisterViewTest(TestCase):
         self.client = Client()
 
     def test_url_is_correct(self):
-        self.assertURLEqual('/register', reverse('users:register'))
+        self.assertURLEqual("/register", reverse("users:register"))
 
     def test_template_name_is_correct(self):
         self.assertEqual("register.html", self.view.template_name)
@@ -98,7 +98,7 @@ class UserLoginViewTest(TestCase):
         self.user = UserFactory().create()
 
     def test_url_is_correct(self):
-        self.assertURLEqual('/login', reverse('users:login'))
+        self.assertURLEqual("/login", reverse("users:login"))
 
     def test_template_is_correct(self):
         self.assertEqual("login.html", self.view.template_name)
@@ -151,10 +151,10 @@ class UserLogoutViewTest(TestCase):
         self.user = UserFactory().create()
 
     def test_url_is_correct(self):
-        self.assertURLEqual('/logout', reverse('users:logout'))
+        self.assertURLEqual("/logout", reverse("users:logout"))
 
     def test_only_allow_post_method(self):
-        self.assertEqual(['post'], self.view.http_method_names)
+        self.assertEqual(["post"], self.view.http_method_names)
 
     def test_user_can_logout_and_redirect_to_movies_list(self):
         self.client.login(username=self.user.username, password="password")
@@ -171,7 +171,7 @@ class UserListViewTest(TestCase):
         self.user = UserFactory().create()
 
     def test_url_ic_correct(self):
-        self.assertEqual("/users", reverse('users:list'))
+        self.assertEqual("/users", reverse("users:list"))
 
     def test_model_is_user_model(self):
         self.assertEqual(User, self.view.model)
@@ -180,22 +180,25 @@ class UserListViewTest(TestCase):
         self.assertEqual("user_list.html", self.view.template_name)
 
     def test_redirect_login_url_is_correct(self):
-        self.assertEqual(reverse('users:login'), self.view.login_url)
+        self.assertEqual(reverse("users:login"), self.view.login_url)
 
     def test_unauthenticated_user_redirects_to_login(self):
-        response = self.client.get(reverse('users:list'))
+        response = self.client.get(reverse("users:list"))
 
-        self.assertRedirects(response, expected_url=f"{reverse('users:login')}?next={reverse('users:list')}")
+        self.assertRedirects(
+            response,
+            expected_url=f"{reverse('users:login')}?next={reverse('users:list')}",
+        )
 
     def test_user_is_forbidden_to_access(self):
         self.client.login(username=self.user.username, password="Passw0rd!")
 
-        response = self.client.get(reverse('users:list'))
+        response = self.client.get(reverse("users:list"))
         self.assertEqual(403, response.status_code)
 
     def test_admin_can_view_page(self):
-        self.client.login(username=self.admin.username, password='Passw0rd!')
+        self.client.login(username=self.admin.username, password="Passw0rd!")
 
-        response = self.client.get(reverse('users:list'))
+        response = self.client.get(reverse("users:list"))
 
         self.assertEqual(200, response.status_code)
