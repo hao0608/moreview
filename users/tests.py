@@ -8,7 +8,13 @@ from faker import Faker
 
 from users.factories import UserFactory
 from .models import User
-from .views import UserRegisterView, UserLoginView, UserLogoutView, UserListView
+from .views import (
+    UserRegisterView,
+    UserLoginView,
+    UserLogoutView,
+    UserListView,
+    UserProfileView,
+)
 
 
 # Create your tests here.
@@ -200,5 +206,57 @@ class UserListViewTest(TestCase):
         self.client.login(username=self.admin.username, password="Passw0rd!")
 
         response = self.client.get(reverse("users:list"))
+
+        self.assertEqual(200, response.status_code)
+
+
+class UserProfileViewTest(TestCase):
+    def setUp(self) -> None:
+        self.view = UserProfileView()
+        self.client = Client()
+        self.user = UserFactory().create()
+        self.admin = UserFactory().is_superuser().create()
+
+    def test_url_is_correct(self):
+        self.assertURLEqual("/profile", reverse("users:profile"))
+
+    def test_template_name_is_correct(self):
+        self.assertEqual("profile.html", self.view.template_name)
+
+    def test_model_is_correct(self):
+        self.assertEqual(User, self.view.model)
+
+    def test_unauthorized_user_redirects_to_login(self):
+        response = self.client.get(reverse("users:profile"))
+
+        self.assertRedirects(
+            response,
+            expected_url=f"{reverse('users:login')}?next={reverse('users:profile')}",
+        )
+
+    def test_authorized_user_can_view_profile(self):
+        self.client.login(username=self.user.username, password="Passw0rd!")
+
+        response = self.client.get(reverse("users:profile"))
+
+        self.assertEqual(200, response.status_code)
+
+    def test_authorized_user_redirects_to_personal_profile_when_request_to_view_profile_with_parameter(
+        self,
+    ):
+        self.client.login(username=self.user.username, password="Passw0rd!")
+
+        response = self.client.get(
+            reverse("users:profile", kwargs={"pk": self.user.pk})
+        )
+
+        self.assertRedirects(response, expected_url=reverse("users:profile"))
+
+    def test_authorized_admin_can_view_other_user_profile(self):
+        self.client.login(username=self.admin.username, password="Passw0rd!")
+
+        response = self.client.get(
+            reverse("users:profile", kwargs={"pk": self.user.pk})
+        )
 
         self.assertEqual(200, response.status_code)
