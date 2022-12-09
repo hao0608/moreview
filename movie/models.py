@@ -21,6 +21,7 @@ movie_grade = [
     ("限制級", "限制級"),
 ]
 
+
 class Movie(models.Model):
     tag_id = models.ForeignKey(Tag, on_delete=models.CASCADE, default="1")
     name = models.CharField(max_length=20)
