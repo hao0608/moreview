@@ -1,7 +1,7 @@
 import time
 
 from django.contrib import auth
-from django.test import Client, RequestFactory, TestCase
+from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from faker import Faker
@@ -61,9 +61,6 @@ class UserRegisterViewTest(TestCase):
             self.view.form_class.Meta.fields,
         )
 
-    def test_success_url_is_correct(self):
-        self.assertEqual(reverse("movie:list"), self.view.success_url)
-
     def test_register_page_can_render(self):
         response = self.client.get(reverse("users:register"))
 
@@ -110,15 +107,6 @@ class UserLoginViewTest(TestCase):
     def test_template_is_correct(self):
         self.assertEqual("login.html", self.view.template_name)
 
-    def test_redirect_url_is_root(self):
-        request = RequestFactory().post(
-            reverse("users:login"),
-            {"username": self.user.username, "password": "Passw0rd!"},
-        )
-        self.view.setup(request)
-
-        self.assertURLEqual("", self.view.get_redirect_url())
-
     def test_login_page_can_render(self):
         response = self.client.get(reverse("users:login"))
 
@@ -131,24 +119,6 @@ class UserLoginViewTest(TestCase):
         )
 
         self.assertRedirects(response, expected_url=reverse("movie:list"))
-
-    def test_user_cannot_login_with_incorrect_certificate(self):
-        response = self.client.post(
-            reverse("users:login"),
-            {"username": self.user.username, "password": "secret"},
-        )
-
-        self.assertNotEqual(0, len(response.context["form"].errors))
-
-    def test_inactive_user_cannot_login(self):
-        inactive_user = UserFactory().inactive().create()
-
-        response = self.client.post(
-            reverse("users:login"),
-            {"username": inactive_user.username, "password": "password"},
-        )
-
-        self.assertNotEqual(0, len(response.context["form"].errors))
 
 
 class UserLogoutViewTest(TestCase):
@@ -177,17 +147,14 @@ class UserListViewTest(TestCase):
         self.admin = UserFactory().is_superuser().create()
         self.user = UserFactory().create()
 
-    def test_url_ic_correct(self):
+    def test_url_is_correct(self):
         self.assertEqual("/users", reverse("users:list"))
 
-    def test_model_is_user_model(self):
+    def test_model_is_correct(self):
         self.assertEqual(User, self.view.model)
 
     def test_template_name_is_correct(self):
         self.assertEqual("user_list.html", self.view.template_name)
-
-    def test_redirect_login_url_is_correct(self):
-        self.assertEqual(reverse("users:login"), self.view.login_url)
 
     def test_unauthenticated_user_redirects_to_login(self):
         response = self.client.get(reverse("users:list"))

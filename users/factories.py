@@ -1,5 +1,6 @@
-from moreview.factories import BaseFactory
 from django.contrib.auth.hashers import make_password
+
+from moreview.factories import BaseFactory
 from .models import User
 
 
@@ -17,8 +18,4 @@ class UserFactory(BaseFactory):
 
     def is_superuser(self):
         self.data.update({"is_superuser": True})
-        return self
-
-    def inactive(self):
-        self.data.update({"is_active": False})
         return self
