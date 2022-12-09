@@ -14,6 +14,7 @@ from .views import (
     UserLogoutView,
     UserListView,
     UserProfileView,
+    AdminCreateView
 )
 
 
@@ -260,3 +261,56 @@ class UserProfileViewTest(TestCase):
         )
 
         self.assertEqual(200, response.status_code)
+
+
+class AdminCreateViewTest(TestCase):
+    def setUp(self) -> None:
+        self.view = AdminCreateView()
+        self.client = Client()
+        self.user = UserFactory().create()
+        self.admin = UserFactory().is_superuser().create()
+
+    def test_url_is_correct(self):
+        self.assertURLEqual('/users/create', reverse('users:create'))
+
+    def test_template_name_suffix_is_correct(self):
+        self.assertEqual('_create_form', self.view.template_name_suffix)
+
+    def test_model_is_correct(self):
+        self.assertEqual(User, self.view.model)
+
+    def test_fields_are_correct(self):
+        self.assertEqual(['username', 'first_name', 'last_name', 'email', 'password'], self.view.fields)
+
+    def test_unauthorized_user_redirects_to_login(self):
+        response = self.client.get(reverse('users:create'))
+
+        self.assertRedirects(response, expected_url=f"{reverse('users:login')}?next={reverse('users:create')}")
+
+    def test_authorized_user_is_forbidden(self):
+        self.client.login(username=self.user.username, password="Passw0rd!")
+
+        response = self.client.get(reverse('users:create'))
+
+        self.assertEqual(403, response.status_code)
+
+    def test_authorized_admin_can_view(self):
+        self.client.login(username=self.user.username, password="Passw0rd!")
+
+        response = self.client.get(reverse('users:create'))
+
+        self.assertEqual(200, response.status_code)
+
+    def test_authorized_admin_can_create_and_new_admin_can_login(self):
+        admin = UserFactory().data.copy()
+        admin.pop('password')
+
+        self.client.login(username=self.admin.username, password="Passw0rd!")
+        response = self.client.post(reverse('users:create'), {
+            **admin,
+            'password': "Passw0rd!"
+        })
+
+        self.assertRedirects(response, expected_url=reverse('users:list'))
+        self.assertEqual(1, User.objects.filter(**admin).count())
+        self.assertTrue(self.client.login(username=admin.get('username'), password="Passw0rd!"))
