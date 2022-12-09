@@ -26,26 +26,48 @@ class MovieDetailView(DetailView):
 
 class MovieListView(ListView):
     model = Movie
-    template_name = "movie_list.html"
+    home_template_name = "homepage.html"
+    manage_template_name = "movie_list.html"
+
+    def get_template_names(self, *args, **kwargs):
+        if self.request.path == reverse("movie:list"):
+            return [self.home_template_name]
+        else:
+            return [self.manage_template_name]
 
     def get_context_data(self, **kwargs):
         context = super(MovieListView, self).get_context_data(**kwargs)
-        # 取得request
-        query_dict = self.request.GET
-        query = query_dict.get("q")
-        movie_obj = None
-        if query is not None:  # 搜尋
-            query = "%" + query + "%"
-            movie_obj = Movie.objects.raw(
-                "SELECT * FROM movie_movie WHERE name LIKE %s AND image LIKE %s",
-                [query, "movies/%"],
-            )
-        else:  # 沒有搜尋
-            movie_obj = Movie.objects.raw(
-                "SELECT * FROM movie_movie WHERE image LIKE %s ", ["movies/%"]
-            )
-        context["object_list"] = movie_obj
-        return context
+
+        if self.request.path == reverse("movie:list"):
+            # 取得request
+            query = self.request.GET.get("q")
+            movie_obj = None
+            if query is not None:  # 搜尋
+                query = "%" + query + "%"
+                movie_obj = Movie.objects.raw(
+                    "SELECT * FROM movie_movie WHERE name LIKE %s AND image LIKE %s",
+                    [query, "movies/%"],
+                )
+            else:  # 沒有搜尋
+                movie_obj = Movie.objects.raw(
+                    "SELECT * FROM movie_movie WHERE image LIKE %s ", ["movies/%"]
+                )
+            context["object_list"] = movie_obj
+            return context
+        else:
+            # 取得request
+            query = self.request.GET.get("q")
+            movie_obj = None
+            if query is not None:  # 搜尋
+                query = "%" + query + "%"
+                movie_obj = Movie.objects.raw(
+                    "SELECT * FROM movie_movie WHERE name LIKE %s AND image LIKE %s",
+                    [query, "movies/%"],
+                )
+            else:  # 沒有搜尋
+                movie_obj = Movie.objects.all()
+            context["object_list"] = movie_obj
+            return context
 
 
 class MovieEditView(UpdateView):
@@ -58,4 +80,4 @@ class MovieDeleteView(DeleteView):
     model = Movie
 
     def get_success_url(self):
-        return reverse("movie:list")
+        return reverse("movie:manage-list")
