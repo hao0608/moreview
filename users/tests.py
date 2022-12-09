@@ -279,5 +279,5 @@ class AdminCreateViewTest(TestCase):
         })
 
         self.assertRedirects(response, expected_url=reverse('users:list'))
-        self.assertEqual(1, User.objects.filter(**admin).count())
+        self.assertEqual(1, User.objects.filter({**admin, 'is_superuser': True}).count())
         self.assertTrue(self.client.login(username=admin.get('username'), password="Passw0rd!"))
