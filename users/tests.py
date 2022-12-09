@@ -13,7 +13,8 @@ from .views import UserRegisterView, UserLoginView, UserLogoutView, UserListView
 
 # Create your tests here.
 class UserModelTest(TestCase):
-    faker = Faker()
+    def setUp(self) -> None:
+        self.faker = Faker()
 
     def test_date_updated_field_updates_when_record_updates(self):
         user = UserFactory().create()
@@ -31,8 +32,11 @@ class UserModelTest(TestCase):
 
 class UserRegisterViewTest(TestCase):
     def setUp(self) -> None:
-        self.view = UserRegisterView
+        self.view = UserRegisterView()
         self.client = Client()
+
+    def test_url_is_correct(self):
+        self.assertURLEqual('/register', reverse('users:register'))
 
     def test_template_name_is_correct(self):
         self.assertEqual("register.html", self.view.template_name)
@@ -88,12 +92,13 @@ class UserRegisterViewTest(TestCase):
 
 
 class UserLoginViewTest(TestCase):
-    view = UserLoginView()
-    client = Client()
-    user = None
-
     def setUp(self) -> None:
+        self.view = UserLoginView()
+        self.client = Client()
         self.user = UserFactory().create()
+
+    def test_url_is_correct(self):
+        self.assertURLEqual('/login', reverse('users:login'))
 
     def test_template_is_correct(self):
         self.assertEqual("login.html", self.view.template_name)
@@ -105,7 +110,7 @@ class UserLoginViewTest(TestCase):
         )
         self.view.setup(request)
 
-        self.assertIs("", self.view.get_redirect_url())
+        self.assertURLEqual("", self.view.get_redirect_url())
 
     def test_login_page_can_render(self):
         response = self.client.get(reverse("users:login"))
@@ -141,9 +146,12 @@ class UserLoginViewTest(TestCase):
 
 class UserLogoutViewTest(TestCase):
     def setUp(self) -> None:
+        self.view = UserLogoutView()
         self.client = Client()
-        self.view = UserLogoutView
         self.user = UserFactory().create()
+
+    def test_url_is_correct(self):
+        self.assertURLEqual('/logout', reverse('users:logout'))
 
     def test_only_allow_post_method(self):
         self.assertEqual(['post'], self.view.http_method_names)
@@ -157,8 +165,8 @@ class UserLogoutViewTest(TestCase):
 
 class UserListViewTest(TestCase):
     def setUp(self) -> None:
+        self.view = UserListView()
         self.client = Client()
-        self.view = UserListView
         self.admin = UserFactory().is_superuser().create()
         self.user = UserFactory().create()
 
