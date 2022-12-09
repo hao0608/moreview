@@ -65,14 +65,14 @@
                 <ul class="dropdown-menu">
                     <li>
                         <a class="dropdown-item" href="#">                        
-                            <form method="POST" action="{% url 'movie_delete' movie.id %}">{% csrf_token %}
+                            <form method="POST" action="{% url 'movie:delete' movie.id %}">{% csrf_token %}
                                 <button type="submit" style="border: none; background: none; width: 100%; text-align: left;">刪除</button>
                             </form>
                         </a>
                     </li>
                 <li>
                     <a class="dropdown-item" href="#">                        
-                        <form action="{% url 'movie_edit' movie.id %}">
+                        <form action="{% url 'movie:edit' movie.id %}">
                             <button type="submit" style="border: none; background: none; width: 100%; text-align: left;">修改</button>
                         </form>
                     </a>
