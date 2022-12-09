@@ -8,6 +8,6 @@ urlpatterns = [
     path("login", views.UserLoginView.as_view(), name="login"),
     path("logout", views.UserLogoutView.as_view(), name="logout"),
     path("users", views.UserListView.as_view(), name="list"),
-    path('profile', views.UserProfileView.as_view(), name="profile"),
-    path('profile/<int:pk>', views.UserProfileView.as_view(), name="profile")
+    path("profile", views.UserProfileView.as_view(), name="profile"),
+    path("profile/<int:pk>", views.UserProfileView.as_view(), name="profile"),
 ]

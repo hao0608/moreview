@@ -50,14 +50,14 @@ class UserListView(UserPassesTestMixin, ListView):
 
 
 class UserProfileView(LoginRequiredMixin, DetailView):
-    template_name = 'profile.html'
+    template_name = "profile.html"
     model = User
-    login_url = reverse_lazy('users:login')
+    login_url = reverse_lazy("users:login")
 
     def get(self, request, *args, **kwargs):
         if self.kwargs.get(self.pk_url_kwarg, "") == "":
             self.kwargs.update({"pk": request.user.pk})
         elif not request.user.is_superuser:
-            return redirect(reverse_lazy('users:profile'))
+            return redirect(reverse_lazy("users:profile"))
 
         return super().get(request, *args, **kwargs)
