@@ -27,6 +27,5 @@ class MovieModelForm(forms.ModelForm):
             "date_released": forms.TextInput(
                 attrs={"class": "form-control", "type": "date"}
             ),
-            "image": forms.FileInput(attrs={"class": "form-control"})
-            
+            "image": forms.FileInput(attrs={"class": "form-control"}),
         }
