@@ -412,8 +412,8 @@ class UserDeleteViewTest(TestCase):
     def test_model_is_correct(self):
         self.assertEqual(User, self.view.model)
 
-    def test_form_class_is_correct(self):
-        self.assertEqual(forms.Form, self.view.form_class)
+    def test_fields_are_correct(self):
+        self.assertEqual([], self.view.fields)
 
     def test_unauthenticated_user_redirects_to_login(self):
         response = self.client.post(reverse('users:delete'))
