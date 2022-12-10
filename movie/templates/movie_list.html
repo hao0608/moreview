@@ -19,8 +19,11 @@
      <section class="py-5 text-center container">
         <div >
             <form class="d-flex" method="GET">
-              <input class="form-control me-1" type="search" placeholder="Search" aria-label="Search" name="q">
-              <button class="btn btn-custom-primary" type="submit">Search</button>
+              <input class="form-control me-1" type="search" placeholder="輸入電影關鍵字" aria-label="Search" name="q">
+              <button class="btn btn-custom-primary text-nowrap" type="submit">
+                搜尋 <i class="fa fa-search" aria-hidden="true"></i>
+
+              </button>
             </form>
       
           </div>
@@ -52,10 +55,35 @@
                         </form>
                     </td>
                     <td>
-                        <form method="POST" action="{% url 'movie:delete' movie.id %}">{% csrf_token %}
-                            <!-- <input type="submit" class="btn btn-danger" value="刪除"> -->
+                        <!-- <form method="POST" action="{% url 'movie:delete' movie.id %}">{% csrf_token %}
                             <button type="submit" class="btn btn-danger">刪除</button>
-                        </form>
+                        </form> -->
+                        
+
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                            刪除
+                        </button>
+                        
+                        <!-- Modal -->
+                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">確認刪除{{movie.name}}?</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+ 
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">取消</button>
+                                <form method="POST" action="{% url 'movie:delete' movie.id %}">{% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">刪除</button>
+                                </form>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+
                     </td>
                 </tr>
             {% endfor %}
