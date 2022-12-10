@@ -1,11 +1,11 @@
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import redirect
-from django.urls.base import reverse_lazy
+from django.urls.base import reverse, reverse_lazy
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormView, CreateView
+from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.views.generic.list import ListView
 
 from moreview import settings
@@ -77,4 +77,23 @@ class AdminCreateView(UserPassesTestMixin, CreateView):
     def form_valid(self, form):
         form.instance.password = make_password(form.instance.password)
         form.instance.is_superuser = True
+        return super().form_valid(form)
+
+
+class UserDeleteView(LoginRequiredMixin, UpdateView):
+    model = User
+    fields = []
+    success_url = reverse_lazy("movie:list")
+    login_url = reverse_lazy("users:login")
+
+    def get(self, request, *args, **kwargs):
+        return redirect(reverse("users:profile"))
+
+    def post(self, request, *args, **kwargs):
+        self.kwargs.update({"pk": request.user.pk})
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.instance.is_active = False
+        logout(self.request)
         return super().form_valid(form)
