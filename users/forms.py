@@ -37,7 +37,9 @@ class RegisterForm(forms.ModelForm):
 
 
 class AdminCreateForm(forms.ModelForm):
-    password = forms.CharField(label=_('password'), widget=forms.PasswordInput(), max_length=128)
+    password = forms.CharField(
+        label=_("password"), widget=forms.PasswordInput(), max_length=128
+    )
 
     class Meta:
         model = User

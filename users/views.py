@@ -68,8 +68,8 @@ class AdminCreateView(UserPassesTestMixin, CreateView):
     template_name_suffix = "_create_form"
     model = User
     form_class = AdminCreateForm
-    success_url = reverse_lazy('users:list')
-    login_url = reverse_lazy('users:login')
+    success_url = reverse_lazy("users:list")
+    login_url = reverse_lazy("users:login")
 
     def test_func(self):
         return self.request.user.is_superuser

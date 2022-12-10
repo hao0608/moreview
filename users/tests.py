@@ -15,7 +15,7 @@ from .views import (
     UserLogoutView,
     UserListView,
     UserProfileView,
-    AdminCreateView
+    AdminCreateView,
 )
 
 
@@ -59,55 +59,56 @@ class RegisterFormTest(TestCase):
         )
 
     def test_first_name_field_has_correct_setting(self):
-        field = self.form.fields['first_name']
+        field = self.form.fields["first_name"]
 
         self.assertEqual(forms.CharField, field.__class__)
-        self.assertEqual(_('first name'), field.label)
+        self.assertEqual(_("first name"), field.label)
         self.assertEqual(150, field.max_length)
         self.assertTrue(field.required)
 
     def test_last_name_field_has_correct_setting(self):
-        field = self.form.fields['last_name']
+        field = self.form.fields["last_name"]
 
         self.assertEqual(forms.CharField, field.__class__)
-        self.assertEqual(_('last name'), field.label)
+        self.assertEqual(_("last name"), field.label)
         self.assertEqual(150, field.max_length)
         self.assertTrue(field.required)
 
     def test_email_field_has_correct_setting(self):
-        field = self.form.fields['email']
+        field = self.form.fields["email"]
 
         self.assertEqual(forms.EmailField, field.__class__)
-        self.assertEqual(_('email address'), field.label)
+        self.assertEqual(_("email address"), field.label)
         self.assertEqual(254, field.max_length)
         self.assertTrue(field.required)
 
     def test_password_field_has_correct_setting(self):
-        field = self.form.fields['password']
+        field = self.form.fields["password"]
 
         self.assertEqual(forms.CharField, field.__class__)
-        self.assertEqual(_('password'), field.label)
+        self.assertEqual(_("password"), field.label)
         self.assertEqual(forms.PasswordInput, field.widget.__class__)
         self.assertEqual(128, field.max_length)
         self.assertTrue(field.required)
 
     def test_confirm_password_field_has_correct_setting(self):
-        field = self.form.fields['confirm_password']
+        field = self.form.fields["confirm_password"]
 
         self.assertEqual(forms.CharField, field.__class__)
-        self.assertEqual(_('confirm password'), field.label)
+        self.assertEqual(_("confirm password"), field.label)
         self.assertEqual(forms.PasswordInput, field.widget.__class__)
         self.assertEqual(128, field.max_length)
         self.assertTrue(field.required)
 
     def test_validation_failed_when_password_and_confirm_password_mismatch(self):
-        form = self.form.__class__({
-            'password': 'password1',
-            'confirm_password': 'password2'
-        })
+        form = self.form.__class__(
+            {"password": "password1", "confirm_password": "password2"}
+        )
 
         self.assertFalse(form.is_valid())
-        self.assertTrue(_('Password does not match confirm_password') in form['password'].errors)
+        self.assertTrue(
+            _("Password does not match confirm_password") in form["password"].errors
+        )
 
 
 class UserRegisterViewTest(TestCase):
@@ -232,7 +233,7 @@ class UserProfileViewTest(TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_authorized_user_redirects_to_personal_profile_when_request_to_view_profile_with_parameter(
-            self,
+        self,
     ):
         self.client.login(username=self.user.username, password="Passw0rd!")
 
@@ -268,38 +269,38 @@ class AdminCreateFormTest(TestCase):
                 "email",
                 "password",
             ],
-            self.form.Meta.fields
+            self.form.Meta.fields,
         )
 
     def test_first_name_field_has_correct_setting(self):
-        field = self.form.fields['first_name']
+        field = self.form.fields["first_name"]
 
         self.assertEqual(forms.CharField, field.__class__)
-        self.assertEqual(_('first name'), field.label)
+        self.assertEqual(_("first name"), field.label)
         self.assertEqual(150, field.max_length)
         self.assertTrue(field.required)
 
     def test_last_name_field_has_correct_setting(self):
-        field = self.form.fields['last_name']
+        field = self.form.fields["last_name"]
 
         self.assertEqual(forms.CharField, field.__class__)
-        self.assertEqual(_('last name'), field.label)
+        self.assertEqual(_("last name"), field.label)
         self.assertEqual(150, field.max_length)
         self.assertTrue(field.required)
 
     def test_email_field_has_correct_setting(self):
-        field = self.form.fields['email']
+        field = self.form.fields["email"]
 
         self.assertEqual(forms.EmailField, field.__class__)
-        self.assertEqual(_('email address'), field.label)
+        self.assertEqual(_("email address"), field.label)
         self.assertEqual(254, field.max_length)
         self.assertTrue(field.required)
 
     def test_password_field_has_correct_setting(self):
-        field = self.form.fields['password']
+        field = self.form.fields["password"]
 
         self.assertEqual(forms.CharField, field.__class__)
-        self.assertEqual(_('password'), field.label)
+        self.assertEqual(_("password"), field.label)
         self.assertEqual(forms.PasswordInput, field.widget.__class__)
         self.assertTrue(field.required)
 
@@ -312,43 +313,47 @@ class AdminCreateViewTest(TestCase):
         self.admin = UserFactory().is_superuser().create()
 
     def test_url_is_correct(self):
-        self.assertURLEqual('/users/create', reverse('users:create'))
+        self.assertURLEqual("/users/create", reverse("users:create"))
 
     def test_template_name_suffix_is_correct(self):
-        self.assertEqual('_create_form', self.view.template_name_suffix)
+        self.assertEqual("_create_form", self.view.template_name_suffix)
 
     def test_form_class_is_correct(self):
         self.assertEqual(AdminCreateForm, self.view.form_class)
 
     def test_unauthorized_user_redirects_to_login(self):
-        response = self.client.get(reverse('users:create'))
+        response = self.client.get(reverse("users:create"))
 
-        self.assertRedirects(response, expected_url=f"{reverse('users:login')}?next={reverse('users:create')}")
+        self.assertRedirects(
+            response,
+            expected_url=f"{reverse('users:login')}?next={reverse('users:create')}",
+        )
 
     def test_authorized_user_is_forbidden(self):
         self.client.login(username=self.user.username, password="Passw0rd!")
 
-        response = self.client.get(reverse('users:create'))
+        response = self.client.get(reverse("users:create"))
 
         self.assertEqual(403, response.status_code)
 
     def test_authorized_admin_can_view(self):
         self.client.login(username=self.admin.username, password="Passw0rd!")
 
-        response = self.client.get(reverse('users:create'))
+        response = self.client.get(reverse("users:create"))
 
         self.assertEqual(200, response.status_code)
 
     def test_authorized_admin_can_create_and_new_admin_can_login(self):
         admin = UserFactory().data.copy()
-        admin.pop('password')
+        admin.pop("password")
 
         self.client.login(username=self.admin.username, password="Passw0rd!")
-        response = self.client.post(reverse('users:create'), {
-            **admin,
-            'password': "Passw0rd!"
-        })
+        response = self.client.post(
+            reverse("users:create"), {**admin, "password": "Passw0rd!"}
+        )
 
-        self.assertRedirects(response, expected_url=reverse('users:list'))
+        self.assertRedirects(response, expected_url=reverse("users:list"))
         self.assertEqual(1, User.objects.filter(**admin, is_superuser=True).count())
-        self.assertTrue(self.client.login(username=admin.get('username'), password="Passw0rd!"))
+        self.assertTrue(
+            self.client.login(username=admin.get("username"), password="Passw0rd!")
+        )

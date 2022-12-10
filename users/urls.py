@@ -10,5 +10,5 @@ urlpatterns = [
     path("users", views.UserListView.as_view(), name="list"),
     path("profile", views.UserProfileView.as_view(), name="profile"),
     path("profile/<int:pk>", views.UserProfileView.as_view(), name="profile"),
-    path('users/create', views.AdminCreateView.as_view(), name="create")
+    path("users/create", views.AdminCreateView.as_view(), name="create"),
 ]
