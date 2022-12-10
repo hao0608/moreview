@@ -16,6 +16,7 @@ from .views import (
     UserListView,
     UserProfileView,
     AdminCreateView,
+    UserDeleteView
 )
 
 
@@ -217,7 +218,7 @@ class UserProfileViewTest(TestCase):
     def test_model_is_correct(self):
         self.assertEqual(User, self.view.model)
 
-    def test_unauthorized_user_redirects_to_login(self):
+    def test_unauthenticated_user_redirects_to_login(self):
         response = self.client.get(reverse("users:profile"))
 
         self.assertRedirects(
@@ -225,15 +226,15 @@ class UserProfileViewTest(TestCase):
             expected_url=f"{reverse('users:login')}?next={reverse('users:profile')}",
         )
 
-    def test_authorized_user_can_view_profile(self):
+    def test_authenticated_user_can_view_profile(self):
         self.client.login(username=self.user.username, password="Passw0rd!")
 
         response = self.client.get(reverse("users:profile"))
 
         self.assertEqual(200, response.status_code)
 
-    def test_authorized_user_redirects_to_personal_profile_when_request_to_view_profile_with_parameter(
-        self,
+    def test_authenticated_user_redirects_to_personal_profile_when_request_to_view_profile_with_parameter(
+            self,
     ):
         self.client.login(username=self.user.username, password="Passw0rd!")
 
@@ -243,7 +244,7 @@ class UserProfileViewTest(TestCase):
 
         self.assertRedirects(response, expected_url=reverse("users:profile"))
 
-    def test_authorized_admin_can_view_other_user_profile(self):
+    def test_authenticated_admin_can_view_other_user_profile(self):
         self.client.login(username=self.admin.username, password="Passw0rd!")
 
         response = self.client.get(
@@ -315,13 +316,16 @@ class AdminCreateViewTest(TestCase):
     def test_url_is_correct(self):
         self.assertURLEqual("/users/create", reverse("users:create"))
 
+    def test_model_is_correct(self):
+        self.assertEqual(User, self.view.model)
+
     def test_template_name_suffix_is_correct(self):
         self.assertEqual("_create_form", self.view.template_name_suffix)
 
     def test_form_class_is_correct(self):
         self.assertEqual(AdminCreateForm, self.view.form_class)
 
-    def test_unauthorized_user_redirects_to_login(self):
+    def test_unauthenticated_user_redirects_to_login(self):
         response = self.client.get(reverse("users:create"))
 
         self.assertRedirects(
@@ -329,21 +333,21 @@ class AdminCreateViewTest(TestCase):
             expected_url=f"{reverse('users:login')}?next={reverse('users:create')}",
         )
 
-    def test_authorized_user_is_forbidden(self):
+    def test_authenticated_user_is_forbidden(self):
         self.client.login(username=self.user.username, password="Passw0rd!")
 
         response = self.client.get(reverse("users:create"))
 
         self.assertEqual(403, response.status_code)
 
-    def test_authorized_admin_can_view(self):
+    def test_authenticated_admin_can_view(self):
         self.client.login(username=self.admin.username, password="Passw0rd!")
 
         response = self.client.get(reverse("users:create"))
 
         self.assertEqual(200, response.status_code)
 
-    def test_authorized_admin_can_create_and_new_admin_can_login(self):
+    def test_authenticated_admin_can_create_and_new_admin_can_login(self):
         admin = UserFactory().data.copy()
         admin.pop("password")
 
@@ -357,3 +361,40 @@ class AdminCreateViewTest(TestCase):
         self.assertTrue(
             self.client.login(username=admin.get("username"), password="Passw0rd!")
         )
+
+
+class UserDeleteViewTest(TestCase):
+    def setUp(self) -> None:
+        self.view = UserDeleteView
+        self.client = Client()
+        self.user = UserFactory().create()
+
+    def test_url_is_correct(self):
+        self.assertURLEqual('/users/delete', reverse('users:delete'))
+
+    def test_model_is_correct(self):
+        self.assertEqual(User, self.view.model)
+
+    def test_form_class_is_correct(self):
+        self.assertEqual(forms.Form, self.view.form_class)
+
+    def test_unauthenticated_user_redirects_to_login(self):
+        response = self.client.post(reverse('users:delete'))
+
+        self.assertRedirects(response, expected_url=f"{reverse('users:login')}?next={reverse('users:delete')}")
+
+    def test_http_get_method_redirects_to_profile(self):
+        self.client.login(username=self.user.username, password="Passw0rd!")
+
+        response = self.client.get(reverse('users:delete'))
+
+        self.assertRedirects(response, expected_url=reverse('users:profile'))
+
+    def test_authenticated_user_can_delete_account_then_logout_and_redirect_to_homepage(self):
+        self.client.login(username=self.user.username, password="Passw0rd!")
+
+        response = self.client.post(reverse('users:delete'))
+
+        self.assertRedirects(response, expected_url=reverse('movie:list'))
+        self.assertEqual(1, User.objects.filter(pk=self.user.pk, is_active=False).count())
+        self.assertFalse(auth.get_user(self.client).is_authenticated)
