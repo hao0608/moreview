@@ -11,5 +11,5 @@ urlpatterns = [
     path("profile", views.UserProfileView.as_view(), name="profile"),
     path("profile/<int:pk>", views.UserProfileView.as_view(), name="profile"),
     path("users/create", views.AdminCreateView.as_view(), name="create"),
-    path('users/delete', views.UserDeleteView.as_view(), name="delete")
+    path("users/delete", views.UserDeleteView.as_view(), name="delete"),
 ]

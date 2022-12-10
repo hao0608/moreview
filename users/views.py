@@ -83,11 +83,11 @@ class AdminCreateView(UserPassesTestMixin, CreateView):
 class UserDeleteView(LoginRequiredMixin, UpdateView):
     model = User
     fields = []
-    success_url = reverse_lazy('movie:list')
-    login_url = reverse_lazy('users:login')
+    success_url = reverse_lazy("movie:list")
+    login_url = reverse_lazy("users:login")
 
     def get(self, request, *args, **kwargs):
-        return redirect(reverse('users:profile'))
+        return redirect(reverse("users:profile"))
 
     def post(self, request, *args, **kwargs):
         self.kwargs.update({"pk": request.user.pk})

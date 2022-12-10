@@ -17,7 +17,7 @@ from .views import (
     UserListView,
     UserProfileView,
     AdminCreateView,
-    UserDeleteView
+    UserDeleteView,
 )
 
 
@@ -271,7 +271,7 @@ class UserProfileViewTest(TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_authenticated_user_redirects_to_personal_profile_when_request_to_view_profile_with_parameter(
-            self,
+        self,
     ):
         self.client.login(username=self.user.username, password="Passw0rd!")
 
@@ -407,7 +407,7 @@ class UserDeleteViewTest(TestCase):
         self.user = UserFactory().create()
 
     def test_url_is_correct(self):
-        self.assertURLEqual('/users/delete', reverse('users:delete'))
+        self.assertURLEqual("/users/delete", reverse("users:delete"))
 
     def test_model_is_correct(self):
         self.assertEqual(User, self.view.model)
@@ -416,22 +416,29 @@ class UserDeleteViewTest(TestCase):
         self.assertEqual([], self.view.fields)
 
     def test_unauthenticated_user_redirects_to_login(self):
-        response = self.client.post(reverse('users:delete'))
+        response = self.client.post(reverse("users:delete"))
 
-        self.assertRedirects(response, expected_url=f"{reverse('users:login')}?next={reverse('users:delete')}")
+        self.assertRedirects(
+            response,
+            expected_url=f"{reverse('users:login')}?next={reverse('users:delete')}",
+        )
 
     def test_http_get_method_redirects_to_profile(self):
         self.client.login(username=self.user.username, password="Passw0rd!")
 
-        response = self.client.get(reverse('users:delete'))
+        response = self.client.get(reverse("users:delete"))
 
-        self.assertRedirects(response, expected_url=reverse('users:profile'))
+        self.assertRedirects(response, expected_url=reverse("users:profile"))
 
-    def test_authenticated_user_can_delete_account_then_logout_and_redirect_to_homepage(self):
+    def test_authenticated_user_can_delete_account_then_logout_and_redirect_to_homepage(
+        self,
+    ):
         self.client.login(username=self.user.username, password="Passw0rd!")
 
-        response = self.client.post(reverse('users:delete'))
+        response = self.client.post(reverse("users:delete"))
 
-        self.assertRedirects(response, expected_url=reverse('movie:list'))
-        self.assertEqual(1, User.objects.filter(pk=self.user.pk, is_active=False).count())
+        self.assertRedirects(response, expected_url=reverse("movie:list"))
+        self.assertEqual(
+            1, User.objects.filter(pk=self.user.pk, is_active=False).count()
+        )
         self.assertFalse(auth.get_user(self.client).is_authenticated)
