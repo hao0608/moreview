@@ -30,6 +30,7 @@
      <table class="table" >
         <thead class="text-center">
           <tr >
+            <th scope="col">電影流水號</th>
             <th scope="col">電影名稱</th>
             <th scope="col">新增時間</th>
             <th scope="col">更新時間</th>
@@ -41,7 +42,8 @@
         <tbody class="text-center">
             {% for movie in object_list %}
                 <tr>
-                    <th scope="row">{{movie.name}}</th>
+                    <th scope="row">{{movie.id}}</th>
+                    <td>{{movie.name}}</td>
                     <td>{{movie.date_created}}</td>
                     <td>{{movie.date_updated}}</td>
                     <td>
