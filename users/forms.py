@@ -34,3 +34,17 @@ class RegisterForm(forms.ModelForm):
             self.add_error("password", _("Password does not match confirm_password"))
 
         return cleaned_data
+
+
+class AdminCreateForm(forms.ModelForm):
+    password = forms.CharField(label=_('password'), widget=forms.PasswordInput(), max_length=128)
+
+    class Meta:
+        model = User
+        fields = [
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "password",
+        ]
