@@ -2,7 +2,7 @@
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic.edit import FormView
 from moreview import settings
-from .forms import RegisterForm
+from .forms import RegisterForm, ProfileForm
 from django.contrib.auth import login, authenticate
 
 
@@ -32,3 +32,7 @@ class UserLogoutView(LogoutView):
 
     def get_redirect_url(self):
         return ""
+
+class UserProfileView(FormView):
+    template_name = "profile.html"
+    form_class = ProfileForm

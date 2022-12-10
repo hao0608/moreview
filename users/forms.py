@@ -3,6 +3,24 @@ from .models import User
 from django.utils.translation import gettext as _
 from django.contrib.auth.password_validation import validate_password
 
+class ProfileForm(forms.ModelForm):
+    password = forms.CharField(
+        label=_("password"),
+        widget=forms.PasswordInput(attrs={'disabled':'disabled', 'value': "password"}),
+    )
+    username = forms.CharField(
+        label=_("username"),
+        widget=forms.TextInput(attrs={'disabled':'disabled', 'width':'100%'}),
+    )
+    class Meta:
+        model = User
+        fields = [
+            "username",
+            "last_name",
+            "first_name",
+            "email",
+            "password",
+        ]
 
 class RegisterForm(forms.ModelForm):
     password = forms.CharField(
@@ -19,11 +37,11 @@ class RegisterForm(forms.ModelForm):
         model = User
         fields = [
             "username",
+            "last_name",
+            "first_name",
             "email",
             "password",
             "confirm_password",
-            "last_name",
-            "first_name",
         ]
 
     def clean(self):

@@ -41,11 +41,11 @@ class UserRegisterViewTest(TestCase):
         self.assertEqual(
             [
                 "username",
+                "last_name",
+                "first_name",
                 "email",
                 "password",
                 "confirm_password",
-                "last_name",
-                "first_name",
             ],
             self.view.form_class.Meta.fields,
         )
