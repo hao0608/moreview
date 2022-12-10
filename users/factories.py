@@ -10,7 +10,7 @@ class UserFactory(BaseFactory):
     def __init__(self):
         super().__init__()
         self.data = {
-            **dict.fromkeys(["username", "first_name"], self.faker.first_name()),
+            **dict.fromkeys(["username", "first_name"], self.faker.unique.first_name()),
             "last_name": self.faker.last_name(),
             "email": self.faker.safe_email(),
             "password": make_password("Passw0rd!"),

@@ -8,7 +8,7 @@ from django.utils.translation import gettext as _
 from faker import Faker
 
 from users.factories import UserFactory
-from .forms import RegisterForm
+from .forms import RegisterForm, AdminCreateForm
 from .models import User
 from .views import (
     UserRegisterView,
@@ -45,7 +45,7 @@ class RegisterFormTest(TestCase):
     def test_model_is_correct(self):
         self.assertEqual(User, self.form.Meta.model)
 
-    def test_fields_is_correct(self):
+    def test_fields_are_correct(self):
         self.assertEqual(
             [
                 "username",
@@ -58,19 +58,19 @@ class RegisterFormTest(TestCase):
             self.form.Meta.fields,
         )
 
-    def test_last_name_field_has_correct_setting(self):
-        field = self.form.fields['last_name']
-
-        self.assertEqual(forms.CharField, field.__class__)
-        self.assertEqual(_('last name'), field.label)
-        self.assertEqual(150, field.max_length)
-        self.assertTrue(field.required)
-
     def test_first_name_field_has_correct_setting(self):
         field = self.form.fields['first_name']
 
         self.assertEqual(forms.CharField, field.__class__)
         self.assertEqual(_('first name'), field.label)
+        self.assertEqual(150, field.max_length)
+        self.assertTrue(field.required)
+
+    def test_last_name_field_has_correct_setting(self):
+        field = self.form.fields['last_name']
+
+        self.assertEqual(forms.CharField, field.__class__)
+        self.assertEqual(_('last name'), field.label)
         self.assertEqual(150, field.max_length)
         self.assertTrue(field.required)
 
@@ -252,6 +252,58 @@ class UserProfileViewTest(TestCase):
         self.assertEqual(200, response.status_code)
 
 
+class AdminCreateFormTest(TestCase):
+    def setUp(self) -> None:
+        self.form = AdminCreateForm()
+
+    def test_model_is_correct(self):
+        self.assertEqual(User, self.form.Meta.model)
+
+    def test_fields_are_correct(self):
+        self.assertEqual(
+            [
+                "username",
+                "first_name",
+                "last_name",
+                "email",
+                "password",
+            ],
+            self.form.Meta.fields
+        )
+
+    def test_first_name_field_has_correct_setting(self):
+        field = self.form.fields['first_name']
+
+        self.assertEqual(forms.CharField, field.__class__)
+        self.assertEqual(_('first name'), field.label)
+        self.assertEqual(150, field.max_length)
+        self.assertTrue(field.required)
+
+    def test_last_name_field_has_correct_setting(self):
+        field = self.form.fields['last_name']
+
+        self.assertEqual(forms.CharField, field.__class__)
+        self.assertEqual(_('last name'), field.label)
+        self.assertEqual(150, field.max_length)
+        self.assertTrue(field.required)
+
+    def test_email_field_has_correct_setting(self):
+        field = self.form.fields['email']
+
+        self.assertEqual(forms.EmailField, field.__class__)
+        self.assertEqual(_('email address'), field.label)
+        self.assertEqual(254, field.max_length)
+        self.assertTrue(field.required)
+
+    def test_password_field_has_correct_setting(self):
+        field = self.form.fields['password']
+
+        self.assertEqual(forms.CharField, field.__class__)
+        self.assertEqual(_('password'), field.label)
+        self.assertEqual(forms.PasswordInput, field.widget.__class__)
+        self.assertTrue(field.required)
+
+
 class AdminCreateViewTest(TestCase):
     def setUp(self) -> None:
         self.view = AdminCreateView()
@@ -265,11 +317,8 @@ class AdminCreateViewTest(TestCase):
     def test_template_name_suffix_is_correct(self):
         self.assertEqual('_create_form', self.view.template_name_suffix)
 
-    def test_model_is_correct(self):
-        self.assertEqual(User, self.view.model)
-
-    def test_fields_are_correct(self):
-        self.assertEqual(['username', 'first_name', 'last_name', 'email', 'password'], self.view.fields)
+    def test_form_class_is_correct(self):
+        self.assertEqual(AdminCreateForm, self.view.form_class)
 
     def test_unauthorized_user_redirects_to_login(self):
         response = self.client.get(reverse('users:create'))
@@ -284,7 +333,7 @@ class AdminCreateViewTest(TestCase):
         self.assertEqual(403, response.status_code)
 
     def test_authorized_admin_can_view(self):
-        self.client.login(username=self.user.username, password="Passw0rd!")
+        self.client.login(username=self.admin.username, password="Passw0rd!")
 
         response = self.client.get(reverse('users:create'))
 
@@ -301,5 +350,5 @@ class AdminCreateViewTest(TestCase):
         })
 
         self.assertRedirects(response, expected_url=reverse('users:list'))
-        self.assertEqual(1, User.objects.filter({**admin, 'is_superuser': True}).count())
+        self.assertEqual(1, User.objects.filter(**admin, is_superuser=True).count())
         self.assertTrue(self.client.login(username=admin.get('username'), password="Passw0rd!"))
