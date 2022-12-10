@@ -23,7 +23,7 @@ msgid "password"
 msgstr "密碼"
 
 #: users/forms.py:9
-msgid "confirm_password"
+msgid "confirm password"
 msgstr "確認密碼"
 
 #: users/forms.py:22
