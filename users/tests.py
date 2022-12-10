@@ -1,19 +1,21 @@
 import time
 
+from django import forms
 from django.contrib import auth
-from django.test import Client, RequestFactory, TestCase
+from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from faker import Faker
 
 from users.factories import UserFactory
+from .forms import RegisterForm, AdminCreateForm
 from .models import User
 from .views import (
     UserRegisterView,
-    UserLoginView,
     UserLogoutView,
     UserListView,
     UserProfileView,
+    AdminCreateView,
 )
 
 
@@ -36,6 +38,79 @@ class UserModelTest(TestCase):
         )
 
 
+class RegisterFormTest(TestCase):
+    def setUp(self) -> None:
+        self.form = RegisterForm()
+
+    def test_model_is_correct(self):
+        self.assertEqual(User, self.form.Meta.model)
+
+    def test_fields_are_correct(self):
+        self.assertEqual(
+            [
+                "username",
+                "first_name",
+                "last_name",
+                "email",
+                "password",
+                "confirm_password",
+            ],
+            self.form.Meta.fields,
+        )
+
+    def test_first_name_field_has_correct_setting(self):
+        field = self.form.fields["first_name"]
+
+        self.assertEqual(forms.CharField, field.__class__)
+        self.assertEqual(_("first name"), field.label)
+        self.assertEqual(150, field.max_length)
+        self.assertTrue(field.required)
+
+    def test_last_name_field_has_correct_setting(self):
+        field = self.form.fields["last_name"]
+
+        self.assertEqual(forms.CharField, field.__class__)
+        self.assertEqual(_("last name"), field.label)
+        self.assertEqual(150, field.max_length)
+        self.assertTrue(field.required)
+
+    def test_email_field_has_correct_setting(self):
+        field = self.form.fields["email"]
+
+        self.assertEqual(forms.EmailField, field.__class__)
+        self.assertEqual(_("email address"), field.label)
+        self.assertEqual(254, field.max_length)
+        self.assertTrue(field.required)
+
+    def test_password_field_has_correct_setting(self):
+        field = self.form.fields["password"]
+
+        self.assertEqual(forms.CharField, field.__class__)
+        self.assertEqual(_("password"), field.label)
+        self.assertEqual(forms.PasswordInput, field.widget.__class__)
+        self.assertEqual(128, field.max_length)
+        self.assertTrue(field.required)
+
+    def test_confirm_password_field_has_correct_setting(self):
+        field = self.form.fields["confirm_password"]
+
+        self.assertEqual(forms.CharField, field.__class__)
+        self.assertEqual(_("confirm password"), field.label)
+        self.assertEqual(forms.PasswordInput, field.widget.__class__)
+        self.assertEqual(128, field.max_length)
+        self.assertTrue(field.required)
+
+    def test_validation_failed_when_password_and_confirm_password_mismatch(self):
+        form = self.form.__class__(
+            {"password": "password1", "confirm_password": "password2"}
+        )
+
+        self.assertFalse(form.is_valid())
+        self.assertTrue(
+            _("Password does not match confirm_password") in form["password"].errors
+        )
+
+
 class UserRegisterViewTest(TestCase):
     def setUp(self) -> None:
         self.view = UserRegisterView()
@@ -47,21 +122,8 @@ class UserRegisterViewTest(TestCase):
     def test_template_name_is_correct(self):
         self.assertEqual("register.html", self.view.template_name)
 
-    def test_form_contains_correct_fields(self):
-        self.assertEqual(
-            [
-                "username",
-                "email",
-                "password",
-                "confirm_password",
-                "last_name",
-                "first_name",
-            ],
-            self.view.form_class.Meta.fields,
-        )
-
-    def test_success_url_is_correct(self):
-        self.assertEqual(reverse("movie:list"), self.view.success_url)
+    def test_form_class_is_correct(self):
+        self.assertEqual(RegisterForm, self.view.form_class)
 
     def test_register_page_can_render(self):
         response = self.client.get(reverse("users:register"))
@@ -80,74 +142,6 @@ class UserRegisterViewTest(TestCase):
         self.assertRedirects(response, expected_url=reverse("movie:list"))
         self.assertEqual(1, User.objects.filter(**user).count())
         self.assertTrue(auth.get_user(self.client).is_authenticated)
-
-    def test_user_cannot_register_when_confirm_password_not_match_password(self):
-        user = UserFactory().data.copy()
-        user.pop("password")
-
-        response = self.client.post(
-            reverse("users:register"),
-            {**user, "password": "Passw0rd!", "confirm_password": "password"},
-        )
-
-        self.assertFormError(
-            response.context["form"],
-            field="password",
-            errors=[_("Password does not match confirm_password")],
-        )
-
-
-class UserLoginViewTest(TestCase):
-    def setUp(self) -> None:
-        self.view = UserLoginView()
-        self.client = Client()
-        self.user = UserFactory().create()
-
-    def test_url_is_correct(self):
-        self.assertURLEqual("/login", reverse("users:login"))
-
-    def test_template_is_correct(self):
-        self.assertEqual("login.html", self.view.template_name)
-
-    def test_redirect_url_is_root(self):
-        request = RequestFactory().post(
-            reverse("users:login"),
-            {"username": self.user.username, "password": "Passw0rd!"},
-        )
-        self.view.setup(request)
-
-        self.assertURLEqual("", self.view.get_redirect_url())
-
-    def test_login_page_can_render(self):
-        response = self.client.get(reverse("users:login"))
-
-        self.assertIs(200, response.status_code)
-
-    def test_user_can_login_and_redirect_to_movies_list(self):
-        response = self.client.post(
-            reverse("users:login"),
-            {"username": self.user.username, "password": "Passw0rd!"},
-        )
-
-        self.assertRedirects(response, expected_url=reverse("movie:list"))
-
-    def test_user_cannot_login_with_incorrect_certificate(self):
-        response = self.client.post(
-            reverse("users:login"),
-            {"username": self.user.username, "password": "secret"},
-        )
-
-        self.assertNotEqual(0, len(response.context["form"].errors))
-
-    def test_inactive_user_cannot_login(self):
-        inactive_user = UserFactory().inactive().create()
-
-        response = self.client.post(
-            reverse("users:login"),
-            {"username": inactive_user.username, "password": "password"},
-        )
-
-        self.assertNotEqual(0, len(response.context["form"].errors))
 
 
 class UserLogoutViewTest(TestCase):
@@ -176,17 +170,14 @@ class UserListViewTest(TestCase):
         self.admin = UserFactory().is_superuser().create()
         self.user = UserFactory().create()
 
-    def test_url_ic_correct(self):
+    def test_url_is_correct(self):
         self.assertEqual("/users", reverse("users:list"))
 
-    def test_model_is_user_model(self):
+    def test_model_is_correct(self):
         self.assertEqual(User, self.view.model)
 
     def test_template_name_is_correct(self):
         self.assertEqual("user_list.html", self.view.template_name)
-
-    def test_redirect_login_url_is_correct(self):
-        self.assertEqual(reverse("users:login"), self.view.login_url)
 
     def test_unauthenticated_user_redirects_to_login(self):
         response = self.client.get(reverse("users:list"))
@@ -260,3 +251,109 @@ class UserProfileViewTest(TestCase):
         )
 
         self.assertEqual(200, response.status_code)
+
+
+class AdminCreateFormTest(TestCase):
+    def setUp(self) -> None:
+        self.form = AdminCreateForm()
+
+    def test_model_is_correct(self):
+        self.assertEqual(User, self.form.Meta.model)
+
+    def test_fields_are_correct(self):
+        self.assertEqual(
+            [
+                "username",
+                "first_name",
+                "last_name",
+                "email",
+                "password",
+            ],
+            self.form.Meta.fields,
+        )
+
+    def test_first_name_field_has_correct_setting(self):
+        field = self.form.fields["first_name"]
+
+        self.assertEqual(forms.CharField, field.__class__)
+        self.assertEqual(_("first name"), field.label)
+        self.assertEqual(150, field.max_length)
+        self.assertTrue(field.required)
+
+    def test_last_name_field_has_correct_setting(self):
+        field = self.form.fields["last_name"]
+
+        self.assertEqual(forms.CharField, field.__class__)
+        self.assertEqual(_("last name"), field.label)
+        self.assertEqual(150, field.max_length)
+        self.assertTrue(field.required)
+
+    def test_email_field_has_correct_setting(self):
+        field = self.form.fields["email"]
+
+        self.assertEqual(forms.EmailField, field.__class__)
+        self.assertEqual(_("email address"), field.label)
+        self.assertEqual(254, field.max_length)
+        self.assertTrue(field.required)
+
+    def test_password_field_has_correct_setting(self):
+        field = self.form.fields["password"]
+
+        self.assertEqual(forms.CharField, field.__class__)
+        self.assertEqual(_("password"), field.label)
+        self.assertEqual(forms.PasswordInput, field.widget.__class__)
+        self.assertTrue(field.required)
+
+
+class AdminCreateViewTest(TestCase):
+    def setUp(self) -> None:
+        self.view = AdminCreateView()
+        self.client = Client()
+        self.user = UserFactory().create()
+        self.admin = UserFactory().is_superuser().create()
+
+    def test_url_is_correct(self):
+        self.assertURLEqual("/users/create", reverse("users:create"))
+
+    def test_template_name_suffix_is_correct(self):
+        self.assertEqual("_create_form", self.view.template_name_suffix)
+
+    def test_form_class_is_correct(self):
+        self.assertEqual(AdminCreateForm, self.view.form_class)
+
+    def test_unauthorized_user_redirects_to_login(self):
+        response = self.client.get(reverse("users:create"))
+
+        self.assertRedirects(
+            response,
+            expected_url=f"{reverse('users:login')}?next={reverse('users:create')}",
+        )
+
+    def test_authorized_user_is_forbidden(self):
+        self.client.login(username=self.user.username, password="Passw0rd!")
+
+        response = self.client.get(reverse("users:create"))
+
+        self.assertEqual(403, response.status_code)
+
+    def test_authorized_admin_can_view(self):
+        self.client.login(username=self.admin.username, password="Passw0rd!")
+
+        response = self.client.get(reverse("users:create"))
+
+        self.assertEqual(200, response.status_code)
+
+    def test_authorized_admin_can_create_and_new_admin_can_login(self):
+        admin = UserFactory().data.copy()
+        admin.pop("password")
+
+        self.client.login(username=self.admin.username, password="Passw0rd!")
+        response = self.client.post(
+            reverse("users:create"), {**admin, "password": "Passw0rd!"}
+        )
+
+        self.assertRedirects(response, expected_url=reverse("users:list"))
+        self.assertEqual(1, User.objects.filter(**admin, is_superuser=True).count())
+        self.assertTrue(
+            self.client.login(username=admin.get("username"), password="Passw0rd!")
+        )
