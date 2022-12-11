@@ -43,14 +43,9 @@ class MovieListView(ListView):
             query = self.request.GET.get('q')
             movie_obj = None
             if query is not None:  # 搜尋
-                query = "%" + query + "%"
-                movie_obj = Movie.objects.raw(
-                    "SELECT * FROM movie_movie WHERE name LIKE %s AND image LIKE %s", [query, "movies/%"],
-                )
+                movie_obj=Movie.objects.filter(name__contains=query)
             else:  # 沒有搜尋
-                movie_obj = Movie.objects.raw(
-                    "SELECT * FROM movie_movie WHERE image LIKE %s ", ["movies/%"]
-                )
+                movie_obj = Movie.objects.filter(image__contains='movies/')
             context["object_list"] = movie_obj
             return context
         else:
@@ -58,10 +53,7 @@ class MovieListView(ListView):
             query = self.request.GET.get('q')
             movie_obj = None
             if query is not None:  # 搜尋
-                query = "%" + query + "%"
-                movie_obj = Movie.objects.raw(
-                    "SELECT * FROM movie_movie WHERE name LIKE %s AND image LIKE %s", [query, "movies/%"],
-                )
+                movie_obj=Movie.objects.filter(name__contains=query)
             else:  # 沒有搜尋
                 movie_obj = Movie.objects.all()
             context["object_list"] = movie_obj
@@ -76,6 +68,7 @@ class MovieEditView(UpdateView):
 
 class MovieDeleteView(DeleteView):
     model = Movie
+    success_url = "/movies"
 
     def get_success_url(self):
         return reverse("movie:manage-list")
