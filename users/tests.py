@@ -259,13 +259,14 @@ class UserProfileViewTest(TestCase):
 
     def test_context_has_profile_update_form(self):
         request = RequestFactory().get(reverse('users:profile'))
-        request.user = self.user
 
         self.view.setup(request)
+        self.view.object = self.user
         context = self.view.get_context_data()
 
         self.assertIn('form', context)
-        self.assertEqual(ProfileUpdateForm(instance=self.user), context['form'])
+        self.assertEqual(ProfileUpdateForm, context['form'].__class__)
+        self.assertEqual(self.user, context['form'].instance)
 
     def test_unauthenticated_user_redirects_to_login(self):
         response = self.client.get(reverse("users:profile"))
@@ -275,7 +276,7 @@ class UserProfileViewTest(TestCase):
             expected_url=f"{reverse('users:login')}?next={reverse('users:profile')}",
         )
 
-    def test_authenticated_user_can_view_profile(self):
+    def test_authenticated_user_can_view_profile_and_has_update_form(self):
         self.client.login(username=self.user.username, password="Passw0rd!")
 
         response = self.client.get(reverse("users:profile"))
@@ -331,19 +332,19 @@ class ProfileUpdateFormTest(TestCase):
 
 class ProfileUpdateViewTest(TestCase):
     def setUp(self) -> None:
-        self.view = ProfileUpdateView
+        self.view = ProfileUpdateView()
         self.client = Client()
         self.user = UserFactory().create()
         self.faker = Faker()
 
     def test_url_is_correct(self):
-        self.assertURLEqual('/profile/update', reverse('users:edit-profile'))
+        self.assertURLEqual('/profile/edit', reverse('users:edit-profile'))
 
     def test_form_class_is_correct(self):
         self.assertEqual(ProfileUpdateForm, self.view.form_class)
 
     def test_unauthenticated_user_redirects_to_login(self):
-        user = self.user.data.copy()
+        user = {f.name: getattr(self.user, f.name) for f in self.user._meta.fields}
         user.update({
             'first_name': self.faker.first_name,
             'last_name': self.faker.last_name,
@@ -351,9 +352,9 @@ class ProfileUpdateViewTest(TestCase):
         })
 
         response = self.client.post(reverse('users:edit-profile'), {
-            'first_name': self.user.first_name,
-            'last_name': self.user.last_name,
-            'email': self.user.email
+            'first_name': user['first_name'],
+            'last_name': user['last_name'],
+            'email': user['email']
         })
 
         self.assertRedirects(response, expected_url=f"{reverse('users:login')}?next={reverse('users:edit-profile')}")
@@ -366,7 +367,7 @@ class ProfileUpdateViewTest(TestCase):
         self.assertRedirects(response, expected_url=reverse('users:profile'))
 
     def test_authenticate_user_can_edit_profile_then_redirect_to_profile_page(self):
-        user = self.user.data.copy()
+        user = {f.name: getattr(self.user, f.name) for f in self.user._meta.fields}
         user.update({
             'first_name': self.faker.first_name,
             'last_name': self.faker.last_name,
@@ -375,14 +376,15 @@ class ProfileUpdateViewTest(TestCase):
 
         self.client.login(username=self.user.username, password="Passw0rd!")
         response = self.client.post(reverse('users:edit-profile'), {
-            'first_name': self.user.first_name,
-            'last_name': self.user.last_name,
-            'email': self.user.email
+            'first_name': user['first_name'],
+            'last_name': user['last_name'],
+            'email': user['email']
         })
 
         self.assertRedirects(response, expected_url=reverse('users:profile'))
-        self.assertEqual(1, User.objects.filter(pk=self.user.pk, first_name=user.first_name, last_name=user.last_name,
-                                                email=user.email))
+        self.assertEqual(1, User.objects.filter(pk=self.user.pk, first_name=user['first_name'],
+                                                last_name=user['last_name'],
+                                                email=user['email']).count())
 
 
 class AdminCreateFormTest(TestCase):
