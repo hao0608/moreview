@@ -305,7 +305,7 @@ class UserProfileViewTest(TestCase):
 
 class ProfileUpdateFormTest(TestCase):
     def setUp(self) -> None:
-        self.form = ProfileUpdateForm
+        self.form = ProfileUpdateForm()
 
     def test_model_is_correct(self):
         self.assertEqual(User, self.form.Meta.model)
@@ -325,7 +325,7 @@ class ProfileUpdateFormTest(TestCase):
         field = self.form.fields['username']
 
         self.assertEqual(forms.CharField, field.__class__)
-        self.assertEqual(_("email address"), field.label)
+        self.assertEqual(_("username"), field.label)
         self.assertTrue(field.disabled)
 
 
