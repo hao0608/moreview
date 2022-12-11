@@ -314,20 +314,12 @@ class ProfileUpdateFormTest(TestCase):
     def test_fields_are_correct(self):
         self.assertEqual(
             [
-                "username",
                 "first_name",
                 "last_name",
                 "email",
             ],
             self.form.Meta.fields
         )
-
-    def test_username_field_has_correct_setting(self):
-        field = self.form.fields['username']
-
-        self.assertEqual(forms.CharField, field.__class__)
-        self.assertEqual(_("username"), field.label)
-        self.assertTrue(field.disabled)
 
 
 class ProfileUpdateViewTest(TestCase):
