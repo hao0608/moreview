@@ -2,8 +2,10 @@ import time
 
 from django import forms
 from django.contrib import auth
+from django.db import models
 from django.test import Client, TestCase, RequestFactory
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext as _
 from faker import Faker
 
@@ -26,18 +28,50 @@ from .views import (
 class UserModelTest(TestCase):
     def setUp(self) -> None:
         self.faker = Faker()
+        self.model = User
+        self.user = UserFactory().create()
+
+    def test_first_name_has_correct_setting(self):
+        field = self.model._meta.get_field('first_name')
+
+        self.assertEqual(models.CharField, field.__class__)
+        self.assertEqual(_('first name'), field.verbose_name)
+        self.assertEqual(150, field.max_length)
+        self.assertFalse(field.blank)
+
+    def test_last_name_has_correct_setting(self):
+        field = self.model._meta.get_field('last_name')
+
+        self.assertEqual(models.CharField, field.__class__)
+        self.assertEqual(_('last name'), field.verbose_name)
+        self.assertEqual(150, field.max_length)
+        self.assertFalse(field.blank)
+
+    def test_email_has_correct_setting(self):
+        field = self.model._meta.get_field('email')
+
+        self.assertEqual(models.EmailField, field.__class__)
+        self.assertEqual(_('email address'), field.verbose_name)
+        self.assertFalse(field.blank)
+
+    def test_date_updated_has_correct_setting(self):
+        field = self.model._meta.get_field('date_updated')
+
+        self.assertEqual(models.DateTimeField, field.__class__)
+        self.assertEqual(timezone.now, field.default)
+
+    def test_required_fields_for_creating_superuser_have_correct_fields(self):
+        self.assertEqual(['first_name', 'last_name', 'email'], self.model.REQUIRED_FIELDS)
 
     def test_date_updated_field_updates_when_record_updates(self):
-        user = UserFactory().create()
-
-        user.email = self.faker.unique.safe_email()
+        self.user.email = self.faker.unique.safe_email()
         # date_joined and date_updated is difference in nanoseconds when created
         time.sleep(1)
-        user.save()
+        self.user.save()
 
         self.assertNotEqual(
-            user.date_joined.strftime("%Y-%m-%d %H:%M:%S"),
-            user.date_updated.strftime("%Y-%m-%d %H:%M:%S"),
+            self.user.date_joined.strftime("%Y-%m-%d %H:%M:%S"),
+            self.user.date_updated.strftime("%Y-%m-%d %H:%M:%S"),
         )
 
 
@@ -60,39 +94,6 @@ class RegisterFormTest(TestCase):
             ],
             self.form.Meta.fields,
         )
-
-    def test_first_name_field_has_correct_setting(self):
-        field = self.form.fields["first_name"]
-
-        self.assertEqual(forms.CharField, field.__class__)
-        self.assertEqual(_("first name"), field.label)
-        self.assertEqual(150, field.max_length)
-        self.assertTrue(field.required)
-
-    def test_last_name_field_has_correct_setting(self):
-        field = self.form.fields["last_name"]
-
-        self.assertEqual(forms.CharField, field.__class__)
-        self.assertEqual(_("last name"), field.label)
-        self.assertEqual(150, field.max_length)
-        self.assertTrue(field.required)
-
-    def test_email_field_has_correct_setting(self):
-        field = self.form.fields["email"]
-
-        self.assertEqual(forms.EmailField, field.__class__)
-        self.assertEqual(_("email address"), field.label)
-        self.assertEqual(254, field.max_length)
-        self.assertTrue(field.required)
-
-    def test_password_field_has_correct_setting(self):
-        field = self.form.fields["password"]
-
-        self.assertEqual(forms.CharField, field.__class__)
-        self.assertEqual(_("password"), field.label)
-        self.assertEqual(forms.PasswordInput, field.widget.__class__)
-        self.assertEqual(128, field.max_length)
-        self.assertTrue(field.required)
 
     def test_confirm_password_field_has_correct_setting(self):
         field = self.form.fields["confirm_password"]
@@ -316,7 +317,6 @@ class ProfileUpdateFormTest(TestCase):
                 "first_name",
                 "last_name",
                 "email",
-                "password",
             ],
             self.form.Meta.fields
         )
@@ -326,37 +326,6 @@ class ProfileUpdateFormTest(TestCase):
 
         self.assertEqual(forms.CharField, field.__class__)
         self.assertEqual(_("email address"), field.label)
-        self.assertTrue(field.disabled)
-
-    def test_first_name_field_has_correct_setting(self):
-        field = self.form.fields["first_name"]
-
-        self.assertEqual(forms.CharField, field.__class__)
-        self.assertEqual(_("first name"), field.label)
-        self.assertEqual(150, field.max_length)
-        self.assertTrue(field.required)
-
-    def test_last_name_field_has_correct_setting(self):
-        field = self.form.fields["last_name"]
-
-        self.assertEqual(forms.CharField, field.__class__)
-        self.assertEqual(_("last name"), field.label)
-        self.assertEqual(150, field.max_length)
-        self.assertTrue(field.required)
-
-    def test_email_field_has_correct_setting(self):
-        field = self.form.fields["email"]
-
-        self.assertEqual(forms.EmailField, field.__class__)
-        self.assertEqual(_("email address"), field.label)
-        self.assertEqual(254, field.max_length)
-        self.assertTrue(field.required)
-
-    def test_password_field_has_correct_setting(self):
-        field = self.form.fields["password"]
-
-        self.assertEqual(forms.CharField, field.__class__)
-        self.assertEqual(_("password"), field.label)
         self.assertTrue(field.disabled)
 
 
@@ -434,38 +403,6 @@ class AdminCreateFormTest(TestCase):
             ],
             self.form.Meta.fields,
         )
-
-    def test_first_name_field_has_correct_setting(self):
-        field = self.form.fields["first_name"]
-
-        self.assertEqual(forms.CharField, field.__class__)
-        self.assertEqual(_("first name"), field.label)
-        self.assertEqual(150, field.max_length)
-        self.assertTrue(field.required)
-
-    def test_last_name_field_has_correct_setting(self):
-        field = self.form.fields["last_name"]
-
-        self.assertEqual(forms.CharField, field.__class__)
-        self.assertEqual(_("last name"), field.label)
-        self.assertEqual(150, field.max_length)
-        self.assertTrue(field.required)
-
-    def test_email_field_has_correct_setting(self):
-        field = self.form.fields["email"]
-
-        self.assertEqual(forms.EmailField, field.__class__)
-        self.assertEqual(_("email address"), field.label)
-        self.assertEqual(254, field.max_length)
-        self.assertTrue(field.required)
-
-    def test_password_field_has_correct_setting(self):
-        field = self.form.fields["password"]
-
-        self.assertEqual(forms.CharField, field.__class__)
-        self.assertEqual(_("password"), field.label)
-        self.assertEqual(forms.PasswordInput, field.widget.__class__)
-        self.assertTrue(field.required)
 
 
 class AdminCreateViewTest(TestCase):
