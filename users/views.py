@@ -53,9 +53,11 @@ class UserListView(UserPassesTestMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
-        context['form'] = AdminCreateForm(
-            data=self.request.session.get('admin-create-form')) if self.request.session.get(
-            'admin-create-form') else AdminCreateForm()
+        context["form"] = (
+            AdminCreateForm(data=self.request.session.get("admin-create-form"))
+            if self.request.session.get("admin-create-form")
+            else AdminCreateForm()
+        )
         return context
 
 
@@ -122,16 +124,16 @@ class AdminCreateView(UserPassesTestMixin, CreateView):
         return self.request.user.is_superuser
 
     def get(self, request, *args, **kwargs):
-        return redirect(reverse('users:list'))
+        return redirect(reverse("users:list"))
 
     def form_valid(self, form):
         form.instance.password = make_password(form.instance.password)
         form.instance.is_superuser = True
-        self.request.session['admin-create-form'] = None
+        self.request.session["admin-create-form"] = None
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        self.request.session['admin-create-form'] = form.data
+        self.request.session["admin-create-form"] = form.data
         return super().form_invalid(form)
 
 

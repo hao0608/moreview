@@ -222,28 +222,28 @@ class UserListViewTest(TestCase):
         self.assertEqual(User, self.view.model)
 
     def test_template_is_correct(self):
-        self.assertEqual('user_list.html', self.view.template_name)
+        self.assertEqual("user_list.html", self.view.template_name)
 
     def test_context_has_form(self):
-        request = RequestFactory().get(reverse('users:list'))
+        request = RequestFactory().get(reverse("users:list"))
         request.session = {}
 
         self.view.setup(request)
         self.view.object_list = self.view.get_queryset()
         context = self.view.get_context_data()
 
-        self.assertIn('form', context)
-        self.assertEqual(AdminCreateForm, context['form'].__class__)
+        self.assertIn("form", context)
+        self.assertEqual(AdminCreateForm, context["form"].__class__)
 
-    def test_form_initial_data_load_from_session_when_session_has_failed_input_data(self):
+    def test_form_initial_data_load_from_session_when_session_has_failed_input_data(
+        self,
+    ):
         failed_input = UserFactory().data.copy()
-        failed_input.pop('password')
-        failed_input.update({'password': 'password'})
+        failed_input.pop("password")
+        failed_input.update({"password": "password"})
 
         request = RequestFactory().get(reverse("users:list"))
-        request.session = {
-            'admin-create-form': failed_input
-        }
+        request.session = {"admin-create-form": failed_input}
 
         self.view.setup(request)
         self.view.object_list = self.view.get_queryset()
@@ -252,7 +252,7 @@ class UserListViewTest(TestCase):
         self.assertIn("form", context)
         self.assertEqual(AdminCreateForm, context["form"].__class__)
         self.assertEqual(failed_input, context["form"].data)
-        self.assertIsNotNone(context['form'].errors)
+        self.assertIsNotNone(context["form"].errors)
 
     def test_unauthenticated_user_redirects_to_login(self):
         response = self.client.get(reverse("users:list"))
@@ -527,9 +527,11 @@ class AdminCreateViewTest(TestCase):
 
     def test_unauthenticated_user_redirects_to_login(self):
         admin = UserFactory().data.copy()
-        admin.pop('password')
+        admin.pop("password")
 
-        response = self.client.post(reverse("users:create"), {**admin, 'password': "Passw0rd!"})
+        response = self.client.post(
+            reverse("users:create"), {**admin, "password": "Passw0rd!"}
+        )
 
         self.assertRedirects(
             response,
@@ -543,7 +545,7 @@ class AdminCreateViewTest(TestCase):
         self.client.login(username=self.admin.username, password="Passw0rd!")
         response = self.client.get(reverse("users:create"))
 
-        self.assertRedirects(response, expected_url=reverse('users:list'))
+        self.assertRedirects(response, expected_url=reverse("users:list"))
 
     def test_authenticated_user_is_forbidden(self):
         admin = UserFactory().data.copy()
