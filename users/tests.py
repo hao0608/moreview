@@ -348,26 +348,6 @@ class UserProfileViewTest(TestCase):
 
         self.assertEqual(200, response.status_code)
 
-    def test_authenticated_user_redirects_to_personal_profile_when_request_to_view_profile_with_parameter(
-        self,
-    ):
-        self.client.login(username=self.user.username, password="Passw0rd!")
-
-        response = self.client.get(
-            reverse("users:profile", kwargs={"pk": self.user.pk})
-        )
-
-        self.assertRedirects(response, expected_url=reverse("users:profile"))
-
-    def test_authenticated_admin_can_view_other_user_profile(self):
-        self.client.login(username=self.admin.username, password="Passw0rd!")
-
-        response = self.client.get(
-            reverse("users:profile", kwargs={"pk": self.user.pk})
-        )
-
-        self.assertEqual(200, response.status_code)
-
 
 class ProfileUpdateFormTest(TestCase):
     def setUp(self) -> None:
