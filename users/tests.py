@@ -3,7 +3,6 @@ import time
 from django import forms
 from django.contrib import auth
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.hashers import make_password
 from django.db import models
 from django.test import Client, TestCase, RequestFactory
 from django.urls import reverse
@@ -265,6 +264,7 @@ class UserProfileViewTest(TestCase):
 
     def test_context_has_profile_update_form(self):
         request = RequestFactory().get(reverse("users:profile"))
+        request.user = self.user
         request.session = {}
 
         self.view.setup(request)
@@ -278,6 +278,7 @@ class UserProfileViewTest(TestCase):
     def test_context_has_reset_password_form(self):
         request = RequestFactory().get(reverse("users:profile"))
         request.session = {}
+        request.user = self.user
 
         self.view.setup(request)
         self.view.object = self.user
@@ -285,6 +286,7 @@ class UserProfileViewTest(TestCase):
 
         self.assertIn("reset-password-form", context)
         self.assertEqual(PasswordChangeForm, context["reset-password-form"].__class__)
+        self.assertEqual(self.user, context["reset-password-form"].user)
 
     def test_profile_update_form_initial_data_load_from_session_when_session_has_failed_input_data(
             self,
@@ -297,12 +299,13 @@ class UserProfileViewTest(TestCase):
 
         request = RequestFactory().get(reverse("users:profile"))
         request.session = {"profile-update-form": failed_input}
+        request.user = self.user
 
         self.view.setup(request)
         self.view.object = self.user
         context = self.view.get_context_data()
 
-        self.assertIn("form", context)
+        self.assertIn("profile-update-form", context)
         self.assertEqual(ProfileUpdateForm, context["profile-update-form"].__class__)
         self.assertEqual(failed_input, context["profile-update-form"].data)
         self.assertIsNotNone(context['profile-update-form'].errors)
@@ -318,13 +321,14 @@ class UserProfileViewTest(TestCase):
 
         request = RequestFactory().get(reverse("users:profile"))
         request.session = {"reset-password-form": failed_input}
+        request.user = self.user
 
         self.view.setup(request)
         self.view.object = self.user
         context = self.view.get_context_data()
 
-        self.assertIn("form", context)
-        self.assertEqual(ProfileUpdateForm, context["reset-password-form"].__class__)
+        self.assertIn("reset-password-form", context)
+        self.assertEqual(PasswordChangeForm, context["reset-password-form"].__class__)
         self.assertEqual(failed_input, context["reset-password-form"].data)
         self.assertIsNotNone(context['reset-password-form'].errors)
 
@@ -595,10 +599,10 @@ class UserDeleteViewTest(TestCase):
         self.assertFalse(auth.get_user(self.client).is_authenticated)
 
 
-class UserRestPasswordViewTest(TestCase):
+class UserResetPasswordViewTest(TestCase):
     def setUp(self) -> None:
         self.view = UserResetPasswordView
-        self.client = Client
+        self.client = Client()
         self.user = UserFactory().create()
 
     def test_url_is_correct(self):
@@ -621,7 +625,7 @@ class UserRestPasswordViewTest(TestCase):
         })
 
         self.assertRedirects(response, expected_url=reverse('users:profile'))
-        self.assertEqual(1, User.objects.filter(pk=self.user.pk, password=make_password("NewPassw0rd!")).count())
+        self.assertTrue(self.client.login(username=self.user.username, password="NewPassw0rd!"))
 
     def test_redirect_to_profile_page_with_failed_input_when_validation_failed(self):
         failed_input = {
