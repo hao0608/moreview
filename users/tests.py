@@ -23,7 +23,7 @@ from .views import (
     AdminCreateView,
     UserDeleteView,
     UserResetPasswordView,
-    UserStatusUpdateView
+    UserStatusUpdateView,
 )
 
 
@@ -619,7 +619,10 @@ class UserResetPasswordViewTest(TestCase):
             },
         )
 
-        self.assertRedirects(response, expected_url=f"{reverse('users:login')}?next={reverse('users:reset-password')}")
+        self.assertRedirects(
+            response,
+            expected_url=f"{reverse('users:login')}?next={reverse('users:reset-password')}",
+        )
 
     def test_http_get_method_redirects_to_profile_page(self):
         self.client.login(username=self.user.username, password="Passw0rd!")
@@ -670,7 +673,9 @@ class UserStatusUpdateViewTest(TestCase):
         self.admin = UserFactory().is_superuser().create()
 
     def test_url_is_correct(self):
-        self.assertEqual('/users/1/status', reverse('users:toggle-status', kwargs={'pk': 1}))
+        self.assertEqual(
+            "/users/1/status", reverse("users:toggle-status", kwargs={"pk": 1})
+        )
 
     def test_model_is_correct(self):
         self.assertEqual(User, self.view.model)
@@ -679,41 +684,61 @@ class UserStatusUpdateViewTest(TestCase):
         self.assertEqual([], self.view.fields)
 
     def test_unauthenticated_user_redirects_to_login(self):
-        response = self.client.post(reverse('users:toggle-status', kwargs={'pk': self.user.pk}))
+        response = self.client.post(
+            reverse("users:toggle-status", kwargs={"pk": self.user.pk})
+        )
 
-        self.assertRedirects(response,
-                             expected_url=f"{reverse('users:login')}?next={reverse('users:toggle-status', kwargs={'pk': self.user.pk})}")
+        self.assertRedirects(
+            response,
+            expected_url=f"{reverse('users:login')}?next={reverse('users:toggle-status', kwargs={'pk': self.user.pk})}",
+        )
 
     def test_http_get_method_redirects_to_profile(self):
         self.client.login(username=self.admin.username, password="Passw0rd!")
 
-        response = self.client.get(reverse('users:toggle-status', kwargs={'pk': self.user.pk}))
+        response = self.client.get(
+            reverse("users:toggle-status", kwargs={"pk": self.user.pk})
+        )
 
-        self.assertRedirects(response, expected_url=reverse('users:list'))
+        self.assertRedirects(response, expected_url=reverse("users:list"))
 
     def test_authenticated_user_is_forbidden(self):
         self.client.login(username=self.user.username, password="Passw0rd!")
 
-        response = self.client.get(reverse('users:toggle-status', kwargs={'pk': self.admin.pk}))
+        response = self.client.get(
+            reverse("users:toggle-status", kwargs={"pk": self.admin.pk})
+        )
 
         self.assertEqual(403, response.status_code)
 
     def test_authenticated_admin_is_forbidden_to_toggle_own_status(self):
         self.client.login(username=self.admin.username, password="Passw0rd!")
 
-        response = self.client.get(reverse('users:toggle-status', kwargs={'pk': self.admin.pk}))
+        response = self.client.get(
+            reverse("users:toggle-status", kwargs={"pk": self.admin.pk})
+        )
 
         self.assertEqual(403, response.status_code)
 
-    def test_authenticated_user_can_toggle_other_user_status_and_redirect_to_users_list(self):
+    def test_authenticated_user_can_toggle_other_user_status_and_redirect_to_users_list(
+        self,
+    ):
         self.client.login(username=self.admin.username, password="Passw0rd!")
 
-        response = self.client.post(reverse('users:toggle-status', kwargs={'pk': self.user.pk}))
+        response = self.client.post(
+            reverse("users:toggle-status", kwargs={"pk": self.user.pk})
+        )
 
-        self.assertRedirects(response, expected_url=reverse('users:list'))
-        self.assertEqual(1, User.objects.filter(pk=self.user.pk, is_active=False).count())
+        self.assertRedirects(response, expected_url=reverse("users:list"))
+        self.assertEqual(
+            1, User.objects.filter(pk=self.user.pk, is_active=False).count()
+        )
 
-        response = self.client.post(reverse('users:toggle-status', kwargs={'pk': self.user.pk}))
+        response = self.client.post(
+            reverse("users:toggle-status", kwargs={"pk": self.user.pk})
+        )
 
-        self.assertRedirects(response, expected_url=reverse('users:list'))
-        self.assertEqual(1, User.objects.filter(pk=self.user.pk, is_active=True).count())
+        self.assertRedirects(response, expected_url=reverse("users:list"))
+        self.assertEqual(
+            1, User.objects.filter(pk=self.user.pk, is_active=True).count()
+        )
