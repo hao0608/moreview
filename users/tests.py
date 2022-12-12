@@ -22,7 +22,7 @@ from .views import (
     ProfileUpdateView,
     AdminCreateView,
     UserDeleteView,
-    UserResetPasswordView
+    UserResetPasswordView,
 )
 
 
@@ -289,7 +289,7 @@ class UserProfileViewTest(TestCase):
         self.assertEqual(self.user, context["reset-password-form"].user)
 
     def test_profile_update_form_initial_data_load_from_session_when_session_has_failed_input_data(
-            self,
+        self,
     ):
         failed_input = {
             "first_name": self.faker.first_name(),
@@ -308,10 +308,10 @@ class UserProfileViewTest(TestCase):
         self.assertIn("profile-update-form", context)
         self.assertEqual(ProfileUpdateForm, context["profile-update-form"].__class__)
         self.assertEqual(failed_input, context["profile-update-form"].data)
-        self.assertIsNotNone(context['profile-update-form'].errors)
+        self.assertIsNotNone(context["profile-update-form"].errors)
 
     def test_reset_password_form_initial_data_load_from_session_when_session_has_failed_input_data(
-            self,
+        self,
     ):
         failed_input = {
             "old_password": "password",
@@ -330,7 +330,7 @@ class UserProfileViewTest(TestCase):
         self.assertIn("reset-password-form", context)
         self.assertEqual(PasswordChangeForm, context["reset-password-form"].__class__)
         self.assertEqual(failed_input, context["reset-password-form"].data)
-        self.assertIsNotNone(context['reset-password-form'].errors)
+        self.assertIsNotNone(context["reset-password-form"].errors)
 
     def test_unauthenticated_user_redirects_to_login(self):
         response = self.client.get(reverse("users:profile"))
@@ -606,37 +606,44 @@ class UserResetPasswordViewTest(TestCase):
         self.user = UserFactory().create()
 
     def test_url_is_correct(self):
-        self.assertURLEqual('/reset-password', reverse('users:reset-password'))
+        self.assertURLEqual("/reset-password", reverse("users:reset-password"))
 
     def test_http_get_method_redirects_to_profile_page(self):
         self.client.login(username=self.user.username, password="Passw0rd!")
 
-        response = self.client.get(reverse('users:reset-password'))
+        response = self.client.get(reverse("users:reset-password"))
 
-        self.assertRedirects(response, expected_url=reverse('users:profile'))
+        self.assertRedirects(response, expected_url=reverse("users:profile"))
 
     def test_authenticated_user_can_reset_password_and_redirect_to_profile(self):
         self.client.login(username=self.user.username, password="Passw0rd!")
 
-        response = self.client.post(reverse('users:reset-password'), {
-            'old_password': "Passw0rd!",
-            'new_password1': "NewPassw0rd!",
-            'new_password2': "NewPassw0rd!"
-        })
+        response = self.client.post(
+            reverse("users:reset-password"),
+            {
+                "old_password": "Passw0rd!",
+                "new_password1": "NewPassw0rd!",
+                "new_password2": "NewPassw0rd!",
+            },
+        )
 
-        self.assertRedirects(response, expected_url=reverse('users:profile'))
-        self.assertTrue(self.client.login(username=self.user.username, password="NewPassw0rd!"))
+        self.assertRedirects(response, expected_url=reverse("users:profile"))
+        self.assertTrue(
+            self.client.login(username=self.user.username, password="NewPassw0rd!")
+        )
 
     def test_redirect_to_profile_page_with_failed_input_when_validation_failed(self):
         failed_input = {
-            'old_password': "password",
-            'new_password1': "NewPassw0rd!",
-            'new_password2': "NewPassw0rd!"
+            "old_password": "password",
+            "new_password1": "NewPassw0rd!",
+            "new_password2": "NewPassw0rd!",
         }
 
         self.client.login(username=self.user.username, password="Passw0rd!")
-        response = self.client.post(reverse('users:reset-password'), failed_input)
+        response = self.client.post(reverse("users:reset-password"), failed_input)
 
-        self.assertRedirects(response, expected_url=f"{reverse('users:profile')}#reset-password")
-        self.assertIn('reset-password-form', self.client.session.keys())
-        self.assertEqual(failed_input, self.client.session['reset-password-form'])
+        self.assertRedirects(
+            response, expected_url=f"{reverse('users:profile')}#reset-password"
+        )
+        self.assertIn("reset-password-form", self.client.session.keys())
+        self.assertEqual(failed_input, self.client.session["reset-password-form"])

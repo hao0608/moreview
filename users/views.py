@@ -73,7 +73,10 @@ class UserProfileView(LoginRequiredMixin, DetailView):
             else ProfileUpdateForm(instance=self.object)
         )
         context["reset-password-form"] = (
-            PasswordChangeForm(user=self.request.user, data=self.request.session.get("reset-password-form"))
+            PasswordChangeForm(
+                user=self.request.user,
+                data=self.request.session.get("reset-password-form"),
+            )
             if self.request.session.get("reset-password-form")
             else PasswordChangeForm(user=self.request.user)
         )
@@ -138,19 +141,19 @@ class UserDeleteView(LoginRequiredMixin, UpdateView):
 
 
 class UserResetPasswordView(PasswordChangeView):
-    success_url = reverse_lazy('users:profile')
+    success_url = reverse_lazy("users:profile")
 
     def get(self, request, *args, **kwargs):
-        return redirect(reverse('users:profile'))
+        return redirect(reverse("users:profile"))
 
     def post(self, request, *args, **kwargs):
-        self.kwargs.update({'pk': request.user.pk})
+        self.kwargs.update({"pk": request.user.pk})
         return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
-        self.request.session['reset-password-form'] = None
+        self.request.session["reset-password-form"] = None
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        self.request.session['reset-password-form'] = form.data
+        self.request.session["reset-password-form"] = form.data
         return redirect(f"{reverse('users:profile')}#reset-password")
