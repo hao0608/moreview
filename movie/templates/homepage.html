@@ -12,7 +12,14 @@
           <button class="btn btn-custom-primary" type="submit">Search</button>
         </form>
   
-      </div>
+    </div>
+    <div>
+        <form class="d-flex" method="GET">
+          <select  name="order" onchange="this.form.submit();">
+            <option value='Desc'> 最新 </option>
+            <option value='Asc'> 最舊 </option>
+          </select>
+    </div>
   </section>
 
   <div class="album py-5  ">
