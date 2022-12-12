@@ -32,36 +32,38 @@ class UserModelTest(TestCase):
         self.user = UserFactory().create()
 
     def test_first_name_has_correct_setting(self):
-        field = self.model._meta.get_field('first_name')
+        field = self.model._meta.get_field("first_name")
 
         self.assertEqual(models.CharField, field.__class__)
-        self.assertEqual(_('first name'), field.verbose_name)
+        self.assertEqual(_("first name"), field.verbose_name)
         self.assertEqual(150, field.max_length)
         self.assertFalse(field.blank)
 
     def test_last_name_has_correct_setting(self):
-        field = self.model._meta.get_field('last_name')
+        field = self.model._meta.get_field("last_name")
 
         self.assertEqual(models.CharField, field.__class__)
-        self.assertEqual(_('last name'), field.verbose_name)
+        self.assertEqual(_("last name"), field.verbose_name)
         self.assertEqual(150, field.max_length)
         self.assertFalse(field.blank)
 
     def test_email_has_correct_setting(self):
-        field = self.model._meta.get_field('email')
+        field = self.model._meta.get_field("email")
 
         self.assertEqual(models.EmailField, field.__class__)
-        self.assertEqual(_('email address'), field.verbose_name)
+        self.assertEqual(_("email address"), field.verbose_name)
         self.assertFalse(field.blank)
 
     def test_date_updated_has_correct_setting(self):
-        field = self.model._meta.get_field('date_updated')
+        field = self.model._meta.get_field("date_updated")
 
         self.assertEqual(models.DateTimeField, field.__class__)
         self.assertEqual(timezone.now, field.default)
 
     def test_required_fields_for_creating_superuser_have_correct_fields(self):
-        self.assertEqual(['first_name', 'last_name', 'email'], self.model.REQUIRED_FIELDS)
+        self.assertEqual(
+            ["first_name", "last_name", "email"], self.model.REQUIRED_FIELDS
+        )
 
     def test_date_updated_field_updates_when_record_updates(self):
         self.user.email = self.faker.unique.safe_email()
@@ -259,36 +261,36 @@ class UserProfileViewTest(TestCase):
         self.assertEqual(User, self.view.model)
 
     def test_context_has_profile_update_form(self):
-        request = RequestFactory().get(reverse('users:profile'))
+        request = RequestFactory().get(reverse("users:profile"))
         request.session = {}
 
         self.view.setup(request)
         self.view.object = self.user
         context = self.view.get_context_data()
 
-        self.assertIn('form', context)
-        self.assertEqual(ProfileUpdateForm, context['form'].__class__)
-        self.assertEqual(self.user, context['form'].instance)
+        self.assertIn("form", context)
+        self.assertEqual(ProfileUpdateForm, context["form"].__class__)
+        self.assertEqual(self.user, context["form"].instance)
 
-    def test_form_initial_data_load_from_session_when_session_has_failed_input_data(self):
+    def test_form_initial_data_load_from_session_when_session_has_failed_input_data(
+        self,
+    ):
         failed_input = {
-            'first_name': self.faker.first_name(),
-            'last_name': self.faker.last_name(),
-            'email': self.faker.first_name()
+            "first_name": self.faker.first_name(),
+            "last_name": self.faker.last_name(),
+            "email": self.faker.first_name(),
         }
 
-        request = RequestFactory().get(reverse('users:profile'))
-        request.session = {
-            'profile-update-form': failed_input
-        }
+        request = RequestFactory().get(reverse("users:profile"))
+        request.session = {"profile-update-form": failed_input}
 
         self.view.setup(request)
         self.view.object = self.user
         context = self.view.get_context_data()
 
-        self.assertIn('form', context)
-        self.assertEqual(ProfileUpdateForm, context['form'].__class__)
-        self.assertEqual(failed_input, context['form'].data)
+        self.assertIn("form", context)
+        self.assertEqual(ProfileUpdateForm, context["form"].__class__)
+        self.assertEqual(failed_input, context["form"].data)
 
     def test_unauthenticated_user_redirects_to_login(self):
         response = self.client.get(reverse("users:profile"))
@@ -340,7 +342,7 @@ class ProfileUpdateFormTest(TestCase):
                 "last_name",
                 "email",
             ],
-            self.form.Meta.fields
+            self.form.Meta.fields,
         )
 
 
@@ -352,67 +354,88 @@ class ProfileUpdateViewTest(TestCase):
         self.faker = Faker()
 
     def test_url_is_correct(self):
-        self.assertURLEqual('/profile/edit', reverse('users:edit-profile'))
+        self.assertURLEqual("/profile/edit", reverse("users:edit-profile"))
 
     def test_form_class_is_correct(self):
         self.assertEqual(ProfileUpdateForm, self.view.form_class)
 
     def test_unauthenticated_user_redirects_to_login(self):
         user = {f.name: getattr(self.user, f.name) for f in self.user._meta.fields}
-        user.update({
-            'first_name': self.faker.first_name(),
-            'last_name': self.faker.last_name(),
-            'email': self.faker.unique.safe_email()
-        })
+        user.update(
+            {
+                "first_name": self.faker.first_name(),
+                "last_name": self.faker.last_name(),
+                "email": self.faker.unique.safe_email(),
+            }
+        )
 
-        response = self.client.post(reverse('users:edit-profile'), {
-            'first_name': user['first_name'],
-            'last_name': user['last_name'],
-            'email': user['email']
-        })
+        response = self.client.post(
+            reverse("users:edit-profile"),
+            {
+                "first_name": user["first_name"],
+                "last_name": user["last_name"],
+                "email": user["email"],
+            },
+        )
 
-        self.assertRedirects(response, expected_url=f"{reverse('users:login')}?next={reverse('users:edit-profile')}")
+        self.assertRedirects(
+            response,
+            expected_url=f"{reverse('users:login')}?next={reverse('users:edit-profile')}",
+        )
 
     def test_http_get_method_redirects_to_profile_page(self):
         self.client.login(username=self.user.username, password="Passw0rd!")
 
-        response = self.client.get(reverse('users:edit-profile'))
+        response = self.client.get(reverse("users:edit-profile"))
 
-        self.assertRedirects(response, expected_url=reverse('users:profile'))
+        self.assertRedirects(response, expected_url=reverse("users:profile"))
 
     def test_authenticate_user_can_edit_profile_then_redirect_to_profile_page(self):
         user = {f.name: getattr(self.user, f.name) for f in self.user._meta.fields}
-        user.update({
-            'first_name': self.faker.first_name(),
-            'last_name': self.faker.last_name(),
-            'email': self.faker.unique.safe_email()
-        })
+        user.update(
+            {
+                "first_name": self.faker.first_name(),
+                "last_name": self.faker.last_name(),
+                "email": self.faker.unique.safe_email(),
+            }
+        )
 
         self.client.login(username=self.user.username, password="Passw0rd!")
-        response = self.client.post(reverse('users:edit-profile'), {
-            'first_name': user['first_name'],
-            'last_name': user['last_name'],
-            'email': user['email']
-        })
+        response = self.client.post(
+            reverse("users:edit-profile"),
+            {
+                "first_name": user["first_name"],
+                "last_name": user["last_name"],
+                "email": user["email"],
+            },
+        )
 
-        self.assertRedirects(response, expected_url=reverse('users:profile'))
-        self.assertEqual(1, User.objects.filter(pk=self.user.pk, first_name=user['first_name'],
-                                                last_name=user['last_name'],
-                                                email=user['email']).count())
+        self.assertRedirects(response, expected_url=reverse("users:profile"))
+        self.assertEqual(
+            1,
+            User.objects.filter(
+                pk=self.user.pk,
+                first_name=user["first_name"],
+                last_name=user["last_name"],
+                email=user["email"],
+            ).count(),
+        )
 
-    def test_authenticated_user_redirects_to_profile_page_and_input_data_stored_in_session_when_validation_failed(self):
+    def test_authenticated_user_redirects_to_profile_page_and_input_data_stored_in_session_when_validation_failed(
+        self,
+    ):
         failed_data = {
-            'first_name': self.faker.first_name(),
-            'last_name': self.faker.last_name(),
-            'email': self.faker.first_name()
+            "first_name": self.faker.first_name(),
+            "last_name": self.faker.last_name(),
+            "email": self.faker.first_name(),
         }
 
         self.client.login(username=self.user.username, password="Passw0rd!")
-        response = self.client.post(reverse('users:edit-profile'), failed_data)
+        response = self.client.post(reverse("users:edit-profile"), failed_data)
 
-        self.assertRedirects(response, reverse('users:profile'))
-        self.assertIn('profile-update-form', self.client.session.keys())
-        self.assertEqual(failed_data, self.client.session['profile-update-form'])
+        self.assertRedirects(response, reverse("users:profile"))
+        self.assertIn("profile-update-form", self.client.session.keys())
+        self.assertEqual(failed_data, self.client.session["profile-update-form"])
 
 
 class AdminCreateFormTest(TestCase):
