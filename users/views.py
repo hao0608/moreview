@@ -51,6 +51,13 @@ class UserListView(UserPassesTestMixin, ListView):
     def test_func(self):
         return self.request.user.is_superuser
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context['form'] = AdminCreateForm(
+            data=self.request.session.get('admin-create-form')) if self.request.session.get(
+            'admin-create-form') else AdminCreateForm()
+        return context
+
 
 class UserProfileView(LoginRequiredMixin, DetailView):
     template_name = "profile.html"
@@ -106,7 +113,6 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
 
 class AdminCreateView(UserPassesTestMixin, CreateView):
-    template_name_suffix = "_create_form"
     model = User
     form_class = AdminCreateForm
     success_url = reverse_lazy("users:list")
@@ -115,10 +121,18 @@ class AdminCreateView(UserPassesTestMixin, CreateView):
     def test_func(self):
         return self.request.user.is_superuser
 
+    def get(self, request, *args, **kwargs):
+        return redirect(reverse('users:list'))
+
     def form_valid(self, form):
         form.instance.password = make_password(form.instance.password)
         form.instance.is_superuser = True
+        self.request.session['admin-create-form'] = None
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        self.request.session['admin-create-form'] = form.data
+        return super().form_invalid(form)
 
 
 class UserDeleteView(LoginRequiredMixin, UpdateView):
