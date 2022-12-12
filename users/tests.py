@@ -221,8 +221,35 @@ class UserListViewTest(TestCase):
     def test_model_is_correct(self):
         self.assertEqual(User, self.view.model)
 
-    def test_template_name_is_correct(self):
-        self.assertEqual("user_list.html", self.view.template_name)
+    def test_context_has_form(self):
+        request = RequestFactory().get(reverse('users:list'))
+        request.session = {}
+
+        self.view.setup(request)
+        self.view.object_list = self.view.get_queryset()
+        context = self.view.get_context_data()
+
+        self.assertIn('form', context)
+        self.assertEqual(AdminCreateForm, context['form'].__class__)
+
+    def test_form_initial_data_load_from_session_when_session_has_failed_input_data(self):
+        failed_input = UserFactory().data.copy()
+        failed_input.pop('password')
+        failed_input.update({'password': 'password'})
+
+        request = RequestFactory().get(reverse("users:list"))
+        request.session = {
+            'admin-create-form': failed_input
+        }
+
+        self.view.setup(request)
+        self.view.object_list = self.view.get_queryset()
+        context = self.view.get_context_data()
+
+        self.assertIn("form", context)
+        self.assertEqual(AdminCreateForm, context["form"].__class__)
+        self.assertEqual(failed_input, context["form"].data)
+        self.assertIsNotNone(context['form'].errors)
 
     def test_unauthenticated_user_redirects_to_login(self):
         response = self.client.get(reverse("users:list"))
@@ -499,26 +526,35 @@ class AdminCreateViewTest(TestCase):
         self.assertEqual(AdminCreateForm, self.view.form_class)
 
     def test_unauthenticated_user_redirects_to_login(self):
-        response = self.client.get(reverse("users:create"))
+        admin = UserFactory().data.copy()
+        admin.pop('password')
+
+        response = self.client.post(reverse("users:create"), {**admin, 'password': "Passw0rd!"})
 
         self.assertRedirects(
             response,
             expected_url=f"{reverse('users:login')}?next={reverse('users:create')}",
         )
 
-    def test_authenticated_user_is_forbidden(self):
-        self.client.login(username=self.user.username, password="Passw0rd!")
+    def test_http_get_method_redirects_to_users_list(self):
+        admin = UserFactory().data.copy()
+        admin.pop("password")
 
+        self.client.login(username=self.admin.username, password="Passw0rd!")
         response = self.client.get(reverse("users:create"))
+
+        self.assertRedirects(response, expected_url=reverse('users:list'))
+
+    def test_authenticated_user_is_forbidden(self):
+        admin = UserFactory().data.copy()
+        admin.pop("password")
+
+        self.client.login(username=self.user.username, password="Passw0rd!")
+        response = self.client.post(
+            reverse("users:create"), {**admin, "password": "Passw0rd!"}
+        )
 
         self.assertEqual(403, response.status_code)
-
-    def test_authenticated_admin_can_view(self):
-        self.client.login(username=self.admin.username, password="Passw0rd!")
-
-        response = self.client.get(reverse("users:create"))
-
-        self.assertEqual(200, response.status_code)
 
     def test_authenticated_admin_can_create_and_new_admin_can_login(self):
         admin = UserFactory().data.copy()
