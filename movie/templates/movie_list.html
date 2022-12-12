@@ -38,7 +38,7 @@
             <th scope="col">電影名稱</th>
             <th scope="col">新增時間</th>
             <th scope="col">更新時間</th>
-            <th scope="col">修改</th>
+            <th scope="col">編輯</th>
             <th scope="col">刪除</th>
 
           </tr>
@@ -52,7 +52,7 @@
                     <td>{{movie.date_updated}}</td>
                     <td>
                         <form action="{% url 'movie:edit' movie.id %}">
-                            <button type="submit" class="btn btn-secondary">修改</button>
+                            <button type="submit" class="btn btn-secondary">編輯</button>
                         </form>
                     </td>
                     <td>
