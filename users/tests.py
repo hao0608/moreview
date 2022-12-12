@@ -23,6 +23,7 @@ from .views import (
     AdminCreateView,
     UserDeleteView,
     UserResetPasswordView,
+    UserStatusUpdateView
 )
 
 
@@ -659,3 +660,54 @@ class UserResetPasswordViewTest(TestCase):
         )
         self.assertIn("reset-password-form", self.client.session.keys())
         self.assertEqual(failed_input, self.client.session["reset-password-form"])
+
+
+class UserStatusUpdateViewTest(TestCase):
+    def setUp(self) -> None:
+        self.view = UserStatusUpdateView()
+        self.client = Client()
+        self.user = UserFactory().create()
+        self.admin = UserFactory().is_superuser().create()
+
+    def test_url_is_correct(self):
+        self.assertEqual('/users/1/status', reverse('users:toggle-status', kwargs={'pk': 1}))
+
+    def test_unauthenticated_user_redirects_to_login(self):
+        response = self.client.post(reverse('users:toggle-status', kwargs={'pk': self.user.pk}))
+
+        self.assertRedirects(response,
+                             expected_url=f"{reverse('users:login')}?next={reverse('users:toggle-status', kwargs={'pk': self.user.pk})}")
+
+    def test_http_get_method_redirects_to_profile(self):
+        self.client.login(username=self.admin.username, password="Passw0rd!")
+
+        response = self.client.get(reverse('users:toggle-status', kwargs={'pk': self.user.pk}))
+
+        self.assertRedirects(response, expected_url=reverse('users:list'))
+
+    def test_authenticated_user_is_forbidden(self):
+        self.client.login(username=self.user.username, password="Passw0rd!")
+
+        response = self.client.get(reverse('users:toggle-status', kwargs={'pk': self.admin.pk}))
+
+        self.assertEqual(403, response.status_code)
+
+    def test_authenticated_admin_is_forbidden_to_toggle_own_status(self):
+        self.client.login(username=self.admin.username, password="Passw0rd!")
+
+        response = self.client.get(reverse('users:toggle-status', kwargs={'pk': self.admin.pk}))
+
+        self.assertEqual(403, response.status_code)
+
+    def test_authenticated_user_can_toggle_other_user_status_and_redirect_to_users_list(self):
+        self.client.login(username=self.admin.username, password="Passw0rd!")
+
+        response = self.client.post(reverse('users:toggle-status', kwargs={'pk': self.user.pk}))
+
+        self.assertRedirects(response, expected_url=reverse('users:list'))
+        self.assertEqual(0, User.objects.filter(pk=self.user.pk, is_active=False))
+
+        response = self.client.post(reverse('users:toggle-status', kwargs={'pk': self.user.pk}))
+
+        self.assertRedirects(response, expected_url=reverse('users:list'))
+        self.assertEqual(0, User.objects.filter(pk=self.user.pk, is_active=True))
