@@ -13,7 +13,7 @@
                     <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="#">檢舉清單</a></li>
 		    	{% if request.user.is_superuser %}
 			<li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{# url 'users:list' #}">帳號列表</a></li>
-			<li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{# url 'movie:list' #}">電影列表</a></li>
+			<li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'movie:manage-list' %}">電影列表</a></li>
                     	{% endif %}
 		    <li class="nav-item">
 			    <form method="post" action="{% url 'users:logout' %}">

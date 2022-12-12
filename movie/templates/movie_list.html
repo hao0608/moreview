@@ -12,7 +12,8 @@
             </div>
             <div class="col-3 col-sm-2">
                 <form action="{% url 'movie:create' %}"  style="text-align: right;">
-                    <button type="submit" class="btn btn-warning">新增</button>
+                    <button type="submit" class="btn btn-warning">新增 <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
                 </form>
             </div>
           </div>
@@ -86,6 +87,10 @@
 
                     </td>
                 </tr>
+
+                {% empty %}
+        
+                <tr><td colspan="6">查無此電影</td></tr>
             {% endfor %}
  
         </tbody>
