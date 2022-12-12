@@ -2,15 +2,17 @@ from moreview.factories import BaseFactory
 
 from .models import Movie, Tag
 
+
 class TagFactory(BaseFactory):
     model = Tag
 
     def __init__(self):
         super().__init__()
 
-        self.data={
-            "name":"幽默",
+        self.data = {
+            "name": "幽默",
         }
+
 
 class MovieFactory(BaseFactory):
     model = Movie
@@ -19,7 +21,7 @@ class MovieFactory(BaseFactory):
         super().__init__()
 
         self.data = {
-            "name":self.faker.name(),
+            "name": self.faker.name(),
             "content": self.faker.text(),
             "official_site": self.faker.url(),
             "time": self.faker.random_int(100, 200),

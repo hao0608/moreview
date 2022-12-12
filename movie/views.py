@@ -43,9 +43,9 @@ class MovieListView(ListView):
             query = self.request.GET.get("q")
             movie_obj = None
             if query is not None:  # 搜尋
-                movie_obj=Movie.objects.filter(name__contains=query)
+                movie_obj = Movie.objects.filter(name__contains=query)
             else:  # 沒有搜尋
-                movie_obj = Movie.objects.filter(image__contains='movies/')
+                movie_obj = Movie.objects.filter(image__contains="movies/")
             context["object_list"] = movie_obj
             return context
         else:
@@ -53,7 +53,7 @@ class MovieListView(ListView):
             query = self.request.GET.get("q")
             movie_obj = None
             if query is not None:  # 搜尋
-                movie_obj=Movie.objects.filter(name__contains=query)
+                movie_obj = Movie.objects.filter(name__contains=query)
             else:  # 沒有搜尋
                 movie_obj = Movie.objects.all()
             context["object_list"] = movie_obj
