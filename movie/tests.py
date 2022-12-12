@@ -58,7 +58,7 @@ class MovieCreateViewTest(TestCase):
                 "time",
                 "grade",
                 "date_released",
-                "image"
+                "image",
             ],
             self.view.form_class.Meta.fields,
         )
@@ -76,10 +76,11 @@ class MovieListViewTest(TestCase):
     def test_homepage_can_render(self):
         response = self.client.get(reverse("movie:list"))
         self.assertIs(200, response.status_code)
-    
+
     def test_manage_list_page_can_render(self):
         response = self.client.get(reverse("movie:manage-list"))
         self.assertIs(200, response.status_code)
+
 
 class MovieDetailViewTest(TestCase):
     view = MovieDetailView()

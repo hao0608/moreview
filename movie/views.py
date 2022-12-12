@@ -30,7 +30,7 @@ class MovieListView(ListView):
     manage_template_name = "movie_list.html"
 
     def get_template_names(self, *args, **kwargs):
-        if self.request.path == reverse('movie:list'):
+        if self.request.path == reverse("movie:list"):
             return [self.home_template_name]
         else:
             return [self.manage_template_name]
@@ -38,9 +38,9 @@ class MovieListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(MovieListView, self).get_context_data(**kwargs)
 
-        if self.request.path == reverse('movie:list'):
+        if self.request.path == reverse("movie:list"):
             # 取得request
-            query = self.request.GET.get('q')
+            query = self.request.GET.get("q")
             movie_obj = None
             if query is not None:  # 搜尋
                 movie_obj=Movie.objects.filter(name__contains=query)
@@ -50,7 +50,7 @@ class MovieListView(ListView):
             return context
         else:
             # 取得request
-            query = self.request.GET.get('q')
+            query = self.request.GET.get("q")
             movie_obj = None
             if query is not None:  # 搜尋
                 movie_obj=Movie.objects.filter(name__contains=query)

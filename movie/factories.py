@@ -29,5 +29,3 @@ class MovieFactory(BaseFactory):
             ),
             "date_released": self.faker.date(),
         }
-
-
