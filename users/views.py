@@ -1,7 +1,9 @@
 from django.contrib.auth import login, logout
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import PasswordChangeView
 from django.shortcuts import redirect
 from django.urls.base import reverse, reverse_lazy
 from django.views.generic.detail import DetailView
@@ -65,10 +67,18 @@ class UserProfileView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["form"] = (
+        context["profile-update-form"] = (
             ProfileUpdateForm(data=self.request.session.get("profile-update-form"))
             if self.request.session.get("profile-update-form")
             else ProfileUpdateForm(instance=self.object)
+        )
+        context["reset-password-form"] = (
+            PasswordChangeForm(
+                user=self.request.user,
+                data=self.request.session.get("reset-password-form"),
+            )
+            if self.request.session.get("reset-password-form")
+            else PasswordChangeForm(user=self.request.user)
         )
         return context
 
@@ -128,3 +138,22 @@ class UserDeleteView(LoginRequiredMixin, UpdateView):
         form.instance.is_active = False
         logout(self.request)
         return super().form_valid(form)
+
+
+class UserResetPasswordView(PasswordChangeView):
+    success_url = reverse_lazy("users:profile")
+
+    def get(self, request, *args, **kwargs):
+        return redirect(reverse("users:profile"))
+
+    def post(self, request, *args, **kwargs):
+        self.kwargs.update({"pk": request.user.pk})
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        self.request.session["reset-password-form"] = None
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        self.request.session["reset-password-form"] = form.data
+        return redirect(f"{reverse('users:profile')}#reset-password")
