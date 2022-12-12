@@ -162,6 +162,7 @@ class UserResetPasswordView(LoginRequiredMixin, PasswordChangeView):
 
 class UserStatusUpdateView(UserPassesTestMixin, UpdateView):
     model = User
+    fields = []
     success_url = reverse_lazy('users:list')
     login_url = reverse_lazy('users:login')
 
