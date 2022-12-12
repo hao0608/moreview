@@ -705,9 +705,9 @@ class UserStatusUpdateViewTest(TestCase):
         response = self.client.post(reverse('users:toggle-status', kwargs={'pk': self.user.pk}))
 
         self.assertRedirects(response, expected_url=reverse('users:list'))
-        self.assertEqual(0, User.objects.filter(pk=self.user.pk, is_active=False))
+        self.assertEqual(1, User.objects.filter(pk=self.user.pk, is_active=False).count())
 
         response = self.client.post(reverse('users:toggle-status', kwargs={'pk': self.user.pk}))
 
         self.assertRedirects(response, expected_url=reverse('users:list'))
-        self.assertEqual(0, User.objects.filter(pk=self.user.pk, is_active=True))
+        self.assertEqual(1, User.objects.filter(pk=self.user.pk, is_active=True).count())
