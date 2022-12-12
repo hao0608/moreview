@@ -221,6 +221,9 @@ class UserListViewTest(TestCase):
     def test_model_is_correct(self):
         self.assertEqual(User, self.view.model)
 
+    def test_template_is_correct(self):
+        self.assertEqual('user_list.html', self.view.template_name)
+
     def test_context_has_form(self):
         request = RequestFactory().get(reverse('users:list'))
         request.session = {}
@@ -518,9 +521,6 @@ class AdminCreateViewTest(TestCase):
 
     def test_model_is_correct(self):
         self.assertEqual(User, self.view.model)
-
-    def test_template_name_suffix_is_correct(self):
-        self.assertEqual("_create_form", self.view.template_name_suffix)
 
     def test_form_class_is_correct(self):
         self.assertEqual(AdminCreateForm, self.view.form_class)
