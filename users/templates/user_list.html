@@ -37,14 +37,16 @@
 						{% if user.is_superuser %}
 							<tr>
 								<td>{{ user.username }}</td>
-								<td>{{ user.first_name }}{{user.last_name}}</td>
+								<td>{{ user.last_name }}{{user.first_name}}</td>
 								<td>{{ user.email }}</td>
-								<form method="post" action="{# url 'users:delete' #}">
-								<td>{% if user.is_active %}
+								<form method="post" action="{% url 'users:toggle-status' pk=user.pk %}">
+									{% csrf_token %}
+									<td><button class="btn btn-link" type="submit">{% if user.is_active %}
 									<span class="badge rounded-pill bg-success">Active</span>{% endif %}
 									{% if not user.is_active %}
 									<span class="badge rounded-pill bg-danger">Disable</span>{% endif %}
-								</td>
+									</button></td>
+								</form>
 							</tr>
 						{% endif %}
                                 	{% endfor %}
@@ -75,13 +77,17 @@
                                                 {% if not user.is_superuser %}
                                                         <tr>
                                                                 <td>{{ user.username }}</td>
-								<td>{{ user.first_name }}{{user.last_name}}</td>
+								<td>{{ user.last_name }}{{user.first_name}}</td>
                                                                 <td>{{ user.email }}</td>
-                                                                <td>{% if user.is_active %}
+								<form method="post" action="{% url 'users:toggle-status' pk=user.pk %}">
+									{% csrf_token %}
+                                                                        <td><button class="btn btn-link" type="submit">
+                                                                {% if user.is_active %}
                                                                         <span class="badge rounded-pill bg-success">Active</span>{% endif %}
 									{% if not user.is_active %}
                                                                         <span class="badge rounded-pill bg-danger">Disable</span>{% endif %}
-                                                                </td>
+									</button></td>
+								</form>
                                                         </tr>
                                                 {% endif %}
                                         {% endfor %}

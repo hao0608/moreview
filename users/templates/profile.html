@@ -16,46 +16,13 @@
                 <div class="col-md-10 col-lg-8 col-xl-7">
                         <form action="{% url 'users:edit-profile' %}" method="post">
                                 {% csrf_token %}
-				{{ profile-update-form|crispy }}
-				<div class="mb-3 row">
-                                        <label class="col-sm-3 col-form-label">使用者姓名</label>
-                                        <div class="col-sm-9">
-						{{ request.user.username }} <!-- readonly -->
-                                        </div>
+				<div class="mb-3">
+                                        <label class="col-form-label">使用者姓名</label>
+					<p>{{ request.user.username }}</p>
                                 </div>
-
-                                <div class="mb-3 row">
-                                        <label class="col-sm-3 col-form-label">{{ form.first_name.label }}</label>
-                                        <div class="col-sm-9">
-                                                {{ form.first_name }}
-                                        </div>
-                                </div>
-				<div class="mb-3 row">
-                                        <label class="col-sm-3 col-form-label">{{ form.last_name.label }}</label>
-                                        <div class="col-sm-9">
-                                                {{ form.last_name }}
-                                        </div>
-                                </div>
-				<!-- 有要顯示信箱嗎？要能改嗎？  -->
-                                <div class="mb-3 row">
-                                        <label class="col-sm-3 col-form-label">{{ form.email.label }}</label>
-                                        <div class="col-sm-9">
-                                                {{ form.email }}
-                                        </div>
-                                </div>
-				<!-- 有要另外做更改密碼的按鈕嗎？還是不用？  -->
-                                <div class="mb-3 row">
-                                        <label class="col-sm-3 col-form-label">{{ form.password.label }}</label>
-                                        <div class="col-sm-9">
-                                                {{ form.password }}
-						<button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#resetPwd">重設密碼</button>
-					</div>
-					<!--
-					<div class="col-sm-3">
-						<button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#resetPwd">重設密碼</button>
-					</div>-->
-				</div>
+				{{ profile_update_form|crispy }}
 				<div class="container text-center">
+					 <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#resetPwd">重設密碼</button>
 					<button class="btn btn-success" type="submit">儲存</button>
 					<button class="btn btn-danger"  type="button"  data-bs-toggle="modal" data-bs-target="#disabledAcc">停用帳號</button>
 				</div>
@@ -73,7 +40,8 @@
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-							<form method="post" action="">
+							<form method="post" action="{% url 'users:delete' %}">
+							{% csrf_token %}
 							<button type="submit" class="btn btn-success">確認</button>
 							</form>
 						</div>
@@ -91,24 +59,6 @@
                                                 	<div class="modal-body">
                                                         {% csrf_token %}
 							{{ reset_password_form|crispy }}
-							<div class="mb-3 row">
-                                        		<label class="col-sm-3 col-form-label">原密碼</label>
-                                        		<div class="col-sm-9">
-								<input type="password">
-                                        		</div>
-                                			</div>
-							<div class="mb-3 row">
-                                                        <label class="col-sm-3 col-form-label">新密碼</label>
-                                                        <div class="col-sm-9">
-                                                                <input type="password">
-                                                        </div>
-                                                        </div>
-							<div class="mb-3 row">
-                                                        <label class="col-sm-3 col-form-label">再次輸入新密碼</label>
-                                                        <div class="col-sm-9">
-                                                                <input type="password">
-                                                        </div>
-                                                        </div>
 
                                                 	</div>
                                                 <div class="modal-footer">
