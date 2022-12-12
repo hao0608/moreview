@@ -140,8 +140,9 @@ class UserDeleteView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class UserResetPasswordView(PasswordChangeView):
+class UserResetPasswordView(LoginRequiredMixin, PasswordChangeView):
     success_url = reverse_lazy("users:profile")
+    login_url = reverse_lazy("users:login")
 
     def get(self, request, *args, **kwargs):
         return redirect(reverse("users:profile"))
@@ -157,3 +158,25 @@ class UserResetPasswordView(PasswordChangeView):
     def form_invalid(self, form):
         self.request.session["reset-password-form"] = form.data
         return redirect(f"{reverse('users:profile')}#reset-password")
+
+
+class UserStatusUpdateView(UserPassesTestMixin, UpdateView):
+    model = User
+    fields = []
+    success_url = reverse_lazy("users:list")
+    login_url = reverse_lazy("users:login")
+
+    def test_func(self):
+        return (
+            self.request.user.is_superuser and self.request.user.pk != self.kwargs["pk"]
+        )
+
+    def get(self, request, *args, **kwargs):
+        return redirect(reverse("users:list"))
+
+    def form_valid(self, form):
+        form.instance.is_active = not form.instance.is_active
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        return redirect(reverse("users:list"))
