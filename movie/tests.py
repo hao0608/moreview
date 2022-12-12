@@ -130,7 +130,6 @@ class MovieDeleteViewTest(TestCase):
             reverse("movie:delete", kwargs={'pk':self.movie.id})
         )
 
-        self.assertRedirects(304, response.status_code)
         self.assertRedirects(response, expected_url=reverse("movie:manage-list"))
         self.assertEqual(0, Movie.objects.filter(name='delete test').count())
 
