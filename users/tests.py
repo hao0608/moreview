@@ -272,9 +272,9 @@ class UserProfileViewTest(TestCase):
         self.view.object = self.user
         context = self.view.get_context_data()
 
-        self.assertIn("profile-update-form", context)
-        self.assertEqual(ProfileUpdateForm, context["profile-update-form"].__class__)
-        self.assertEqual(self.user, context["profile-update-form"].instance)
+        self.assertIn("profile_update_form", context)
+        self.assertEqual(ProfileUpdateForm, context["profile_update_form"].__class__)
+        self.assertEqual(self.user, context["profile_update_form"].instance)
 
     def test_context_has_reset_password_form(self):
         request = RequestFactory().get(reverse("users:profile"))
@@ -285,9 +285,9 @@ class UserProfileViewTest(TestCase):
         self.view.object = self.user
         context = self.view.get_context_data()
 
-        self.assertIn("reset-password-form", context)
-        self.assertEqual(PasswordChangeForm, context["reset-password-form"].__class__)
-        self.assertEqual(self.user, context["reset-password-form"].user)
+        self.assertIn("reset_password_form", context)
+        self.assertEqual(PasswordChangeForm, context["reset_password_form"].__class__)
+        self.assertEqual(self.user, context["reset_password_form"].user)
 
     def test_profile_update_form_initial_data_load_from_session_when_session_has_failed_input_data(
         self,
@@ -306,10 +306,10 @@ class UserProfileViewTest(TestCase):
         self.view.object = self.user
         context = self.view.get_context_data()
 
-        self.assertIn("profile-update-form", context)
-        self.assertEqual(ProfileUpdateForm, context["profile-update-form"].__class__)
-        self.assertEqual(failed_input, context["profile-update-form"].data)
-        self.assertIsNotNone(context["profile-update-form"].errors)
+        self.assertIn("profile_update_form", context)
+        self.assertEqual(ProfileUpdateForm, context["profile_update_form"].__class__)
+        self.assertEqual(failed_input, context["profile_update_form"].data)
+        self.assertIsNotNone(context["profile_update_form"].errors)
 
     def test_reset_password_form_initial_data_load_from_session_when_session_has_failed_input_data(
         self,
@@ -328,10 +328,10 @@ class UserProfileViewTest(TestCase):
         self.view.object = self.user
         context = self.view.get_context_data()
 
-        self.assertIn("reset-password-form", context)
-        self.assertEqual(PasswordChangeForm, context["reset-password-form"].__class__)
-        self.assertEqual(failed_input, context["reset-password-form"].data)
-        self.assertIsNotNone(context["reset-password-form"].errors)
+        self.assertIn("reset_password_form", context)
+        self.assertEqual(PasswordChangeForm, context["reset_password_form"].__class__)
+        self.assertEqual(failed_input, context["reset_password_form"].data)
+        self.assertIsNotNone(context["reset_password_form"].errors)
 
     def test_unauthenticated_user_redirects_to_login(self):
         response = self.client.get(reverse("users:profile"))
