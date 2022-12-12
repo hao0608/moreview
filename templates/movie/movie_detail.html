@@ -58,21 +58,21 @@
         <div class="col-1 col-md-1 col-lg-2 col-xl-2">
             <!-- <h1><i class="fa fa-ellipsis-h" aria-hidden="true"></i></h1> -->
             <!-- Example single danger button -->
-            <!-- <div class="btn-group">
+            <div class="btn-group">
                 <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"  >
                  <h2><i class="fa fa-ellipsis-h" aria-hidden="true"></i></h2>
                 </button>
                 <ul class="dropdown-menu">
                     <li>
                         <a class="dropdown-item" href="#">                        
-                            <form method="POST" action="{% url 'movie:delete' movie.id %}">{% csrf_token %}
+                            <form method="POST" action="{% url 'movie_delete' movie.id %}">{% csrf_token %}
                                 <button type="submit" style="border: none; background: none; width: 100%; text-align: left;">刪除</button>
                             </form>
                         </a>
                     </li>
                 <li>
                     <a class="dropdown-item" href="#">                        
-                        <form action="{% url 'movie:edit' movie.id %}">
+                        <form action="{% url 'movie_edit' movie.id %}">
                             <button type="submit" style="border: none; background: none; width: 100%; text-align: left;">修改</button>
                         </form>
                     </a>
@@ -80,7 +80,7 @@
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="#">Separated link</a></li>
                 </ul>
-            </div> -->
+            </div>
         </div>
         <div class="col-md-10 col-lg-8 col-xl-7">
             <h4>
@@ -140,7 +140,7 @@
                 </div>
                 <!-- <div class="col-sm 10 col-md-8" >
                     <div class="col">
-                        <form action="{% url 'movie:edit' movie.id %}">
+                        <form action="{% url 'movie_edit' movie.id %}">
                             <button type="submit" class="btn btn-warning">修改</button>
                          </form>
                      </div>
@@ -149,13 +149,20 @@
                 <div class="col-2">
     
                     <div class="col">
-                        <form method="POST" action="{% url 'movie:delete' movie.id %}">{% csrf_token %}
+                        <form method="POST" action="{% url 'movie_delete' movie.id %}">{% csrf_token %}
                             <input type="submit" class="btn btn-danger" value="刪除">
                         </form>
                      </div>
                 </div>
+                 -->
+
+
                 
-            
+                <!-- <p><a href="{% url 'movie_edit' movie.id %}">修改</a></p> 
+
+                <form method="POST" action="{% url 'movie_delete' movie.id %}">
+                    {% csrf_token %}<input type="submit" class="btn btn-danger" value="DELETE">
+                </form> -->
             </div>
  
         </div> 
