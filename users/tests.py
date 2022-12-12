@@ -608,6 +608,18 @@ class UserResetPasswordViewTest(TestCase):
     def test_url_is_correct(self):
         self.assertURLEqual("/reset-password", reverse("users:reset-password"))
 
+    def test_unauthenticated_user_redirects_to_login(self):
+        response = self.client.post(
+            reverse("users:reset-password"),
+            {
+                "old_password": "Passw0rd!",
+                "new_password1": "NewPassw0rd!",
+                "new_password2": "NewPassw0rd!",
+            },
+        )
+
+        self.assertRedirects(response, expected_url=f"{reverse('users:login')}?next={reverse('users:reset-password')}")
+
     def test_http_get_method_redirects_to_profile_page(self):
         self.client.login(username=self.user.username, password="Passw0rd!")
 
