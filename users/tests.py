@@ -243,6 +243,7 @@ class UserListViewTest(TestCase):
 
 class UserProfileViewTest(TestCase):
     def setUp(self) -> None:
+        self.faker = Faker()
         self.view = UserProfileView()
         self.client = Client()
         self.user = UserFactory().create()
@@ -259,6 +260,7 @@ class UserProfileViewTest(TestCase):
 
     def test_context_has_profile_update_form(self):
         request = RequestFactory().get(reverse('users:profile'))
+        request.session = {}
 
         self.view.setup(request)
         self.view.object = self.user
@@ -268,6 +270,26 @@ class UserProfileViewTest(TestCase):
         self.assertEqual(ProfileUpdateForm, context['form'].__class__)
         self.assertEqual(self.user, context['form'].instance)
 
+    def test_form_initial_data_load_from_session_when_session_has_failed_input_data(self):
+        failed_input = {
+            'first_name': self.faker.first_name(),
+            'last_name': self.faker.last_name(),
+            'email': self.faker.first_name()
+        }
+
+        request = RequestFactory().get(reverse('users:profile'))
+        request.session = {
+            'profile-update-form': failed_input
+        }
+
+        self.view.setup(request)
+        self.view.object = self.user
+        context = self.view.get_context_data()
+
+        self.assertIn('form', context)
+        self.assertEqual(ProfileUpdateForm, context['form'].__class__)
+        self.assertEqual(failed_input, context['form'].data)
+
     def test_unauthenticated_user_redirects_to_login(self):
         response = self.client.get(reverse("users:profile"))
 
@@ -276,7 +298,7 @@ class UserProfileViewTest(TestCase):
             expected_url=f"{reverse('users:login')}?next={reverse('users:profile')}",
         )
 
-    def test_authenticated_user_can_view_profile_and_has_update_form(self):
+    def test_authenticated_user_can_view_profile(self):
         self.client.login(username=self.user.username, password="Passw0rd!")
 
         response = self.client.get(reverse("users:profile"))
@@ -338,9 +360,9 @@ class ProfileUpdateViewTest(TestCase):
     def test_unauthenticated_user_redirects_to_login(self):
         user = {f.name: getattr(self.user, f.name) for f in self.user._meta.fields}
         user.update({
-            'first_name': self.faker.first_name,
-            'last_name': self.faker.last_name,
-            'email': self.faker.unique.safe_email
+            'first_name': self.faker.first_name(),
+            'last_name': self.faker.last_name(),
+            'email': self.faker.unique.safe_email()
         })
 
         response = self.client.post(reverse('users:edit-profile'), {
@@ -361,9 +383,9 @@ class ProfileUpdateViewTest(TestCase):
     def test_authenticate_user_can_edit_profile_then_redirect_to_profile_page(self):
         user = {f.name: getattr(self.user, f.name) for f in self.user._meta.fields}
         user.update({
-            'first_name': self.faker.first_name,
-            'last_name': self.faker.last_name,
-            'email': self.faker.unique.safe_email
+            'first_name': self.faker.first_name(),
+            'last_name': self.faker.last_name(),
+            'email': self.faker.unique.safe_email()
         })
 
         self.client.login(username=self.user.username, password="Passw0rd!")
@@ -377,6 +399,20 @@ class ProfileUpdateViewTest(TestCase):
         self.assertEqual(1, User.objects.filter(pk=self.user.pk, first_name=user['first_name'],
                                                 last_name=user['last_name'],
                                                 email=user['email']).count())
+
+    def test_authenticated_user_redirects_to_profile_page_and_input_data_stored_in_session_when_validation_failed(self):
+        failed_data = {
+            'first_name': self.faker.first_name(),
+            'last_name': self.faker.last_name(),
+            'email': self.faker.first_name()
+        }
+
+        self.client.login(username=self.user.username, password="Passw0rd!")
+        response = self.client.post(reverse('users:edit-profile'), failed_data)
+
+        self.assertRedirects(response, reverse('users:profile'))
+        self.assertIn('profile-update-form', self.client.session.keys())
+        self.assertEqual(failed_data, self.client.session['profile-update-form'])
 
 
 class AdminCreateFormTest(TestCase):
