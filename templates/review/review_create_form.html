@@ -24,7 +24,7 @@
     }
 
     .rating>label::before {
-        content: "\2605";
+        content: "\2665";
         position: absolute;
         opacity: 0
     }
@@ -112,10 +112,12 @@
                     排序方式    
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><a class="dropdown-item" href="#">依時間(由近至遠)</a></li>
-                    <li><a class="dropdown-item" href="#">依時間(由遠至近)</a></li>
-                    <li><a class="dropdown-item" href="#">依評分(由高到低)</a></li>
-                    <li><a class="dropdown-item" href="#">依評分(由低到高)</a></li>
+                    <li><a class="dropdown-item" href="#">時間由遠至近</a></li>
+                    <li><a class="dropdown-item" href="#">時間由近至遠</a></li>
+                    <li><a class="dropdown-item" href="#">星級由高至低</a></li>
+                    <li><a class="dropdown-item" href="#">星級由低至高</a></li>
+                    <li><a class="dropdown-item" href="#">愛心由多至少</a></li>
+                    <li><a class="dropdown-item" href="#">愛心由少至多</a></li>
                     </ul>
                 </div>
             </div>
@@ -130,11 +132,7 @@
                     </div>
                     <div class="d-flex justify-content-between">
                         <div class="rating"> 
-                            <input type="radio" name="rating" value="5" id="5"><label for="5">☆</label>
-                            <input type="radio" name="rating" value="4" id="4"><label for="4">☆</label> 
-                            <input type="radio" name="rating" value="3" id="3"><label for="3">☆</label>
-                            <input type="radio" name="rating" value="2" id="2"><label for="2">☆</label>
-                            <input type="radio" name="rating" value="1" id="1"><label for="1">☆</label>
+                            <input type="radio" name="rating" value="5" id="5"><label for="5">♡</label>
                         </div>
                     </div>
                     <input type="checkbox" id="check">
