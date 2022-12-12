@@ -8,8 +8,10 @@
 <section class="py-5 text-center container">
     <div >
         <form class="d-flex" method="GET">
-          <input class="form-control me-1" type="search" placeholder="Search" aria-label="Search" name="q">
-          <button class="btn btn-custom-primary" type="submit">Search</button>
+          <input class="form-control me-1" type="search" placeholder="輸入電影關鍵字" aria-label="Search" name="q">
+          <button class="btn btn-custom-primary text-nowrap" type="submit">
+            搜尋 <i class="fa fa-search" aria-hidden="true"></i>
+          </button>
         </form>
   
       </div>
@@ -22,13 +24,15 @@
             
             <div class="col">
                 <div class="card shadow-sm">
-                  <img src="{{ movie.image.url }}">
+                  <img style="height:300px;" src="{{ movie.image.url }}">
                   <div class="card-body">
                       <h4><p class="card-text"><a href="{% url 'movie:detail' movie.id %} " class="text-dark stretched-link"style="text-decoration: none">{{ movie.name }}</a></p></h4>
+                      <h5><p class="card-text">上映日:  {{movie.date_released}}</p></h5>
                   </div>
                 </div>
             </div>
         {% empty %}
+        
             <tr><td colspan="6">查無此電影</td></tr>
         {% endfor %}
        

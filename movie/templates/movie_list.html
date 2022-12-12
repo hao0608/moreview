@@ -2,23 +2,105 @@
 
 {% block content %}
 <div class="content-pad-top container px-4 px-lg-5">
-
-    <section class="py-5 text-center container">
+         <!-- <h1>電影清單(管理者)</h1>
+        <form action="{% url 'movie:create' %}"  >
+            <button type="submit" class="btn btn-warning">新增</button>
+        </form> -->
+        <div class="row justify-content-between">
+            <div class="col-8 col-sm-8">
+                <h1>電影清單(管理者)</h1>
+            </div>
+            <div class="col-3 col-sm-2">
+                <form action="{% url 'movie:create' %}"  style="text-align: right;">
+                    <button type="submit" class="btn btn-warning">新增 <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                </form>
+            </div>
+          </div>
+     <section class="py-5 text-center container">
         <div >
             <form class="d-flex" method="GET">
-              <input class="form-control me-1" type="search" placeholder="Search" aria-label="Search" name="q">
-              <button class="btn btn-custom-primary" type="submit">Search</button>
+              <input class="form-control me-1" type="search" placeholder="輸入電影關鍵字" aria-label="Search" name="q">
+              <button class="btn btn-custom-primary text-nowrap" type="submit">
+                搜尋 <i class="fa fa-search" aria-hidden="true"></i>
+
+              </button>
             </form>
       
           </div>
       </section>
       
-    <form action="{% url 'movie:create' %}" style="text-align: right;">
-        <button type="submit" class="btn btn-warning">新增</button>
-    </form>
-    {% for movie in object_list %}
+
+     <table class="table" >
+        <thead class="text-center">
+          <tr >
+            <th scope="col">電影流水號</th>
+            <th scope="col">電影名稱</th>
+            <th scope="col">新增時間</th>
+            <th scope="col">更新時間</th>
+            <th scope="col">修改</th>
+            <th scope="col">刪除</th>
+
+          </tr>
+        </thead>
+        <tbody class="text-center">
+            {% for movie in object_list %}
+                <tr>
+                    <th scope="row">{{movie.id}}</th>
+                    <td>{{movie.name}}</td>
+                    <td>{{movie.date_created}}</td>
+                    <td>{{movie.date_updated}}</td>
+                    <td>
+                        <form action="{% url 'movie:edit' movie.id %}">
+                            <button type="submit" class="btn btn-secondary">修改</button>
+                        </form>
+                    </td>
+                    <td>
+                        <!-- <form method="POST" action="{% url 'movie:delete' movie.id %}">{% csrf_token %}
+                            <button type="submit" class="btn btn-danger">刪除</button>
+                        </form> -->
+                        
+
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                            刪除
+                        </button>
+                        
+                        <!-- Modal -->
+                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">確認刪除{{movie.name}}?</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+ 
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">取消</button>
+                                <form method="POST" action="{% url 'movie:delete' movie.id %}">{% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">刪除</button>
+                                </form>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+
+                    </td>
+                </tr>
+
+                {% empty %}
+        
+                <tr><td colspan="6">查無此電影</td></tr>
+            {% endfor %}
+ 
+        </tbody>
+      </table>
+
+    <!-- {% for movie in object_list %}
         <div>
             {{movie.name}}
+            <p>電影新增時間: {{movie.date_created}}</p>
+            <p>電影更新時間: {{movie.date_updated}}</p>
             <form action="{% url 'movie:edit' movie.id %}">
                 <button type="submit" class="btn btn-warning">修改</button>
             </form>
