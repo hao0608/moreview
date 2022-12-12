@@ -672,6 +672,12 @@ class UserStatusUpdateViewTest(TestCase):
     def test_url_is_correct(self):
         self.assertEqual('/users/1/status', reverse('users:toggle-status', kwargs={'pk': 1}))
 
+    def test_model_is_correct(self):
+        self.assertEqual(User, self.view.model)
+
+    def test_fields_are_correct(self):
+        self.assertEqual([], self.view.fields)
+
     def test_unauthenticated_user_redirects_to_login(self):
         response = self.client.post(reverse('users:toggle-status', kwargs={'pk': self.user.pk}))
 
