@@ -1,9 +1,16 @@
-# from django.shortcuts import render
+from django.contrib.auth import login
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
-from django.views.generic.edit import FormView
+from django.shortcuts import redirect
+from django.urls.base import reverse_lazy
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import FormView, CreateView
+from django.views.generic.list import ListView
+
 from moreview import settings
-from .forms import RegisterForm, ProfileForm
-from django.contrib.auth import login, authenticate
+from .forms import RegisterForm, AdminCreateForm
+from .models import User
 
 
 # Create your views here.
@@ -33,6 +40,41 @@ class UserLogoutView(LogoutView):
     def get_redirect_url(self):
         return ""
 
-class UserProfileView(FormView):
+
+class UserListView(UserPassesTestMixin, ListView):
+    template_name = "user_list.html"
+    model = User
+    login_url = reverse_lazy("users:login")
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+
+class UserProfileView(LoginRequiredMixin, DetailView):
     template_name = "profile.html"
-    form_class = ProfileForm
+    model = User
+    login_url = reverse_lazy("users:login")
+
+    def get(self, request, *args, **kwargs):
+        if self.kwargs.get(self.pk_url_kwarg, "") == "":
+            self.kwargs.update({"pk": request.user.pk})
+        elif not request.user.is_superuser:
+            return redirect(reverse_lazy("users:profile"))
+
+        return super().get(request, *args, **kwargs)
+
+
+class AdminCreateView(UserPassesTestMixin, CreateView):
+    template_name_suffix = "_create_form"
+    model = User
+    form_class = AdminCreateForm
+    success_url = reverse_lazy("users:list")
+    login_url = reverse_lazy("users:login")
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def form_valid(self, form):
+        form.instance.password = make_password(form.instance.password)
+        form.instance.is_superuser = True
+        return super().form_valid(form)

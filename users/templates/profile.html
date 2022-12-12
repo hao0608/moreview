@@ -14,8 +14,9 @@
 	</div>
 	<div class="row gx-4 gx-lg-5 justify-content-center pt-3">
                 <div class="col-md-10 col-lg-8 col-xl-7">
-                        <form action="{% url 'users:profile' %}" enctype="multipart/form-data" method="POST">
+                        <form action="{% url 'users:profile' %}" method="get">
                                 {% csrf_token %}
+
 				<div class="mb-3 row">
                                         <label class="col-sm-3 col-form-label">{{ form.username.label }}</label>
                                         <div class="col-sm-9">
@@ -56,7 +57,7 @@
 				</div>
 				<div class="container text-center">
 					<button class="btn btn-success" type="submit">儲存</button>
-					<button class="btn btn-success"  type="button"  data-bs-toggle="modal" data-bs-target="#disabledAcc">停用帳號</button>
+					<button class="btn btn-danger"  type="button"  data-bs-toggle="modal" data-bs-target="#disabledAcc">停用帳號</button>
 				</div>
                         </form>
 			<!-- Modal -->
@@ -72,7 +73,9 @@
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-							<button type="button" class="btn btn-success">確認</button>
+							<form method="post" action="">
+							<button type="submit" class="btn btn-success">確認</button>
+							</form>
 						</div>
 					</div>
 				</div>
