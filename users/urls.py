@@ -16,4 +16,5 @@ urlpatterns = [
     path(
         "reset-password", views.UserResetPasswordView.as_view(), name="reset-password"
     ),
+    path('users/<int:pk>/status', views.UserStatusUpdateView.as_view(), name="toggle-status")
 ]
