@@ -19,3 +19,7 @@ class UserFactory(BaseFactory):
     def is_superuser(self):
         self.data.update({"is_superuser": True})
         return self
+
+    def inactive(self):
+        self.data.update({"is_active": True})
+        return self

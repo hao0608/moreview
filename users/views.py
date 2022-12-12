@@ -1,15 +1,17 @@
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import PasswordChangeView
 from django.shortcuts import redirect
-from django.urls.base import reverse_lazy
+from django.urls.base import reverse, reverse_lazy
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormView, CreateView
+from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.views.generic.list import ListView
 
 from moreview import settings
-from .forms import RegisterForm, AdminCreateForm
+from .forms import RegisterForm, ProfileUpdateForm, AdminCreateForm
 from .models import User
 
 
@@ -63,6 +65,45 @@ class UserProfileView(LoginRequiredMixin, DetailView):
 
         return super().get(request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["profile_update-form"] = (
+            ProfileUpdateForm(data=self.request.session.get("profile_update-form"))
+            if self.request.session.get("profile_update-form")
+            else ProfileUpdateForm(instance=self.object)
+        )
+        context["reset_password_form"] = (
+            PasswordChangeForm(
+                user=self.request.user,
+                data=self.request.session.get("reset_password_form"),
+            )
+            if self.request.session.get("reset_password_form")
+            else PasswordChangeForm(user=self.request.user)
+        )
+        return context
+
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = ProfileUpdateForm
+    success_url = reverse_lazy("users:profile")
+    login_url = reverse_lazy("users:login")
+
+    def get(self, request, *args, **kwargs):
+        return redirect(reverse("users:profile"))
+
+    def post(self, request, *args, **kwargs):
+        self.kwargs.update({"pk": request.user.pk})
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        self.request.session["profile-update-form"] = None
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        self.request.session["profile-update-form"] = form.data
+        return redirect(reverse("users:profile"))
+
 
 class AdminCreateView(UserPassesTestMixin, CreateView):
     template_name_suffix = "_create_form"
@@ -78,3 +119,41 @@ class AdminCreateView(UserPassesTestMixin, CreateView):
         form.instance.password = make_password(form.instance.password)
         form.instance.is_superuser = True
         return super().form_valid(form)
+
+
+class UserDeleteView(LoginRequiredMixin, UpdateView):
+    model = User
+    fields = []
+    success_url = reverse_lazy("movie:list")
+    login_url = reverse_lazy("users:login")
+
+    def get(self, request, *args, **kwargs):
+        return redirect(reverse("users:profile"))
+
+    def post(self, request, *args, **kwargs):
+        self.kwargs.update({"pk": request.user.pk})
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.instance.is_active = False
+        logout(self.request)
+        return super().form_valid(form)
+
+
+class UserResetPasswordView(PasswordChangeView):
+    success_url = reverse_lazy("users:profile")
+
+    def get(self, request, *args, **kwargs):
+        return redirect(reverse("users:profile"))
+
+    def post(self, request, *args, **kwargs):
+        self.kwargs.update({"pk": request.user.pk})
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        self.request.session["reset-password-form"] = None
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        self.request.session["reset-password-form"] = form.data
+        return redirect(f"{reverse('users:profile')}#reset-password")

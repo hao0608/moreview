@@ -14,13 +14,13 @@
 	</div>
 	<div class="row gx-4 gx-lg-5 justify-content-center pt-3">
                 <div class="col-md-10 col-lg-8 col-xl-7">
-                        <form action="{% url 'users:profile' %}" method="get">
+                        <form action="{% url 'users:edit-profile' %}" method="post">
                                 {% csrf_token %}
-
+				{{ profile-update-form|crispy }}
 				<div class="mb-3 row">
-                                        <label class="col-sm-3 col-form-label">{{ form.username.label }}</label>
+                                        <label class="col-sm-3 col-form-label">使用者姓名</label>
                                         <div class="col-sm-9">
-						{{ form.username }} <!-- readonly -->
+						{{ request.user.username }} <!-- readonly -->
                                         </div>
                                 </div>
 
@@ -87,25 +87,26 @@
                                                         <h1 class="modal-title fs-5" id="resetPwdLabel">重設密碼</h1>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
-                                                <form method="post" action="{% url 'users:profile' %}">
+                                                <form method="post" action="{% url 'users:reset-password' %}">
                                                 	<div class="modal-body">
                                                         {% csrf_token %}
+							{{ reset_password_form|crispy }}
 							<div class="mb-3 row">
-                                        		<label class="col-sm-3 col-form-label">原{{ form.password.label }}</label>
+                                        		<label class="col-sm-3 col-form-label">原密碼</label>
                                         		<div class="col-sm-9">
-                                                		{{ form.first_name }}
+								<input type="password">
                                         		</div>
                                 			</div>
 							<div class="mb-3 row">
-                                                        <label class="col-sm-3 col-form-label">新{{ form.password.label }}</label>
+                                                        <label class="col-sm-3 col-form-label">新密碼</label>
                                                         <div class="col-sm-9">
-                                                                {{ form.first_name }}
+                                                                <input type="password">
                                                         </div>
                                                         </div>
 							<div class="mb-3 row">
-                                                        <label class="col-sm-3 col-form-label">再次輸入{{ form.password.label }}</label>
+                                                        <label class="col-sm-3 col-form-label">再次輸入新密碼</label>
                                                         <div class="col-sm-9">
-                                                                {{ form.first_name }}
+                                                                <input type="password">
                                                         </div>
                                                         </div>
 

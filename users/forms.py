@@ -35,6 +35,16 @@ class RegisterForm(forms.ModelForm):
         return cleaned_data
 
 
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = [
+            "first_name",
+            "last_name",
+            "email",
+        ]
+
+
 class AdminCreateForm(forms.ModelForm):
     password = forms.CharField(
         label=_("password"), widget=forms.PasswordInput(), max_length=128
