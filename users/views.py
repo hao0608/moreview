@@ -67,12 +67,12 @@ class UserProfileView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["profile-update-form"] = (
+        context["profile_update_form"] = (
             ProfileUpdateForm(data=self.request.session.get("profile-update-form"))
             if self.request.session.get("profile-update-form")
             else ProfileUpdateForm(instance=self.object)
         )
-        context["reset-password-form"] = (
+        context["reset_password_form"] = (
             PasswordChangeForm(
                 user=self.request.user,
                 data=self.request.session.get("reset-password-form"),
