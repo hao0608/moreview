@@ -140,8 +140,9 @@ class UserDeleteView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class UserResetPasswordView(PasswordChangeView):
+class UserResetPasswordView(LoginRequiredMixin, PasswordChangeView):
     success_url = reverse_lazy("users:profile")
+    login_url = reverse_lazy('users:login')
 
     def get(self, request, *args, **kwargs):
         return redirect(reverse("users:profile"))
