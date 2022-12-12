@@ -9,7 +9,7 @@ from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.views.generic.list import ListView
 
 from moreview import settings
-from .forms import RegisterForm, AdminCreateForm
+from .forms import RegisterForm, ProfileUpdateForm, AdminCreateForm
 from .models import User
 
 
@@ -62,6 +62,37 @@ class UserProfileView(LoginRequiredMixin, DetailView):
             return redirect(reverse_lazy("users:profile"))
 
         return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = (
+            ProfileUpdateForm(data=self.request.session.get("profile-update-form"))
+            if self.request.session.get("profile-update-form")
+            else ProfileUpdateForm(instance=self.object)
+        )
+        return context
+
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = ProfileUpdateForm
+    success_url = reverse_lazy("users:profile")
+    login_url = reverse_lazy("users:login")
+
+    def get(self, request, *args, **kwargs):
+        return redirect(reverse("users:profile"))
+
+    def post(self, request, *args, **kwargs):
+        self.kwargs.update({"pk": request.user.pk})
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        self.request.session["profile-update-form"] = None
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        self.request.session["profile-update-form"] = form.data
+        return redirect(reverse("users:profile"))
 
 
 class AdminCreateView(UserPassesTestMixin, CreateView):
