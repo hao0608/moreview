@@ -4,7 +4,6 @@ from django.utils.translation import gettext as _
 
 from .models import User
 
-
 class RegisterForm(forms.ModelForm):
     password = forms.CharField(
         label=_("password"),

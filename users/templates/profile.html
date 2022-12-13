@@ -3,6 +3,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+{% load crispy_forms_tags %}
+
 <div class="content-pad-top container px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7">
@@ -11,42 +14,17 @@
 	</div>
 	<div class="row gx-4 gx-lg-5 justify-content-center pt-3">
                 <div class="col-md-10 col-lg-8 col-xl-7">
-                        <form action="" enctype="multipart/form-data" method="POST">
+                        <form action="{% url 'users:edit-profile' %}" method="post">
                                 {% csrf_token %}
-				<div class="mb-3 row">
-                                        <label class="col-sm-2 col-form-label">用戶ID{{ form.id.label }}</label>
-                                        <div class="col-sm-10">
-						 <input class="form-control" type="text" value="aaa12459780" disabled readonly>
-						{{ form.id }} <!-- readonly -->
-                                        </div>
+				<div class="mb-3">
+                                        <label class="col-form-label">使用者姓名</label>
+					<p>{{ request.user.username }}</p>
                                 </div>
-
-                                <div class="mb-3 row">
-                                        <label class="col-sm-2 col-form-label">暱稱{{ form.username.label }}</label>
-                                        <div class="col-sm-10">
-						<input class="form-control" type="text" value="王大明">
-                                                {{ form.username }}
-                                        </div>
-                                </div>
-				<!-- 有要顯示信箱嗎？要能改嗎？  -->
-                                <div class="mb-3 row">
-                                        <label class="col-sm-2 col-form-label">信箱{{ form.email.label }}</label>
-                                        <div class="col-sm-10">
-						<input class="form-control" type="text" value="aaa@example.com" disabled readonly>
-                                                {{ form.email }}
-                                        </div>
-                                </div>
-				<!-- 有要另外做更改密碼的按鈕嗎？還是不用？  -->
-                                <div class="mb-3 row">
-                                        <label class="col-sm-2 col-form-label">密碼{{ form.password.label }}</label>
-                                        <div class="col-sm-10">
-						<input class="form-control" type="password" value="helloMing">
-                                                {{ form.password }}
-                                        </div>
-                                </div>
+				{{ profile_update_form|crispy }}
 				<div class="container text-center">
+					 <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#resetPwd">重設密碼</button>
 					<button class="btn btn-success" type="submit">儲存</button>
-					<button class="btn btn-success"  type="button"  data-bs-toggle="modal" data-bs-target="#disabledAcc">停用帳號</button>
+					<button class="btn btn-danger"  type="button"  data-bs-toggle="modal" data-bs-target="#disabledAcc">停用帳號</button>
 				</div>
                         </form>
 			<!-- Modal -->
@@ -62,12 +40,35 @@
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-							<button type="button" class="btn btn-success">確認</button>
+							<form method="post" action="{% url 'users:delete' %}">
+							{% csrf_token %}
+							<button type="submit" class="btn btn-success">確認</button>
+							</form>
 						</div>
 					</div>
 				</div>
 			</div>
+			<div class="modal fade" id="resetPwd" tabindex="-1" aria-labelledby="resetPwdLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                                <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="resetPwdLabel">重設密碼</h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <form method="post" action="{% url 'users:reset-password' %}">
+                                                	<div class="modal-body">
+                                                        {% csrf_token %}
+							{{ reset_password_form|crispy }}
 
+                                                	</div>
+                                                <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                                                        <button type="submit" class="btn btn-success">確認</button>
+                                                </div>
+						</form>
+                                        </div>
+                                </div>
+                        </div>
 
                 </div>
         </div>
