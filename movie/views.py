@@ -28,6 +28,9 @@ class MovieListView(ListView):
     model = Movie
     home_template_name = "homepage.html"
     manage_template_name = "movie_list.html"
+    queryset = Movie.objects.filter(image__contains="movies/").order_by(
+        "-date_released"
+    )
 
     def get_template_names(self, *args, **kwargs):
         if self.request.path == reverse("movie:list"):
@@ -41,16 +44,19 @@ class MovieListView(ListView):
         if self.request.path == reverse("movie:list"):
             # 取得request
             query = self.request.GET.get("q")
+            order = self.request.GET.get("order")
+            order_query = "-date_released"
             movie_obj = None
+            if order == "Asc":
+                order_query = "date_released"
+
             if query is not None:  # 搜尋
-                query = "%" + query + "%"
-                movie_obj = Movie.objects.raw(
-                    "SELECT * FROM movie_movie WHERE name LIKE %s AND image LIKE %s",
-                    [query, "movies/%"],
-                )
+                movie_obj = Movie.objects.filter(
+                    name__contains=query, image__contains="movies/"
+                ).order_by(order_query)
             else:  # 沒有搜尋
-                movie_obj = Movie.objects.raw(
-                    "SELECT * FROM movie_movie WHERE image LIKE %s ", ["movies/%"]
+                movie_obj = Movie.objects.filter(image__contains="movies/").order_by(
+                    order_query
                 )
             context["object_list"] = movie_obj
             return context
@@ -59,11 +65,7 @@ class MovieListView(ListView):
             query = self.request.GET.get("q")
             movie_obj = None
             if query is not None:  # 搜尋
-                query = "%" + query + "%"
-                movie_obj = Movie.objects.raw(
-                    "SELECT * FROM movie_movie WHERE name LIKE %s AND image LIKE %s",
-                    [query, "movies/%"],
-                )
+                movie_obj = Movie.objects.filter(name__contains=query)
             else:  # 沒有搜尋
                 movie_obj = Movie.objects.all()
             context["object_list"] = movie_obj
@@ -78,6 +80,7 @@ class MovieEditView(UpdateView):
 
 class MovieDeleteView(DeleteView):
     model = Movie
+    success_url = "/movies"
 
     def get_success_url(self):
         return reverse("movie:manage-list")

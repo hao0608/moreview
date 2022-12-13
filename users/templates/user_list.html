@@ -2,7 +2,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
+			
 <div class="content-pad-top container px-4 px-lg-5">
 	<div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7">
@@ -21,25 +21,79 @@
 					</button>
 				</div>
 			</div>
-			{% include 'users/user_create_form.html' %}
+			{% include 'user_create_form.html' %}
 			<div class="mb-3 row">
-				<ul class="list-group list-group-flush">
-				{% for user in users  %}
-					{% if user.is_staff %}
-						<li class="list-group-item">
-
-						{{ user.username }}
-					
-						</li>
-					{% endif %}
-                                {% endfor %}
-  				<li class="list-group-item">An item</li>
-  				<li class="list-group-item">A second item</li>
-  				<li class="list-group-item">A third item</li>
-  				<li class="list-group-item">A fourth item</li>
-  				<li class="list-group-item">And a fifth one</li>
-				</ul>
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th scope="col">使用者名稱</th>
+							<th scope="col">姓名</th>
+							<th scope="col">電子信箱</th>
+							<th scope="col">狀態</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% for user in object_list  %}
+						{% if user.is_superuser %}
+							<tr>
+								<td>{{ user.username }}</td>
+								<td>{{ user.last_name }}{{user.first_name}}</td>
+								<td>{{ user.email }}</td>
+								<form method="post" action="{% url 'users:toggle-status' pk=user.pk %}">
+									{% csrf_token %}
+									<td><button class="btn btn-link" type="submit">{% if user.is_active %}
+									<span class="badge rounded-pill bg-success">Active</span>{% endif %}
+									{% if not user.is_active %}
+									<span class="badge rounded-pill bg-danger">Disable</span>{% endif %}
+									</button></td>
+								</form>
+							</tr>
+						{% endif %}
+                                	{% endfor %}
+					</tbody>
+				</table>
 			</div>
+		</div>
+	</div>
+	<div class="row gx-4 gx-lg-5 justify-content-center pt-3">
+		<div class="col-md-10 col-lg-8 col-xl-7 shadow-sm">
+                        <div class="mb-3 row justify-content-between border-bottom border-secondary">
+                                <div class="col-auto me-auto">
+                                        <p class="fs-2">使用者</p>
+                                </div>
+                        </div>
+			<div class="mb-3 row">
+                                <table class="table table-hover">
+                                        <thead>
+                                                <tr>
+                                                        <th scope="col">使用者名稱</th>
+							 <th scope="col">姓名</th>
+                                                        <th scope="col">電子信箱</th>
+                                                        <th scope="col">狀態</th>
+                                                </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for user in object_list  %}
+                                                {% if not user.is_superuser %}
+                                                        <tr>
+                                                                <td>{{ user.username }}</td>
+								<td>{{ user.last_name }}{{user.first_name}}</td>
+                                                                <td>{{ user.email }}</td>
+								<form method="post" action="{% url 'users:toggle-status' pk=user.pk %}">
+									{% csrf_token %}
+                                                                        <td><button class="btn btn-link" type="submit">
+                                                                {% if user.is_active %}
+                                                                        <span class="badge rounded-pill bg-success">Active</span>{% endif %}
+									{% if not user.is_active %}
+                                                                        <span class="badge rounded-pill bg-danger">Disable</span>{% endif %}
+									</button></td>
+								</form>
+                                                        </tr>
+                                                {% endif %}
+                                        {% endfor %}
+                                        </tbody>
+                                </table>
+                        </div>
 		</div>
 	</div>
 </div>

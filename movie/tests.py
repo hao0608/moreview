@@ -2,10 +2,10 @@ import time
 
 from django.test import Client, RequestFactory, TestCase
 from django.urls import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from faker import Faker
-import datetime
-from movie.models import Movie
+from movie.models import Movie, Tag
 from movie.factories import MovieFactory, TagFactory
 from movie.views import *
 
@@ -14,30 +14,41 @@ from movie.views import *
 class MovieModelTest(TestCase):
     faker = Faker()
 
-    def test_date_updated_field_updates_when_record_updates(self):
-        movie = MovieFactory().create()
-        tag = TagFactory().create()
+    def setUp(self):
+        self.tag = Tag.objects.create(name="test")
+        self.movie = Movie.objects.create(
+            tag_id=self.tag,
+            name="test",
+            content="test content",
+            official_site="test url",
+            time=120,
+            image="test.jpg",
+            grade="普遍級",
+            date_released="2022-12-12",
+        )
 
-        movie.time = self.faker.random_int(100, 200)
+    def test_date_updated_field_updates_when_record_updates(self):
+        self.movie.name = self.faker.name()
         time.sleep(1)
-        movie.save()
+        self.movie.save()
 
         self.assertNotEqual(
-            movie.date_created.strftime("%Y-%m-%d %H:%M:%S"),
-            movie.date_updated.strftime("%Y-%m-%d %H:%M:%S"),
+            self.movie.date_created.strftime("%Y-%m-%d %H:%M:%S"),
+            self.movie.date_updated.strftime("%Y-%m-%d %H:%M:%S"),
         )
 
 
 class MovieCreateViewTest(TestCase):
-    view = MovieCreateView()
-    client = Client()
+    def setUp(self) -> None:
+        self.view = MovieCreateView()
+        self.client = Client()
 
     def test_template_is_correct(self):
         self.assertEqual("movie_create_form.html", self.view.template_name)
 
     def test_movie_create_page_can_render(self):
         response = self.client.get(reverse("movie:create"))
-        self.assertIs(200, response.status_code)
+        self.assertEqual(200, response.status_code)
 
     def test_form_contains_correct_fields(self):
         self.assertEqual(
@@ -78,5 +89,78 @@ class MovieDetailViewTest(TestCase):
     view = MovieDetailView()
     client = Client()
 
+    def setUp(self):
+        self.tag = Tag.objects.create(name="test")
+        self.movie = Movie.objects.create(
+            tag_id=self.tag,
+            name="test",
+            content="test content",
+            official_site="test url",
+            time=120,
+            image="test.jpg",
+            grade="普遍級",
+            date_released="2022-12-12",
+        )
+
     def test_template_is_correct(self):
         self.assertEqual("movie_detail.html", self.view.template_name)
+
+    def test_detail_page_can_render(self):
+        response = self.client.get(
+            reverse("movie:detail", kwargs={"pk": self.movie.pk})
+        )
+        self.assertEqual(200, response.status_code)
+
+
+class MovieDeleteViewTest(TestCase):
+    client = Client()
+    view = MovieDeleteView
+
+    def setUp(self) -> None:
+        self.tag = Tag.objects.create(name="test")
+        self.movie = Movie.objects.create(
+            tag_id=self.tag,
+            name="delete test",
+            content="test content",
+            official_site="test url",
+            time=120,
+            image="test.jpg",
+            grade="普遍級",
+            date_released="2022-12-12",
+        )
+
+    def test_success_url_is_correct(self):
+        self.assertEqual(reverse("movie:manage-list"), self.view.success_url)
+
+    def test_delete_can_work(self):
+        response = self.client.post(
+            reverse("movie:delete", kwargs={"pk": self.movie.id})
+        )
+
+        self.assertRedirects(response, expected_url=reverse("movie:manage-list"))
+        self.assertEqual(0, Movie.objects.filter(name="delete test").count())
+
+
+class MovieEditViewTest(TestCase):
+    client = Client()
+    view = MovieEditView
+
+    def setUp(self) -> None:
+        self.tag = Tag.objects.create(name="test")
+        self.movie = Movie.objects.create(
+            tag_id=self.tag,
+            name="test",
+            content="test content",
+            official_site="test url",
+            time=120,
+            image="test.jpg",
+            grade="普遍級",
+            date_released="2022-12-12",
+        )
+
+    def test_template_is_correct(self):
+        self.assertEqual("movie_edit_form.html", self.view.template_name)
+
+    def test_detail_page_can_render(self):
+        response = self.client.get(reverse("movie:edit", kwargs={"pk": self.movie.pk}))
+        self.assertEqual(200, response.status_code)
