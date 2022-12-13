@@ -47,12 +47,14 @@ class MovieListView(ListView):
             movie_obj = None
             if order == 'Asc' :
                 order_query = 'date_released'
+  
 
             if query is not None:  # 搜尋
                 movie_obj = Movie.objects.filter(name__contains=query, image__contains="movies/").order_by(order_query)
             else:  # 沒有搜尋
                 movie_obj = Movie.objects.filter(image__contains="movies/").order_by(order_query)
             context["object_list"] = movie_obj
+            context["order"]=order
             return context
         else:
             # 取得request
