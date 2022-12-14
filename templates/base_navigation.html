@@ -12,37 +12,39 @@
 
             {% url 'users:login' as login_url %}
             {% if not request.user.is_authenticated and login_url != request.path %}
-                <a class="btn btn-outline-dark" href="{% url 'users:login' %}">{% trans "login" %}</a>
+                <a class="btn btn-outline-dark text-capitalize" href="{% url 'users:login' %}">{% trans "login" %}</a>
             {% endif %}
         </div>
 
         <div class="collapse navbar-collapse flex-fill" id="navbarResponsive">
             <ul class="navbar-nav w-100 py-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'movie:list' %}">{% trans "homepage" %}</a>
+                    <a class="nav-link text-capitalize px-lg-3 py-3 py-lg-4"
+                       href="{% url 'movie:list' %}">{% trans "homepage" %}</a>
                 </li>
                 {% if request.user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link px-lg-3 py-3 py-lg-4"
+                        <a class="nav-link text-capitalize px-lg-3 py-3 py-lg-4"
                            href="{% url 'users:profile' %}">{% trans "profile" %}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-lg-3 py-3 py-lg-4" href="#">{% trans "report list" %}</a>
+                        <a class="nav-link text-capitalize px-lg-3 py-3 py-lg-4" href="#">{% trans "report list" %}</a>
                     </li>
                     {% if request.user.is_superuser %}
                         <li class="nav-item">
-                            <a class="nav-link px-lg-3 py-3 py-lg-4"
+                            <a class="nav-link text-capitalize px-lg-3 py-3 py-lg-4"
                                href="{% url 'users:list' %}">{% trans "user list" %}"}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link px-lg-3 py-3 py-lg-4"
+                            <a class="nav-link text-capitalize px-lg-3 py-3 py-lg-4"
                                href="{% url 'movie:manage-list' %}">{% trans 'movie list' %}</a>
                         </li>
                     {% endif %}
                     <li class="nav-item">
                         <form method="post" action="{% url 'users:logout' %}">
                             {% csrf_token %}
-                            <button class="nav-link bg-transparent border-0 px-lg-3 py-3 py-lg-4" type="submit">
+                            <button class="nav-link text-capitalize bg-transparent border-0 px-lg-3 py-3 py-lg-4"
+                                    type="submit">
                                 {% trans 'logout' %}
                             </button>
                         </form>

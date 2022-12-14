@@ -14,7 +14,10 @@
 
                     <div class="mt-4 d-flex justify-content-center  align-items-center gap-2">
                         <button class="btn btn-custom-primary" type="submit">{% trans 'login' %}</button>
-                        <a type="button" class="text-muted" href="{% url 'users:register' %}">{% trans 'register' %}</a>
+                        <a type="button" class="text-muted text-capitalize"
+                           href="{% url 'users:register' %}">
+                            {% trans 'register' %}
+                        </a>
                     </div>
                 </form>
             </div>
