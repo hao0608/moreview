@@ -1,101 +1,105 @@
-<!--list  user accounts -->
+<!--list user accounts -->
 {% extends 'base.html' %}
 
 {% block content %}
-			
-<div class="content-pad-top container px-4 px-lg-5">
-	<div class="row gx-4 gx-lg-5 justify-content-center">
-                <div class="col-md-10 col-lg-8 col-xl-7">
-			<h1 class="text-center">帳號列表</h1>
-		</div>
-	</div>
-        <div class="row gx-4 gx-lg-5 justify-content-center pt-3">
-                <div class="col-md-10 col-lg-8 col-xl-7 shadow-sm">
-			<div class="mb-3 row justify-content-between border-bottom border-secondary">
-				<div class="col-auto me-auto">
-					<p class="fs-2">管理員</p>
-				</div>
-				<div class="col-auto">
-					<button class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#create_admin_form" aria-expanded="false" aria-controls="create_admin_form">
-						<i class="fa-solid fa-user-plus"></i>
-					</button>
-				</div>
-			</div>
-			{% include 'user_create_form.html' %}
-			<div class="mb-3 row">
-				<table class="table table-hover">
-					<thead>
-						<tr>
-							<th scope="col">使用者名稱</th>
-							<th scope="col">姓名</th>
-							<th scope="col">電子信箱</th>
-							<th scope="col">狀態</th>
-						</tr>
-					</thead>
-					<tbody>
-					{% for user in object_list  %}
-						{% if user.is_superuser %}
-							<tr>
-								<td>{{ user.username }}</td>
-								<td>{{ user.last_name }}{{user.first_name}}</td>
-								<td>{{ user.email }}</td>
-								<form method="post" action="{% url 'users:toggle-status' pk=user.pk %}">
-									{% csrf_token %}
-									<td><button class="btn btn-link" type="submit">{% if user.is_active %}
-									<span class="badge rounded-pill bg-success">Active</span>{% endif %}
-									{% if not user.is_active %}
-									<span class="badge rounded-pill bg-danger">Disable</span>{% endif %}
-									</button></td>
-								</form>
-							</tr>
-						{% endif %}
-                                	{% endfor %}
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-	<div class="row gx-4 gx-lg-5 justify-content-center pt-3">
-		<div class="col-md-10 col-lg-8 col-xl-7 shadow-sm">
-                        <div class="mb-3 row justify-content-between border-bottom border-secondary">
-                                <div class="col-auto me-auto">
-                                        <p class="fs-2">使用者</p>
-                                </div>
-                        </div>
-			<div class="mb-3 row">
-                                <table class="table table-hover">
-                                        <thead>
-                                                <tr>
-                                                        <th scope="col">使用者名稱</th>
-							 <th scope="col">姓名</th>
-                                                        <th scope="col">電子信箱</th>
-                                                        <th scope="col">狀態</th>
-                                                </tr>
-                                        </thead>
-                                        <tbody>
-                                        {% for user in object_list  %}
-                                                {% if not user.is_superuser %}
-                                                        <tr>
-                                                                <td>{{ user.username }}</td>
-								<td>{{ user.last_name }}{{user.first_name}}</td>
-                                                                <td>{{ user.email }}</td>
-								<form method="post" action="{% url 'users:toggle-status' pk=user.pk %}">
-									{% csrf_token %}
-                                                                        <td><button class="btn btn-link" type="submit">
-                                                                {% if user.is_active %}
-                                                                        <span class="badge rounded-pill bg-success">Active</span>{% endif %}
-									{% if not user.is_active %}
-                                                                        <span class="badge rounded-pill bg-danger">Disable</span>{% endif %}
-									</button></td>
-								</form>
-                                                        </tr>
-                                                {% endif %}
-                                        {% endfor %}
-                                        </tbody>
-                                </table>
-                        </div>
-		</div>
-	</div>
-</div>
+    {% load i18n crispy_forms_tags %}
 
-{% endblock  %}
+    <div class="d-block mt-2 container px-2">
+        <h1 class="text-center text-capitalize">{% trans 'user list' %}</h1>
+
+        <div class="mb-2 d-flex justify-content-between">
+            <p class="fs-2 mb-0 text-capitalize">{% trans 'admin' %}</p>
+
+            <button class="btn btn-custom-primary text-capitalize" data-bs-toggle="collapse"
+                    data-bs-target="#create_admin_form"
+                    aria-expanded="false" aria-controls="create_admin_form">
+                <i class="fa-solid fa-user-plus"></i> {% trans 'create admin' %}
+            </button>
+        </div>
+
+        <div class="collapse mb-2" id="create_admin_form">
+            <form action="{% url 'users:create' %}" method="POST">
+                {% csrf_token %}
+                {{ form|crispy }}
+
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-custom-primary text-capitalize" type="submit">{% trans 'create' %}</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="table-responsive overflow-hidden">
+            <table class="table table-hover align-middle mb-4">
+                <thead>
+                <tr>
+                    <th scope="col" class="text-capitalize">{% trans 'username' %}</th>
+                    <th scope="col" class="text-capitalize">{% trans 'full name' %}</th>
+                    <th scope="col" class="text-capitalize">{% trans 'email address' %}</th>
+                    <th scope="col" class="text-capitalize">{% trans 'status' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for user in object_list %}
+                    {% if user.is_superuser %}
+                        <tr>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.get_full_name }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                <form method="post" action="{% url 'users:toggle-status' pk=user.pk %}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-link" type="submit">
+                                        {% if user.is_active %}
+                                            <span class="badge rounded-pill bg-custom-primary text-capitalize">{% trans 'active' %}</span>
+                                        {% else %}
+                                            <span class="badge rounded-pill bg-danger text-capitalize">{% trans 'disable' %}</span>
+                                        {% endif %}
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <p class="mb-2 fs-2" class="text-capitalize">{% trans 'user' %}</p>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                <tr>
+                    <th scope="col" class="text-capitalize">{% trans 'username' %}</th>
+                    <th scope="col" class="text-capitalize">{% trans 'full name' %}</th>
+                    <th scope="col" class="text-capitalize">{% trans 'email address' %}</th>
+                    <th scope="col" class="text-capitalize">{% trans 'status' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for user in object_list %}
+                    {% if not user.is_superuser %}
+                        <tr>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.get_full_name }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                <form method="post" action="{% url 'users:toggle-status' pk=user.pk %}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-link" type="submit">
+                                        {% if user.is_active %}
+                                            <span class="badge rounded-pill bg-custom-primary text-capitalize">{% trans 'active' %}</span>
+                                        {% else %}
+                                            <span class="badge rounded-pill bg-danger text-capitalize">{% trans 'disable' %}</span>
+                                        {% endif %}
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-14 15:58+0800\n"
+"POT-Creation-Date: 2022-12-14 20:18+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,7 +27,7 @@ msgstr "登入"
 msgid "homepage"
 msgstr "首頁"
 
-#: templates/base_navigation.html:28 users/templates/profile.html:7
+#: templates/base_navigation.html:28 users/templates/profile.html:10
 msgid "profile"
 msgstr "個人資料"
 
@@ -35,7 +35,7 @@ msgstr "個人資料"
 msgid "report list"
 msgstr "檢舉清單"
 
-#: templates/base_navigation.html:36
+#: templates/base_navigation.html:36 users/templates/user_list.html:8
 msgid "user list"
 msgstr "使用者清單"
 
@@ -56,7 +56,7 @@ msgid "confirm password"
 msgstr "確認密碼"
 
 #: users/forms.py:36 users/tests.py:119
-msgid "Password does not match confirm_password"
+msgid "Password does not match confirm password"
 msgstr "密碼與確認密碼不相符。"
 
 #: users/models.py:10 users/tests.py:41
@@ -67,7 +67,8 @@ msgstr "名字"
 msgid "last name"
 msgstr "姓氏"
 
-#: users/models.py:12 users/tests.py:57
+#: users/models.py:12 users/templates/user_list.html:37
+#: users/templates/user_list.html:79 users/tests.py:57
 msgid "email address"
 msgstr "電子信箱"
 
@@ -76,38 +77,77 @@ msgstr "電子信箱"
 msgid "register"
 msgstr "註冊"
 
-#: users/templates/profile.html:10
+#: users/templates/profile.html:13 users/templates/user_list.html:35
+#: users/templates/user_list.html:77
 msgid "username"
 msgstr "使用者名稱"
 
-#: users/templates/profile.html:19
+#: users/templates/profile.html:22
 msgid "save"
 msgstr "儲存"
 
-#: users/templates/profile.html:22 users/templates/profile.html:68
+#: users/templates/profile.html:25 users/templates/profile.html:74
 #, fuzzy
 #| msgid "password"
 msgid "reset password"
 msgstr "重設密碼"
 
-#: users/templates/profile.html:26 users/templates/profile.html:38
+#: users/templates/profile.html:29 users/templates/profile.html:44
 msgid "disable account"
 msgstr "刪除帳號"
 
-#: users/templates/profile.html:46
+#: users/templates/profile.html:52
 msgid "Please confirm to disable account."
 msgstr "確定要停用帳號嗎？"
 
-#: users/templates/profile.html:51 users/templates/profile.html:82
+#: users/templates/profile.html:57 users/templates/profile.html:88
 msgid "cancel"
 msgstr "取消"
 
-#: users/templates/profile.html:56
+#: users/templates/profile.html:62
 msgid "delete"
 msgstr "刪除"
 
-#: users/templates/profile.html:84
+#: users/templates/profile.html:90
 #, fuzzy
 #| msgid "confirm password"
 msgid "confirm"
 msgstr "確認"
+
+#: users/templates/user_list.html:11
+msgid "admin"
+msgstr "管理員"
+
+#: users/templates/user_list.html:16
+msgid "create admin"
+msgstr "新增管理員"
+
+#: users/templates/user_list.html:26
+msgid "create"
+msgstr "新增"
+
+#: users/templates/user_list.html:36 users/templates/user_list.html:78
+#, fuzzy
+#| msgid "last name"
+msgid "full name"
+msgstr "姓名"
+
+#: users/templates/user_list.html:38 users/templates/user_list.html:80
+msgid "status"
+msgstr "狀態"
+
+#: users/templates/user_list.html:54 users/templates/user_list.html:96
+msgid "active"
+msgstr "活動中"
+
+#: users/templates/user_list.html:58 users/templates/user_list.html:100
+#, fuzzy
+#| msgid "disable account"
+msgid "disable"
+msgstr "已停用"
+
+#: users/templates/user_list.html:71
+#, fuzzy
+#| msgid "username"
+msgid "user"
+msgstr "使用者"

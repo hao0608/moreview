@@ -33,7 +33,7 @@ class RegisterForm(forms.ModelForm):
         cleaned_data = super(RegisterForm, self).clean()
 
         if cleaned_data.get("password") != cleaned_data.get("confirm_password"):
-            self.add_error("password", _("Password does not match confirm_password"))
+            self.add_error("password", _("Password does not match confirm password"))
 
         return cleaned_data
 
