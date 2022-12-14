@@ -1,0 +1,13 @@
+from django import forms
+
+from review.models import Review
+
+
+class ReviewModelForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields= "__all__"
+        # {
+		# 	'content',
+		# 	'rating'
+		# }

@@ -138,25 +138,40 @@
                     <p>電影新增時間: {{movie.date_created}}</p>
                     <p>電影更新時間: {{movie.date_updated}}</p>
                 </div>
-                <!-- <div class="col-sm 10 col-md-8" >
-                    <div class="col">
-                        <form action="{% url 'movie:edit' movie.id %}">
-                            <button type="submit" class="btn btn-warning">修改</button>
-                         </form>
-                     </div>
- 
-                </div>
-                <div class="col-2">
-    
-                    <div class="col">
-                        <form method="POST" action="{% url 'movie:delete' movie.id %}">{% csrf_token %}
-                            <input type="submit" class="btn btn-danger" value="刪除">
-                        </form>
-                     </div>
-                </div>
-                
-            
             </div>
+            <hr>
+
+            <div>
+                <form action="{% url 'review:create' %}" method="POST">{% csrf_token %}
+                    <input type="hidden" name="userID" value="{{request.user.id}}" />
+                    <input type="hidden" name="movieID" value="{{movie.id}}" />
+                    <input name="content" />
+                    <select name="rating">
+                        <option value='1'> 1 </option>
+                        <option value='2'> 2 </option>
+                        <option value='3' selected> 3 </option>
+                        <option value='4'> 4 </option>
+                        <option value='5'> 5 </option>
+                    </select>
+
+                    <button type="submit">評論</button>
+                    
+                </form>
+            </div>
+            <hr>
+            <div>
+                {% for review in review_list %}
+                    {% if request.user.username == review.user.username %}
+                        <div>
+                            <p>{{review.content}}</p>
+                            <p>{{review.rating}}</p>
+                            <p>更改</p>
+                            <hr>
+                        </div> 
+                    {% endif %}
+                {% endfor %}
+            </div>
+            
  
         </div> 
     </div>

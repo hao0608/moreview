@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.urls import reverse
+from review.models import Review
 
 from django.views.generic import (
     CreateView,
@@ -22,6 +23,11 @@ class MovieCreateView(CreateView):
 class MovieDetailView(DetailView):
     model = Movie
     template_name = "movie_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(MovieDetailView, self).get_context_data(**kwargs)
+        context['review_list'] = Review.objects.filter(movie_id=self.object.id)   
+        return context
 
 
 class MovieListView(ListView):
