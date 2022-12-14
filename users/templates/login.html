@@ -1,20 +1,20 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {% load crispy_forms_tags %}
+    {% load i18n crispy_forms_tags %}
 
     <div class="flex-fill d-flex justify-content-center align-items-center">
         <div class="row w-100">
             <div class="col-12 col-lg-6">
-                <h1 class="mb-3">登入 <i class="fa-solid fa-right-to-bracket"></i></h1>
+                <h1 class="mb-3 text-capitalize">{% trans "login" %} <i class="fa-solid fa-right-to-bracket"></i></h1>
 
                 <form action="{% url 'users:login' %}" method="POST">
                     {% csrf_token %}
                     {{ form|crispy }}
 
                     <div class="mt-4 d-flex justify-content-center  align-items-center gap-2">
-                        <button class="btn btn-custom-primary" type="submit">登入</button>
-                        <a type="button" class="text-muted" href="{% url 'users:register' %}">註冊</a>
+                        <button class="btn btn-custom-primary" type="submit">{% trans 'login' %}</button>
+                        <a type="button" class="text-muted" href="{% url 'users:register' %}">{% trans 'register' %}</a>
                     </div>
                 </form>
             </div>

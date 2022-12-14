@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-07 06:47+0000\n"
+"POT-Creation-Date: 2022-12-14 15:37+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,14 +18,60 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: users/forms.py:8
+#: templates/base_navigation.html:15 users/templates/login.html:9
+#: users/templates/login.html:16
+msgid "login"
+msgstr "登入"
+
+#: templates/base_navigation.html:22
+msgid "homepage"
+msgstr "首頁"
+
+#: templates/base_navigation.html:26
+msgid "profile"
+msgstr "個人資料"
+
+#: templates/base_navigation.html:29
+msgid "report list"
+msgstr "檢舉清單"
+
+#: templates/base_navigation.html:33
+msgid "user list"
+msgstr "使用者清單"
+
+#: templates/base_navigation.html:36
+msgid "movie list"
+msgstr "電影清單"
+
+#: templates/base_navigation.html:43
+msgid "logout"
+msgstr "登出"
+
+#: users/forms.py:11 users/forms.py:53
 msgid "password"
 msgstr "密碼"
 
-#: users/forms.py:9
+#: users/forms.py:18 users/tests.py:107
 msgid "confirm password"
 msgstr "確認密碼"
 
-#: users/forms.py:22
+#: users/forms.py:36 users/tests.py:119
 msgid "Password does not match confirm_password"
 msgstr "密碼與確認密碼不相符。"
+
+#: users/models.py:10 users/tests.py:41
+msgid "first name"
+msgstr "名字"
+
+#: users/models.py:11 users/tests.py:49
+msgid "last name"
+msgstr "姓氏"
+
+#: users/models.py:12 users/tests.py:57
+msgid "email address"
+msgstr "電子信箱"
+
+#: users/templates/login.html:17 users/templates/register.html:9
+#: users/templates/register.html:16
+msgid "register"
+msgstr "註冊"
