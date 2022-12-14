@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.password_validation import password_validators_help_text_html
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext as _
 
@@ -8,12 +9,13 @@ from .models import User
 class RegisterForm(forms.ModelForm):
     password = forms.CharField(
         label=_("password"),
-        widget=forms.PasswordInput,
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
         max_length=128,
         validators=[validate_password],
+        help_text=password_validators_help_text_html()
     )
     confirm_password = forms.CharField(
-        label=_("confirm password"), widget=forms.PasswordInput(), max_length=128
+        label=_("confirm password"), widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}), max_length=128
     )
 
     class Meta:

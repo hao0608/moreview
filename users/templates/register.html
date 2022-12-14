@@ -1,26 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    {% load crispy_forms_tags %}
 
-{% load crispy_forms_tags %}
+    <div class="flex-fill d-flex justify-content-center align-items-center">
+        <div class="w-100 row">
+            <div class="col-12 col-lg-6">
+                <h1 class="mb-3">註冊 <i class="fa-solid fa-user-plus"></i></h1>
 
-<div class="content-pad-top container px-4 px-lg-5">
-        <div class="row gx-4 gx-lg-5 justify-content-center">
-                <div class="col-md-10 col-lg-8 col-xl-7">
-                        <h1>註冊 <i class="fa-solid fa-user-plus"></i></h1>
-		</div>
+                <form action="{% url 'users:register' %}" method="POST">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+
+                    <div class="mt-4 d-flex justify-content-center">
+                        <button class="btn btn-custom-primary" type="submit">註冊</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div class="row gx-4 gx-lg-5 justify-content-center pt-3">
-                <div class="col-md-10 col-lg-8 col-xl-7">
-			<form action="{% url 'users:register' %}" method="POST">
-                                {% csrf_token %}
-                                {{ form|crispy }}
-				<div class="container text-center">
-					<button class="btn btn-success" type="submit">註冊</button>
-				</div>
-                        </form>
-                </div>
-        </div>
-</div>
-
-{% endblock  %}    
+    </div>
+{% endblock %}
