@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-14 22:54+0800\n"
+"POT-Creation-Date: 2022-12-14 23:33+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: movie/templates/homepage.html:10
+#: movie/templates/homepage.html:10 movie/templates/movie_list.html:17
 msgid "Search by name"
 msgstr "用電影名稱搜尋"
 
-#: movie/templates/homepage.html:12
+#: movie/templates/homepage.html:12 movie/templates/movie_list.html:19
 msgid "search"
 msgstr "搜尋"
 
@@ -39,10 +39,11 @@ msgid "Oldest to Latest"
 msgstr "最舊至最新"
 
 #: movie/templates/homepage.html:42 movie/templates/movie_detail.html:33
+#: movie/templates/movie_list.html:31
 msgid "release date"
 msgstr "上映日"
 
-#: movie/templates/homepage.html:50
+#: movie/templates/homepage.html:50 movie/templates/movie_list.html:59
 msgid "Sorry, no movies match the condition."
 msgstr "抱歉，沒有符合條件的電影"
 
@@ -70,6 +71,44 @@ msgstr "顯示更多"
 msgid "Show less"
 msgstr "顯示較少"
 
+#: movie/templates/movie_list.html:8 templates/base_navigation.html:40
+msgid "movie list"
+msgstr "電影清單"
+
+#: movie/templates/movie_list.html:11
+#, fuzzy
+#| msgid "create admin"
+msgid "create movie"
+msgstr "新增電影"
+
+#: movie/templates/movie_list.html:29
+msgid "id"
+msgstr "流水號"
+
+#: movie/templates/movie_list.html:30
+#, fuzzy
+#| msgid "username"
+msgid "name"
+msgstr "使用者名稱"
+
+#: movie/templates/movie_list.html:45
+msgid "edit"
+msgstr "編輯"
+
+#: movie/templates/movie_list.html:52 movie/templates/movie_list.html:89
+#: users/templates/profile.html:58
+msgid "delete"
+msgstr "刪除"
+
+#: movie/templates/movie_list.html:75
+msgid "Confirm to delete"
+msgstr "確認要刪除"
+
+#: movie/templates/movie_list.html:84 users/templates/profile.html:53
+#: users/templates/profile.html:84
+msgid "cancel"
+msgstr "取消"
+
 #: templates/base_navigation.html:15 users/templates/login.html:7
 #: users/templates/login.html:14
 msgid "login"
@@ -90,10 +129,6 @@ msgstr "檢舉清單"
 #: templates/base_navigation.html:36 users/templates/user_list.html:8
 msgid "user list"
 msgstr "使用者清單"
-
-#: templates/base_navigation.html:40
-msgid "movie list"
-msgstr "電影清單"
 
 #: templates/base_navigation.html:48
 msgid "logout"
@@ -151,14 +186,6 @@ msgstr "刪除帳號"
 #: users/templates/profile.html:48
 msgid "Please confirm to disable account."
 msgstr "確定要停用帳號嗎？"
-
-#: users/templates/profile.html:53 users/templates/profile.html:84
-msgid "cancel"
-msgstr "取消"
-
-#: users/templates/profile.html:58
-msgid "delete"
-msgstr "刪除"
 
 #: users/templates/profile.html:86
 #, fuzzy
