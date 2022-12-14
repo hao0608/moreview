@@ -38,7 +38,7 @@
             <th scope="col">電影名稱</th>
             <th scope="col">新增時間</th>
             <th scope="col">更新時間</th>
-            <th scope="col">修改</th>
+            <th scope="col">編輯</th>
             <th scope="col">刪除</th>
 
           </tr>
@@ -52,7 +52,7 @@
                     <td>{{movie.date_updated}}</td>
                     <td>
                         <form action="{% url 'movie:edit' movie.id %}">
-                            <button type="submit" class="btn btn-secondary">修改</button>
+                            <button type="submit" class="btn btn-secondary">編輯</button>
                         </form>
                     </td>
                     <td>
@@ -62,12 +62,12 @@
                         
 
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop-{{ movie.pk }}">
                             刪除
                         </button>
                         
                         <!-- Modal -->
-                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal fade" id="staticBackdrop-{{ movie.pk }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                             <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -77,7 +77,7 @@
  
                                 <div class="modal-footer">
                                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">取消</button>
-                                <form method="POST" action="{% url 'movie:delete' movie.id %}">{% csrf_token %}
+                                <form method="POST" action="{% url 'movie:delete' movie.pk %}">{% csrf_token %}
                                     <button type="submit" class="btn btn-danger">刪除</button>
                                 </form>
                                 </div>
