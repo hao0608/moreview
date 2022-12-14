@@ -16,6 +16,18 @@ from review.models import Review
 
 # Create your views here.
 
+# from time import time
+# from django.http import JsonResponse
+# from django.views.generic import View
+# class AjaxHandlerView(View):
+#     def get(self, request):
+#         text = request.GET.get('button_text')
+#         print(text)
+#         t = time()
+
+#         return JsonResponse({'seconds':t}, status =200)
+
+
 class MovieCreateView(CreateView):
     model = Movie
     template_name = "movie_create_form.html"
@@ -43,6 +55,13 @@ class MovieDetailView(DetailView):
         context = super(MovieDetailView, self).get_context_data(**kwargs)
         context['review_list'] = Review.objects.filter(movie_id=self.object.id)   
         return context
+
+    # def get(self, request):
+    #     text = request.GET.get('button_text')
+    #     print(text)
+    #     t = time()
+
+    #     return JsonResponse({'seconds':t}, status =200)
 
 
 class MovieListView(ListView):
