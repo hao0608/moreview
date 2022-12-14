@@ -6,7 +6,8 @@ from review.models import Review
 class ReviewModelForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields= {
-			'content',
-			'rating'
-		}
+        fields= "__all__"
+        # {
+		# 	'content',
+		# 	'rating'
+		# }

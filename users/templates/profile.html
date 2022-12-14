@@ -1,0 +1,77 @@
+<!-- profile -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load crispy_forms_tags %}
+
+<div class="content-pad-top container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                        <h1>個人頁面 <i class="fa-solid fa-circle-user"></i></h1>
+		</div>
+	</div>
+	<div class="row gx-4 gx-lg-5 justify-content-center pt-3">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                        <form action="{% url 'users:edit-profile' %}" method="post">
+                                {% csrf_token %}
+				<div class="mb-3">
+                                        <label class="col-form-label">使用者姓名</label>
+					<p>{{ request.user.username }}</p>
+                                </div>
+				{{ profile_update_form|crispy }}
+				<div class="container text-center">
+					 <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#resetPwd">重設密碼</button>
+					<button class="btn btn-success" type="submit">儲存</button>
+					<button class="btn btn-danger"  type="button"  data-bs-toggle="modal" data-bs-target="#disabledAcc">停用帳號</button>
+				</div>
+                        </form>
+			<!-- Modal -->
+			<div class="modal fade" id="disabledAcc" tabindex="-1" aria-labelledby="disabledAccLabel" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h1 class="modal-title fs-5" id="disabledAccLabel">停用帳號</h1>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<p>確定要停用帳號嗎？</p>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+							<form method="post" action="{% url 'users:delete' %}">
+							{% csrf_token %}
+							<button type="submit" class="btn btn-success">確認</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal fade" id="resetPwd" tabindex="-1" aria-labelledby="resetPwdLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                                <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="resetPwdLabel">重設密碼</h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <form method="post" action="{% url 'users:reset-password' %}">
+                                                	<div class="modal-body">
+                                                        {% csrf_token %}
+							{{ reset_password_form|crispy }}
+
+                                                	</div>
+                                                <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                                                        <button type="submit" class="btn btn-success">確認</button>
+                                                </div>
+						</form>
+                                        </div>
+                                </div>
+                        </div>
+
+                </div>
+        </div>
+</div>
+
+{% endblock  %}
