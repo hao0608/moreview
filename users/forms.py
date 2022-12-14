@@ -9,13 +9,15 @@ from .models import User
 class RegisterForm(forms.ModelForm):
     password = forms.CharField(
         label=_("password"),
-        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+        widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
         max_length=128,
         validators=[validate_password],
-        help_text=password_validators_help_text_html()
+        help_text=password_validators_help_text_html(),
     )
     confirm_password = forms.CharField(
-        label=_("confirm password"), widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}), max_length=128
+        label=_("confirm password"),
+        widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
+        max_length=128,
     )
 
     class Meta:
