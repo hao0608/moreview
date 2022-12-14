@@ -42,11 +42,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     "movie",
-<<<<<<< HEAD
-    "review"
-=======
     "review",
->>>>>>> 93a16b8716ae30c4eaadc8d136f789c960e7a853
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
