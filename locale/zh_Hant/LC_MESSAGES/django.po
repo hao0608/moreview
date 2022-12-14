@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-14 15:37+0800\n"
+"POT-Creation-Date: 2022-12-14 15:58+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,27 +23,27 @@ msgstr ""
 msgid "login"
 msgstr "登入"
 
-#: templates/base_navigation.html:22
+#: templates/base_navigation.html:23
 msgid "homepage"
 msgstr "首頁"
 
-#: templates/base_navigation.html:26
+#: templates/base_navigation.html:28 users/templates/profile.html:7
 msgid "profile"
 msgstr "個人資料"
 
-#: templates/base_navigation.html:29
+#: templates/base_navigation.html:31
 msgid "report list"
 msgstr "檢舉清單"
 
-#: templates/base_navigation.html:33
+#: templates/base_navigation.html:36
 msgid "user list"
 msgstr "使用者清單"
 
-#: templates/base_navigation.html:36
+#: templates/base_navigation.html:40
 msgid "movie list"
 msgstr "電影清單"
 
-#: templates/base_navigation.html:43
+#: templates/base_navigation.html:48
 msgid "logout"
 msgstr "登出"
 
@@ -71,7 +71,43 @@ msgstr "姓氏"
 msgid "email address"
 msgstr "電子信箱"
 
-#: users/templates/login.html:17 users/templates/register.html:9
-#: users/templates/register.html:16
+#: users/templates/login.html:19 users/templates/register.html:9
+#: users/templates/register.html:18
 msgid "register"
 msgstr "註冊"
+
+#: users/templates/profile.html:10
+msgid "username"
+msgstr "使用者名稱"
+
+#: users/templates/profile.html:19
+msgid "save"
+msgstr "儲存"
+
+#: users/templates/profile.html:22 users/templates/profile.html:68
+#, fuzzy
+#| msgid "password"
+msgid "reset password"
+msgstr "重設密碼"
+
+#: users/templates/profile.html:26 users/templates/profile.html:38
+msgid "disable account"
+msgstr "刪除帳號"
+
+#: users/templates/profile.html:46
+msgid "Please confirm to disable account."
+msgstr "確定要停用帳號嗎？"
+
+#: users/templates/profile.html:51 users/templates/profile.html:82
+msgid "cancel"
+msgstr "取消"
+
+#: users/templates/profile.html:56
+msgid "delete"
+msgstr "刪除"
+
+#: users/templates/profile.html:84
+#, fuzzy
+#| msgid "confirm password"
+msgid "confirm"
+msgstr "確認"
