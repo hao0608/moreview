@@ -116,7 +116,7 @@ class RegisterFormTest(TestCase):
 
         self.assertFalse(form.is_valid())
         self.assertTrue(
-            _("Password does not match confirm_password") in form["password"].errors
+            _("Password does not match confirm password") in form["password"].errors
         )
 
 
