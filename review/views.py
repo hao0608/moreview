@@ -49,3 +49,14 @@ class HeartView(View):
             Heart.objects.get(user=user,review=review).delete()
 
         return HttpResponseRedirect(reverse("movie:detail", kwargs={"pk": movie.pk}))
+
+class ReviewEditView(View):
+    def post(self, request, *args, **kwargs):
+        movie=Movie.objects.get(id=request.POST['movieID'])
+        content=request.POST['content']
+        rating=int(request.POST['rating'])
+        Review.objects.filter(id=request.POST['reviewID']).update(
+            content=content,
+            rating=rating
+        )
+        return HttpResponseRedirect(reverse("movie:detail", kwargs={"pk": movie.pk}))
