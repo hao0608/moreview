@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-14 21:49+0800\n"
+"POT-Creation-Date: 2022-12-14 22:54+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,13 +38,37 @@ msgstr "最新至最舊"
 msgid "Oldest to Latest"
 msgstr "最舊至最新"
 
-#: movie/templates/homepage.html:42
+#: movie/templates/homepage.html:42 movie/templates/movie_detail.html:33
 msgid "release date"
 msgstr "上映日"
 
 #: movie/templates/homepage.html:50
 msgid "Sorry, no movies match the condition."
 msgstr "抱歉，沒有符合條件的電影"
+
+#: movie/templates/movie_detail.html:27
+msgid "No rating yet"
+msgstr "尚無評分"
+
+#: movie/templates/movie_detail.html:34
+msgid "time"
+msgstr "時長"
+
+#: movie/templates/movie_detail.html:35
+msgid "grade"
+msgstr "分級"
+
+#: movie/templates/movie_detail.html:38
+msgid "official site"
+msgstr "官方網站"
+
+#: movie/templates/movie_detail.html:43 movie/templates/movie_detail.html:62
+msgid "Show more"
+msgstr "顯示更多"
+
+#: movie/templates/movie_detail.html:59
+msgid "Show less"
+msgstr "顯示較少"
 
 #: templates/base_navigation.html:15 users/templates/login.html:7
 #: users/templates/login.html:14
