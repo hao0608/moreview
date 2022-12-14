@@ -59,7 +59,7 @@ class MovieListView(ListView):
                     order_query
                 )
             context["object_list"] = movie_obj
-            context["order"]=order
+            context["order"] = order
             return context
         else:
             # 取得request
