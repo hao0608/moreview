@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-14 20:18+0800\n"
+"POT-Creation-Date: 2022-12-14 21:49+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,8 +18,36 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: templates/base_navigation.html:15 users/templates/login.html:9
-#: users/templates/login.html:16
+#: movie/templates/homepage.html:10
+msgid "Search by name"
+msgstr "用電影名稱搜尋"
+
+#: movie/templates/homepage.html:12
+msgid "search"
+msgstr "搜尋"
+
+#: movie/templates/homepage.html:18
+msgid "Order by released date:"
+msgstr "排序依照上映日:"
+
+#: movie/templates/homepage.html:21
+msgid "Latest to Oldest"
+msgstr "最新至最舊"
+
+#: movie/templates/homepage.html:24
+msgid "Oldest to Latest"
+msgstr "最舊至最新"
+
+#: movie/templates/homepage.html:42
+msgid "release date"
+msgstr "上映日"
+
+#: movie/templates/homepage.html:50
+msgid "Sorry, no movies match the condition."
+msgstr "抱歉，沒有符合條件的電影"
+
+#: templates/base_navigation.html:15 users/templates/login.html:7
+#: users/templates/login.html:14
 msgid "login"
 msgstr "登入"
 
@@ -27,7 +55,7 @@ msgstr "登入"
 msgid "homepage"
 msgstr "首頁"
 
-#: templates/base_navigation.html:28 users/templates/profile.html:10
+#: templates/base_navigation.html:28 users/templates/profile.html:8
 msgid "profile"
 msgstr "個人資料"
 
@@ -47,7 +75,7 @@ msgstr "電影清單"
 msgid "logout"
 msgstr "登出"
 
-#: users/forms.py:11 users/forms.py:53
+#: users/forms.py:11 users/forms.py:55
 msgid "password"
 msgstr "密碼"
 
@@ -55,7 +83,7 @@ msgstr "密碼"
 msgid "confirm password"
 msgstr "確認密碼"
 
-#: users/forms.py:36 users/tests.py:119
+#: users/forms.py:38 users/tests.py:119
 msgid "Password does not match confirm password"
 msgstr "密碼與確認密碼不相符。"
 
@@ -68,47 +96,47 @@ msgid "last name"
 msgstr "姓氏"
 
 #: users/models.py:12 users/templates/user_list.html:37
-#: users/templates/user_list.html:79 users/tests.py:57
+#: users/templates/user_list.html:75 users/tests.py:57
 msgid "email address"
 msgstr "電子信箱"
 
-#: users/templates/login.html:19 users/templates/register.html:9
-#: users/templates/register.html:18
+#: users/templates/login.html:17 users/templates/register.html:7
+#: users/templates/register.html:15
 msgid "register"
 msgstr "註冊"
 
-#: users/templates/profile.html:13 users/templates/user_list.html:35
-#: users/templates/user_list.html:77
+#: users/templates/profile.html:11 users/templates/user_list.html:35
+#: users/templates/user_list.html:73
 msgid "username"
 msgstr "使用者名稱"
 
-#: users/templates/profile.html:22
+#: users/templates/profile.html:20
 msgid "save"
 msgstr "儲存"
 
-#: users/templates/profile.html:25 users/templates/profile.html:74
+#: users/templates/profile.html:23 users/templates/profile.html:70
 #, fuzzy
 #| msgid "password"
 msgid "reset password"
 msgstr "重設密碼"
 
-#: users/templates/profile.html:29 users/templates/profile.html:44
+#: users/templates/profile.html:27 users/templates/profile.html:40
 msgid "disable account"
 msgstr "刪除帳號"
 
-#: users/templates/profile.html:52
+#: users/templates/profile.html:48
 msgid "Please confirm to disable account."
 msgstr "確定要停用帳號嗎？"
 
-#: users/templates/profile.html:57 users/templates/profile.html:88
+#: users/templates/profile.html:53 users/templates/profile.html:84
 msgid "cancel"
 msgstr "取消"
 
-#: users/templates/profile.html:62
+#: users/templates/profile.html:58
 msgid "delete"
 msgstr "刪除"
 
-#: users/templates/profile.html:90
+#: users/templates/profile.html:86
 #, fuzzy
 #| msgid "confirm password"
 msgid "confirm"
@@ -126,27 +154,27 @@ msgstr "新增管理員"
 msgid "create"
 msgstr "新增"
 
-#: users/templates/user_list.html:36 users/templates/user_list.html:78
+#: users/templates/user_list.html:36 users/templates/user_list.html:74
 #, fuzzy
 #| msgid "last name"
 msgid "full name"
 msgstr "姓名"
 
-#: users/templates/user_list.html:38 users/templates/user_list.html:80
+#: users/templates/user_list.html:38 users/templates/user_list.html:76
 msgid "status"
 msgstr "狀態"
 
-#: users/templates/user_list.html:54 users/templates/user_list.html:96
+#: users/templates/user_list.html:53 users/templates/user_list.html:91
 msgid "active"
 msgstr "活動中"
 
-#: users/templates/user_list.html:58 users/templates/user_list.html:100
+#: users/templates/user_list.html:55 users/templates/user_list.html:93
 #, fuzzy
 #| msgid "disable account"
 msgid "disable"
 msgstr "已停用"
 
-#: users/templates/user_list.html:71
+#: users/templates/user_list.html:67
 #, fuzzy
 #| msgid "username"
 msgid "user"
