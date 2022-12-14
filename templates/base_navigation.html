@@ -1,38 +1,49 @@
-    <!-- Navigation-->
-    <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-custom-primary" id="mainNav">
-        <div class="container px-4 px-lg-5">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+<!-- Navigation-->
+<nav class="navbar fixed-top navbar-expand-lg bg-custom-primary" id="mainNav">
+    <div class="container px-4 px-lg-5">
+        <div class="w-100 w-md-auto d-flex justify-content-between order-first order-lg-last">
+            <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarResponsive"
+                    aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fas fa-bars"></i>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ms-auto py-lg-0">
-			<li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'movie:list' %}">首頁</a></li>
-		    {% if request.user.is_authenticated %}
-                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="#">個人資料</a></li>
-                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="#">檢舉清單</a></li>
-		    	{% if request.user.is_superuser %}
-			<li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{# url 'users:list' #}">帳號列表</a></li>
-			<li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'movie:manage-list' %}">電影列表</a></li>
-                    	{% endif %}
-		    <li class="nav-item">
-			    <form method="post" action="{% url 'users:logout' %}">
-				    {% csrf_token %}
-				    <button class="bg-custom-primary btn btn-link nav-link px-lg-3 py-3 py-lg-4" id="logout-btn" type="submit">登出</button>
-			    </form>
-		    </li>
-		    {% endif %}
-                </ul>
-            </div>
-
-
+            {% url 'users:login' as login_url %}
+            {% if not request.user.is_authenticated and login_url != request.path %}
+                <a class="btn btn-outline-dark" href="{% url 'users:login' %}">登入</a>
+            {% endif %}
         </div>
-	{% if not request.user.is_authenticated and request.path != '/login' %}
-	 <div class="container px-4 px-lg-5" id="login-btn">
-            <a href="{% url 'users:login' %}">
-                  <button class="navbar-brand btn btn-login text-uppercase" id="login-btn">登入</button>
-	    </a>
-	</div>
-	{% endif %}
-    </nav>
 
+        <div class="collapse navbar-collapse flex-fill" id="navbarResponsive">
+            <ul class="navbar-nav w-100 py-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'movie:list' %}">首頁</a>
+                </li>
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'users:profile' %}">個人資料</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-lg-3 py-3 py-lg-4" href="#">檢舉清單</a>
+                    </li>
+                    {% if request.user.is_superuser %}
+                        <li class="nav-item">
+                            <a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'users:list' %}">帳號列表</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'movie:manage-list' %}">電影列表</a>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <form method="post" action="{% url 'users:logout' %}">
+                            {% csrf_token %}
+                            <button class="nav-link bg-transparent border-0 px-lg-3 py-3 py-lg-4" type="submit">
+                                登出
+                            </button>
+                        </form>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
