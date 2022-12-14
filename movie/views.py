@@ -47,9 +47,8 @@ class MovieListView(ListView):
             order = self.request.GET.get("order")
             order_query = "-date_released"
             movie_obj = None
-            if order == 'Asc' :
-                order_query = 'date_released'
-  
+            if order == "Asc":
+                order_query = "date_released"
 
             if query is not None:  # 搜尋
                 movie_obj = Movie.objects.filter(
@@ -60,7 +59,7 @@ class MovieListView(ListView):
                     order_query
                 )
             context["object_list"] = movie_obj
-            context["order"]=order
+            context["order"] = order
             return context
         else:
             # 取得request
