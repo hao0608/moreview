@@ -21,12 +21,18 @@ review_rating=[
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    content = models.TextField(default="a")
+    content = models.TextField(blank=False, null=False)
     rating = models.IntegerField(choices=review_rating,default=3)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 
     def get_absolute_url(self):
         return reverse("movie:detail", kwargs={"pk": self.movie.pk})
+
+class Heart(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    review = models.ForeignKey(Review, on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_now_add=True)
+
 
 

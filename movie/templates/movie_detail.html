@@ -161,14 +161,34 @@
             <hr>
             <div>
                 {% for review in review_list %}
-                    {% if request.user.username == review.user.username %}
                         <div>
                             <p>{{review.content}}</p>
                             <p>{{review.rating}}</p>
-                            <p>更改</p>
+                            <p>{{review.user.username}}</p>
+                            {% if request.user.username == review.user.username %}
+                                <form method="POST" action="{% url 'review:delete' review.id %}">{% csrf_token %}
+                                    <input type="hidden" name="movieID" value="{{movie.id}}" />
+                                    <input type="hidden" name="reviewID" value="{{review.id}}" />
+                                    <button type="submit">刪除</button>
+                                </form>
+                            {% endif %}
+                            <form method="POST" action="{% url 'review:heart' review.id %}">{% csrf_token %}
+                                <input type="hidden" name="movieID" value="{{movie.id}}" />
+                                <input type="hidden" name="reviewID" value="{{review.id}}" />
+                                <input type="hidden" name="userID" value="{{request.user.id}}" />
+                                <input type="checkbox" onchange="this.form.submit();" name="heart" 
+                                    {% for heart in heart_list %}
+                                        {% if request.user.id == heart.user.id %}
+                                            {% if review.id == heart.review.id %}
+                                                checked
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                />
+                            </form>
                             <hr>
+                            
                         </div> 
-                    {% endif %}
                 {% endfor %}
             </div>
             
