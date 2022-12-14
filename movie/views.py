@@ -33,7 +33,7 @@ class MovieDetailView(DetailView):
             if heart.user.id == self.request.user.id:
                 for review in context["review_list"]:
                     if heart.review.id == review.id:
-                        context["heart_list"].append(Heart.objects.get(user=self.request.user.id,review=review.id)) 
+                        context["heart_list"].append(Heart.objects.get(user=self.request.user.id,review=review.id))  
         return context
 
 
