@@ -3,23 +3,18 @@
 {% block content %}
     {% load i18n crispy_forms_tags %}
 
-    <div class="flex-fill d-flex justify-content-center align-items-center">
-        <div class="w-100 row">
-            <div class="col-12 col-lg-6">
-                <h1 class="mb-3 text-capitalize">{% trans 'register' %} <i class="fa-solid fa-user-plus"></i></h1>
+    <div class="align-self-center my-auto px-2 col-12 col-lg-6">
+        <h1 class="mb-3 text-capitalize">{% trans 'register' %} <i class="fa-solid fa-user-plus"></i></h1>
 
-                <form action="{% url 'users:register' %}" method="POST">
-                    {% csrf_token %}
-                    {{ form|crispy }}
+        <form action="{% url 'users:register' %}" method="POST">
+            {% csrf_token %}
+            {{ form|crispy }}
 
-                    <div class="mt-4 d-flex justify-content-center">
-                        <button class="btn btn-custom-primary text-capitalize"
-                                type="submit">
-                            {% trans 'register' %}
-                        </button>
-                    </div>
-                </form>
+            <div class="mt-4 d-flex justify-content-center">
+                <button class="btn btn-custom-primary text-capitalize" type="submit">
+                    {% trans 'register' %}
+                </button>
             </div>
-        </div>
+        </form>
     </div>
 {% endblock %}
