@@ -2,28 +2,18 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect
 
 from .forms import ReviewModelForm
-from django.views.generic import (
-    CreateView,
-)
+
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from users.models import User
 from movie.models import Movie
-from review.models import Review
+from review.models import Review, Heart
 from .forms import ReviewModelForm
 
 # Create your views here.
-# class ReviewCreateView(CreateView):
-#     model = Review
-#     template_name = "review_create_form.html"
-#     form_class = ReviewModelForm
-    
 class ReviewCreateView(View):
-    form_class = ReviewModelForm
-
     def post(self, request, *args, **kwargs):
-        print(request.POST)
         movie=Movie.objects.get(id=request.POST['movieID'])
         user=User.objects.get(id=request.POST['userID'])
         content=request.POST['content']
@@ -36,6 +26,26 @@ class ReviewCreateView(View):
         )
         return HttpResponseRedirect(reverse("movie:detail", kwargs={"pk": movie.pk}))
 
+class ReviewDeleteView(View):
+    def post(self, request, *args, **kwargs):
+        movie=Movie.objects.get(id=request.POST['movieID'])
+        Review.objects.get(id=request.POST['reviewID']).delete()
+        
+        return HttpResponseRedirect(reverse("movie:detail", kwargs={"pk": movie.pk}))
 
+class HeartView(View):
+    def post(self, request, *args, **kwargs):
+        movie=Movie.objects.get(id=request.POST['movieID'])
+        review=Review.objects.get(id=request.POST['reviewID'])
+        user=User.objects.get(id=request.POST['userID'])
+        print(request.POST.keys())
+        post_keys=request.POST.keys()
+        if 'heart' in post_keys:
+            Heart.objects.create(
+                user=user,
+                review=review,
+            )
+        else:
+            Heart.objects.get(user=user,review=review).delete()
 
-    
+        return HttpResponseRedirect(reverse("movie:detail", kwargs={"pk": movie.pk}))

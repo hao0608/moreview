@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.urls import reverse
-from review.models import Review
+from review.models import Review,Heart
 
 from django.views.generic import (
     CreateView,
@@ -26,7 +26,14 @@ class MovieDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(MovieDetailView, self).get_context_data(**kwargs)
-        context['review_list'] = Review.objects.filter(movie_id=self.object.id)   
+        context['review_list'] = Review.objects.filter(movie_id=self.object.id)  
+        heart_list=Heart.objects.all()
+        context['heart_list']=[]
+        for heart in heart_list:
+            if heart.user.id == self.request.user.id:
+                for review in context["review_list"]:
+                    if heart.review.id == review.id:
+                        context["heart_list"].append(Heart.objects.get(user=self.request.user.id,review=review.id)) 
         return context
 
 
