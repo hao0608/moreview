@@ -4,34 +4,30 @@
 {% block content %}
     {% load i18n crispy_forms_tags %}
 
-    <div class="flex-fill d-flex justify-content-center align-items-center">
-        <div class="row w-100">
-            <div class="col-12 col-lg-6">
-                <h1 class="mb-3 text-capitalize">{% trans 'profile' %} <i class="fa-solid fa-circle-user"></i></h1>
+    <div class="align-self-center my-auto px-2 col-12 col-lg-6">
+        <h1 class="mb-3 text-capitalize">{% trans 'profile' %} <i class="fa-solid fa-circle-user"></i></h1>
 
-                <div class="mb-3">
-                    <p class="text-capitalize">{% trans 'username' %}</p>
-                    <p>{{ request.user.username }}</p>
-                </div>
-
-                <form action="{% url 'users:edit-profile' %}" method="post">
-                    {% csrf_token %}
-                    {{ profile_update_form|crispy }}
-
-                    <div class="d-flex justify-content-center mt-4 gap-2">
-                        <button class="btn btn-custom-primary text-capitalize" type="submit">{% trans 'save' %}</button>
-                        <button class="btn btn-secondary text-capitalize" type="button" data-bs-toggle="modal"
-                                data-bs-target="#resetPwd">
-                            {% trans 'reset password' %}
-                        </button>
-                        <button class="btn btn-danger text-capitalize" type="button" data-bs-toggle="modal"
-                                data-bs-target="#disabledAcc">
-                            {% trans 'disable account' %}
-                        </button>
-                    </div>
-                </form>
-            </div>
+        <div class="mb-3">
+            <p class="text-capitalize">{% trans 'username' %}</p>
+            <p>{{ request.user.username }}</p>
         </div>
+
+        <form action="{% url 'users:edit-profile' %}" method="post">
+            {% csrf_token %}
+            {{ profile_update_form|crispy }}
+
+            <div class="d-flex justify-content-center mt-4 gap-2">
+                <button class="btn btn-custom-primary text-capitalize" type="submit">{% trans 'save' %}</button>
+                <button class="btn btn-secondary text-capitalize" type="button" data-bs-toggle="modal"
+                        data-bs-target="#resetPwd">
+                    {% trans 'reset password' %}
+                </button>
+                <button class="btn btn-danger text-capitalize" type="button" data-bs-toggle="modal"
+                        data-bs-target="#disabledAcc">
+                    {% trans 'disable account' %}
+                </button>
+            </div>
+        </form>
     </div>
 
     <!-- Disable Account Modal -->
