@@ -48,6 +48,22 @@
 
 
  
+/* hides the checkbox */
+#heart {
+  display: none;
+}
+
+/* changes the color when selected */
+input[name=heart]:checked ~ label {
+  color: red;
+}
+
+/* for styling purpose only */
+label[for=heart] {  font-size: 3em;
+}
+
+ 
+    
     
 </style>
 
@@ -190,24 +206,9 @@
                                       <li><a class="dropdown-item" href="#">檢舉</a></li>
                                     </ul>
                                   </div>
-                                
                             </h5>
-                            
-
-
-                            <!-- <h5 class="card-title">愛心數:</h5> -->
                         </div>
 
-                        <div class="d-flex justify-content-between">
-                            <p>評論分數: {{review.rating}}/5</p>
-
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <p>評論內容: {{review.content}}</p>
-                        </div>  
-                        <div class="d-flex justify-content-between">
-                            <p>獲得愛心數: {{review.heart_number}}</p>  
-                        </div> 
                         <!-- 評論星星區塊 -->
                         <div class="  justify-content-between">
                             <i class="fa fa-star" {% if review.rating > 0 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
@@ -215,15 +216,15 @@
                             <i class="fa fa-star" {% if review.rating > 2 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
                             <i class="fa fa-star" {% if review.rating > 3 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
                             <i class="fa fa-star" {% if review.rating > 4 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
-
-
                         </div> 
-                        
-                        
-
+                        <div class="d-flex justify-content-between">
+                            <p>評論內容: {{review.content}}</p>
+                        </div>  
+                        <div class="d-flex justify-content-between">
+                            <p>獲得愛心數: {{review.heart_number}}</p>  
+                        </div> 
  
                         {% if request.user.username == review.user.username %}
-
                             <div class="collapse" id="collapseExample">
                                 <div class="card card-body">
                                     <form action="{% url 'review:edit' review.id%}" method="POST">{% csrf_token %}
@@ -244,13 +245,14 @@
                                 </div>
                             </div>
                         {% endif %}
+ 
                         <div class="d-flex justify-content-between">
                                 <!-- 按讚功能 -->
                                 <form method="POST" action="{% url 'review:heart' review.id %}">{% csrf_token %}
                                     <input type="hidden" name="movieID" value="{{movie.id}}" />
                                     <input type="hidden" name="reviewID" value="{{review.id}}" />
                                     <input type="hidden" name="userID" value="{{request.user.id}}" />
-                                    <input type="checkbox" onchange="this.form.submit();" name="heart" 
+                                    <input type="checkbox" onchange="this.form.submit();" name="heart"  id="heart"
                                         {% for heart in heart_list %}
                                             {% if request.user.id == heart.user.id %}
                                                 {% if review.id == heart.review.id %}
@@ -258,7 +260,7 @@
                                                 {% endif %}
                                             {% endif %}
                                         {% endfor %}
-                                    />
+                                    /> <label for="heart" id="heart_label" >&#9829</label>
                                 </form>
                         </div>    
                     </div>              
