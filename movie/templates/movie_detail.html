@@ -172,10 +172,10 @@
             <div>
                 {% for review in review_list %}
                         <div>
-                            <p>{{review.content}}</p>
-                            <p>{{review.rating}}</p>
-                            <p>{{review.user.username}}</p>
-                            <p>{{review.count}}</p>
+                            <p>內容 : {{review.content}}</p>
+                            <p>評分 : {{review.rating}}</p>
+                            <p>使用者名稱 : {{review.user.username}}</p>
+                            <p>愛心數量 : {{review.heart_number}}</p>
                             {% if request.user.username == review.user.username %}
                                 <form method="POST" action="{% url 'review:delete' review.id %}">{% csrf_token %}
                                     <input type="hidden" name="movieID" value="{{movie.id}}" />
