@@ -1,15 +1,11 @@
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 
-from .forms import ReviewModelForm
-
 from django.views import View
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 from users.models import User
 from movie.models import Movie
 from review.models import Review, Heart
-from .forms import ReviewModelForm
 
 # Create your views here.
 class ReviewCreateView(View):
