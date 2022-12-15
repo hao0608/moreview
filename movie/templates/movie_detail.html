@@ -160,11 +160,21 @@
             </div>
             <hr>
             <div>
+                <form class="d-flex" method="GET" name="sort">
+                  <select  name="order" onchange="this.form.submit();">
+                    <!-- <option> 請選擇 </option> -->
+                    <option value='latest' {% if order == 'latest' %}selected{% endif %}> 最新評論 </option>
+                    <option value='oldest' {% if order == 'oldest' %}selected{% endif %}> 最舊評論 </option>
+                  </select>
+                </form>
+            </div>
+            <div>
                 {% for review in review_list %}
                         <div>
                             <p>{{review.content}}</p>
                             <p>{{review.rating}}</p>
                             <p>{{review.user.username}}</p>
+                            <p>{{number_of_heart.0}}</p>
                             {% if request.user.username == review.user.username %}
                                 <form method="POST" action="{% url 'review:delete' review.id %}">{% csrf_token %}
                                     <input type="hidden" name="movieID" value="{{movie.id}}" />

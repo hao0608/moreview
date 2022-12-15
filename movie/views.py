@@ -26,7 +26,19 @@ class MovieDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(MovieDetailView, self).get_context_data(**kwargs)
-        context['review_list'] = Review.objects.filter(movie_id=self.object.id)  
+        
+        order = self.request.GET.get("order")
+        order_query = "-date_created"
+        if order == "oldest":
+            order_query = "date_created"
+        review_list = Review.objects.filter(movie_id=self.object.id).order_by(order_query)
+        context['review_list'] = review_list
+        context["order"]=order
+
+        context['number_of_heart']=[]
+        for review in context["review_list"]:
+            context["number_of_heart"].append(Heart.objects.filter(review=review.id).count())
+
         heart_list=Heart.objects.all()
         context['heart_list']=[]
         for heart in heart_list:
@@ -34,6 +46,7 @@ class MovieDetailView(DetailView):
                 for review in context["review_list"]:
                     if heart.review.id == review.id:
                         context["heart_list"].append(Heart.objects.get(user=self.request.user.id,review=review.id))  
+        # print(context)
         return context
 
 
@@ -60,7 +73,7 @@ class MovieListView(ListView):
             order = self.request.GET.get("order")
             order_query = "-date_released"
             movie_obj = None
-            if order == "Asc":
+            if order == "oldest":
                 order_query = "date_released"
 
             if query is not None:  # 搜尋
@@ -68,9 +81,7 @@ class MovieListView(ListView):
                     name__contains=query, image__contains="movies/"
                 ).order_by(order_query)
             else:  # 沒有搜尋
-                movie_obj = Movie.objects.filter(image__contains="movies/").order_by(
-                    order_query
-                )
+                movie_obj = Movie.objects.filter(image__contains="movies/").order_by(order_query)
             context["object_list"] = movie_obj
             context["order"]=order
             return context

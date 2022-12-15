@@ -19,8 +19,8 @@
         <form class="d-flex" method="GET">
           <select  name="order" onchange="this.form.submit();">
             <!-- <option> 請選擇 </option> -->
-            <option value='Desc' {% if order == 'Desc' %}selected{% endif %}> 最新 </option>
-            <option value='Asc' {% if order == 'Asc' %}selected{% endif %}> 最舊 </option>
+            <option value='latest' {% if order == 'latest' %}selected{% endif %}> 最新 </option>
+            <option value='oldest' {% if order == 'oldest' %}selected{% endif %}> 最舊 </option>
           </select>
     </div>
   </section>
