@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.urls import reverse
 from review.models import Review,Heart
+from django.db.models import Count
 
 from django.views.generic import (
     CreateView,
@@ -12,7 +13,6 @@ from django.views.generic import (
 
 from .forms import MovieModelForm
 from movie.models import Movie
-from review.models import Review
 
 # Create your views here.
 
@@ -40,7 +40,23 @@ class MovieDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(MovieDetailView, self).get_context_data(**kwargs)
-        context['review_list'] = Review.objects.filter(movie_id=self.object.id)  
+        
+        # sort, default : "latest"
+        order = self.request.GET.get("order")
+        # According to date_created
+        order_query = "-date_created"
+        if order == "oldest":
+            order_query = "date_created"
+        review_list = Review.objects.filter(movie_id=self.object.id).annotate(heart_number=Count('heart')).order_by(order_query)
+
+        #According to number of heart
+        if order == "heart":  
+            review_list = Review.objects.filter(movie_id=self.object.id).annotate(heart_number=Count('heart')).order_by('-heart_number')
+
+        context['review_list'] = review_list
+        context["order"]=order
+
+        # Displays the hearts that the user has clicked
         heart_list=Heart.objects.all()
         context['heart_list']=[]
         for heart in heart_list:
@@ -48,12 +64,7 @@ class MovieDetailView(DetailView):
                 for review in context["review_list"]:
                     if heart.review.id == review.id:
                         context["heart_list"].append(Heart.objects.get(user=self.request.user.id,review=review.id))  
-        return context
-
-    # 取得評論資料
-    def get_context_data(self, **kwargs):
-        context = super(MovieDetailView, self).get_context_data(**kwargs)
-        context['review_list'] = Review.objects.filter(movie_id=self.object.id)   
+        
         return context
 
     # def get(self, request):

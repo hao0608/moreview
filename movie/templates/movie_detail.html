@@ -147,7 +147,18 @@
                     </form>
                 </div>
             {% endif %}
-            
+
+            <!-- 排序選單 -->
+            <div>
+                <form class="d-flex" method="GET" name="sort">
+                  <select  name="order" onchange="this.form.submit();">
+                    <!-- <option> 請選擇 </option> -->
+                    <option value='latest' {% if order == 'latest' %}selected{% endif %}> 最新評論 </option>
+                    <option value='oldest' {% if order == 'oldest' %}selected{% endif %}> 最舊評論 </option>
+                    <option value='heart' {% if order == 'heart' %}selected{% endif %}> 愛心最多 </option>
+                  </select>
+                </form>
+            </div>
             <!-- 評論清單 -->
             {% for review in review_list %}
                 <div class="card mb-3">
@@ -192,7 +203,10 @@
                         </div>
                         <div class="d-flex justify-content-between">
                             <p>評論內容: {{review.content}}</p>
-                        </div>                            
+                        </div>  
+                        <div class="d-flex justify-content-between">
+                            <p>獲得愛心數: {{review.heart_number}}</p>
+                        </div>                              
                         
                         {% if request.user.username == review.user.username %}
 
