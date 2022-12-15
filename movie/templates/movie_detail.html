@@ -73,15 +73,12 @@ label[for=heart] {  font-size: 3em;
 
 
 <div class="content-pad-top container px-4 px-lg-5">
- 
      <div class="row gx-4 gx-lg-5 justify-content-center">
-        
-        <div class="col-8 col-md-8 col-lg-6 col-xl-5">
+ 
+         <div class="col-md-10 col-lg-8 col-xl-7">
                 <h1><b>{{ movie.name }}</b>  </h1>
         </div>
-        <div class="col-1 col-md-1 col-lg-2 col-xl-2">
- 
-        </div>
+     
         <div class="col-md-10 col-lg-8 col-xl-7">
             <h4>
                 <i class="fa fa-star" style="color:#7DCE94"aria-hidden="true"></i>平均星星:   
@@ -98,41 +95,41 @@ label[for=heart] {  font-size: 3em;
 
     <div class="row gx-4 gx-lg-5 justify-content-center pt-3">
         <div class="col-md-10 col-lg-8 col-xl-7">
-            <div class="mb-3 row justify-content-between  ">
-				<div class="col-auto me-auto">
-					<p class="fs-4">上映日:  {{movie.date_released}}</p>
-				</div>
-			</div>
-            <div class="mb-3 row justify-content-between  ">
-				<div class="col-auto me-auto">
-					<p class="fs-4">時長:   {{movie.time}}</p>
-				</div>
-			</div>
-            <div class="mb-3 row justify-content-between  ">
-				<div class="col-auto me-auto">
-					<p class="fs-4">分級:   {{movie.grade}}</p>
-				</div>
-			</div>
-            <div class="mb-3 row justify-content-between  ">
-				<div class="col-auto me-auto">
-					<p class="fs-4"><a href='{{movie.official_site}}'class="text-custom-primary">官方網站</a><i class="fa fa-external-link fa-lg " style="color:#7DCE94"aria-hidden="true"></i>
-                    </p>
-				</div>
-			</div>
-            <div class="mb-3 row justify-content-between  ">
-				<div class="col-auto me-auto">
-					<!-- <p>{{movie.content | slice:85}}</p> -->
-                    <div class="container">
-                        <input type="checkbox" id="check">
-                         <p>{{movie.content | slice:85}}...</p>
-                        <div class="content">
-                            <p>{{movie.content}}</p>
-                        </div>
-                        <label for="check" class = "more">Read more</label>
+            <div class="container">
+                <div class="mb-3 row justify-content-between  ">
+                    <div class="col-auto me-auto">
+                        <p class="fs-4">上映日:  {{movie.date_released}}</p>
                     </div>
-				</div>
-			</div>
-
+                </div>
+                <div class="mb-3 row justify-content-between  ">
+                    <div class="col-auto me-auto">
+                        <p class="fs-4">時長:   {{movie.time}}</p>
+                    </div>
+                </div>
+                <div class="mb-3 row justify-content-between  ">
+                    <div class="col-auto me-auto">
+                        <p class="fs-4">分級:   {{movie.grade}}</p>
+                    </div>
+                </div>
+                <div class="mb-3 row justify-content-between  ">
+                    <div class="col-auto me-auto">
+                        <p class="fs-4"><a href='{{movie.official_site}}'class="text-custom-primary">官方網站</a><i class="fa fa-external-link fa-lg " style="color:#7DCE94"aria-hidden="true"></i>
+                        </p>
+                    </div>
+                </div>
+                <div class="mb-3 row justify-content-between  ">
+                    <div class="col-auto me-auto">
+                        <div class="container">
+                            <input type="checkbox" id="check">
+                            <p>{{movie.content | slice:85}}...</p>
+                            <div class="content">
+                                <p>{{movie.content}}</p>
+                            </div>
+                            <label for="check" class = "more">Read more</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <hr>
             <!-- 新增評論區塊 -->
             {% if request.user.is_authenticated %}              
@@ -170,7 +167,6 @@ label[for=heart] {  font-size: 3em;
                 <span>排序方式</span>
                 <form class="d-flex" method="GET" name="sort">
                   <select class="form-select w-auto" name="order" onchange="this.form.submit();">
-                    <!-- <option> 請選擇 </option> -->
                     <option value='latest' {% if order == 'latest' %}selected{% endif %}> 最新評論 </option>
                     <option value='oldest' {% if order == 'oldest' %}selected{% endif %}> 最舊評論 </option>
                     <option value='heart' {% if order == 'heart' %}selected{% endif %}> 愛心最多 </option>
@@ -230,55 +226,47 @@ label[for=heart] {  font-size: 3em;
                         <!-- 修改評論區塊 -->
                         {% if request.user.username == review.user.username %}
                             <div class="collapse" id="collapseExample">
-                                    <form action="{% url 'review:edit' review.id%}" method="POST">{% csrf_token %}
-                                        <input type="hidden" name="movieID" value="{{movie.id}}" />
-                                        <input type="hidden" name="reviewID" value="{{review.id}}" />
-                                        <div class="d-flex justify-content align-items-center gap-1 mb-4">
-                                            <span>評分: </span>
-                                            <div class="col-2 mb-2">
-                                                <select  class="form-select w-auto" name="rating">
-                                                    <option value='1'{%if review.rating == 1%}selected{%endif%}> 1 </option>
-                                                    <option value='2'{%if review.rating == 2%}selected{%endif%}> 2 </option>
-                                                    <option value='3'{%if review.rating == 3%}selected{%endif%}> 3 </option>
-                                                    <option value='4'{%if review.rating == 4%}selected{%endif%}> 4 </option>
-                                                    <option value='5'{%if review.rating == 5%}selected{%endif%}> 5 </option>
-                                                </select>   
-                                            </div>
-
+                                <form action="{% url 'review:edit' review.id%}" method="POST">{% csrf_token %}
+                                    <input type="hidden" name="movieID" value="{{movie.id}}" />
+                                    <input type="hidden" name="reviewID" value="{{review.id}}" />
+                                    <div class="d-flex justify-content align-items-center gap-1 mb-4">
+                                        <span>評分: </span>
+                                        <div class="col-2 mb-2">
+                                            <select  class="form-select w-auto" name="rating">
+                                                <option value='1'{%if review.rating == 1%}selected{%endif%}> 1 </option>
+                                                <option value='2'{%if review.rating == 2%}selected{%endif%}> 2 </option>
+                                                <option value='3'{%if review.rating == 3%}selected{%endif%}> 3 </option>
+                                                <option value='4'{%if review.rating == 4%}selected{%endif%}> 4 </option>
+                                                <option value='5'{%if review.rating == 5%}selected{%endif%}> 5 </option>
+                                            </select>   
                                         </div>
-                                        <div class="mb-2">
-                                            <textarea class="form-control"name="content" rows="5">{{review.content}}</textarea>
-                                        </div>
-
-
-
-                                        <div class="modal-footer  ">
-                                            <button type="submit" class="btn btn-custom-primary">修改</button>
-                                        </div>
-                                    </form>                                
-                                 
+                                    </div>
+                                    <div class="mb-2">
+                                        <textarea class="form-control"name="content" rows="5">{{review.content}}</textarea>
+                                    </div>
+                                    <div class="modal-footer  ">
+                                        <button type="submit" class="btn btn-custom-primary">修改</button>
+                                    </div>
+                                </form>                                
                             </div>
                         {% endif %}
  
-                         
+                        <!-- 按讚功能 -->
                         <div class="modal-footer  ">
-                                <!-- 按讚功能 -->
-                                <form method="POST" action="{% url 'review:heart' review.id %}">{% csrf_token %}
-                                    <input type="hidden" name="movieID" value="{{movie.id}}" />
-                                    <input type="hidden" name="reviewID" value="{{review.id}}" />
-                                    <input type="hidden" name="userID" value="{{request.user.id}}" />
-                                    <input type="checkbox" onchange="this.form.submit();" name="heart"  id="heart"
-                                        {% for heart in heart_list %}
-                                            {% if request.user.id == heart.user.id %}
-                                                {% if review.id == heart.review.id %}
-                                                    checked
-                                                {% endif %}
+                            <form method="POST" action="{% url 'review:heart' review.id %}">{% csrf_token %}
+                                <input type="hidden" name="movieID" value="{{movie.id}}" />
+                                <input type="hidden" name="reviewID" value="{{review.id}}" />
+                                <input type="hidden" name="userID" value="{{request.user.id}}" />
+                                <input type="checkbox" onchange="this.form.submit();" name="heart"  id="heart"
+                                    {% for heart in heart_list %}
+                                        {% if request.user.id == heart.user.id %}
+                                            {% if review.id == heart.review.id %}
+                                                checked
                                             {% endif %}
-                                        {% endfor %}
-                                    /> <label for="heart" id="heart_label" >&#9829</label>{{review.heart_number}}
-                                    
-                                </form>
-                             
+                                        {% endif %}
+                                    {% endfor %}
+                                /> <label for="heart" id="heart_label" >&#9829</label>{{review.heart_number}}
+                            </form>
                         </div>    
                     </div>              
                 </div>
