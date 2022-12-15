@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-15 14:43+0800\n"
+"POT-Creation-Date: 2022-12-15 15:01+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -91,6 +91,10 @@ msgstr "抱歉，沒有符合條件的電影"
 msgid "create movie"
 msgstr "新增電影"
 
+#: movie/templates/movie_create_form.html:13 users/templates/user_list.html:26
+msgid "create"
+msgstr "新增"
+
 #: movie/templates/movie_detail.html:27
 msgid "No rating yet"
 msgstr "尚無評分"
@@ -102,6 +106,18 @@ msgstr "顯示更多"
 #: movie/templates/movie_detail.html:59
 msgid "Show less"
 msgstr "顯示較少"
+
+#: movie/templates/movie_edit_form.html:7
+#, fuzzy
+#| msgid "create admin"
+msgid "edit movie"
+msgstr "編輯電影"
+
+#: movie/templates/movie_edit_form.html:13 users/templates/profile.html:86
+#, fuzzy
+#| msgid "confirm password"
+msgid "confirm"
+msgstr "確認"
 
 #: movie/templates/movie_list.html:8 templates/base_navigation.html:40
 msgid "movie list"
@@ -207,12 +223,6 @@ msgstr "刪除帳號"
 msgid "Please confirm to disable account."
 msgstr "確定要停用帳號嗎？"
 
-#: users/templates/profile.html:86
-#, fuzzy
-#| msgid "confirm password"
-msgid "confirm"
-msgstr "確認"
-
 #: users/templates/user_list.html:11
 msgid "admin"
 msgstr "管理員"
@@ -220,10 +230,6 @@ msgstr "管理員"
 #: users/templates/user_list.html:16
 msgid "create admin"
 msgstr "新增管理員"
-
-#: users/templates/user_list.html:26
-msgid "create"
-msgstr "新增"
 
 #: users/templates/user_list.html:36 users/templates/user_list.html:74
 #, fuzzy

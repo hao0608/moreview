@@ -1,83 +1,17 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
 
 {% block content %}
+    {% load i18n crispy_forms_tags %}
 
-<div class="content-pad-top container px-4 px-lg-5">
-    <div class="row gx-4 gx-lg-5 justify-content-center">
-        <div class="col-md-10 col-lg-8 col-xl-7">
-                <h1>編輯電影  </h1>
-        </div>
+    <div class="align-self-center px-2 col-12 col-lg-8">
+        <h1 class="text-capitalize">{% trans 'edit movie' %}</h1>
+
+        <form action="{% url 'movie:edit' movie.pk %}" method="POST" enctype="multipart/form-data">
+            {% crispy form %}
+
+            <div class="d-flex justify-content-center mt-4">
+                <input type="submit" value="{% trans 'confirm' %}" class="btn btn-custom-primary text-capitalize"/>
+            </div>
+        </form>
     </div>
-
-    <div class="row gx-4 gx-lg-5 justify-content-center pt-3">
-        <div class="col-md-10 col-lg-8 col-xl-7">
-            <form action'.' method="POST" enctype="multipart/form-data">{% csrf_token %}
-                <!-- {%crispy form%} -->
-                
-
-                <div class="mb-3 row">
-                    <label class="col-sm-2 col-form-label">種類</label>
-                    <div class="col-sm-10">
-                        {{ form.tag_id }}
-                    </div> 
-                </div>
-                <div class="mb-3 row">
-                    <label class="col-sm-2 col-form-label">名稱</label>
-                    <div class="col-sm-10">
-                        {{ form.name }}
-                    </div> 
-                </div>
-                <div class="mb-3 row">
-                    <label class="col-sm-2 col-form-label">上映日</label>
-                    <div class="col-sm-10">
-                        {{ form.date_released }}
-                    </div> 
-                </div>
-                <div class="mb-3 row">
-                    <label class="col-sm-2 col-form-label">時長</label>
-                    <div class="col-sm-10">
-                         <div class="input-group mb-2">
-                            {{ form.time }}
-                            <div class="input-group-prepend">
-                              <div class="input-group-text">分鐘</div>
-                            </div>
-                        </div>
-                     </div> 
-   
-                </div>
-                <div class="mb-3 row">
-                    <label class="col-sm-2 col-form-label">分級</label>
-                    <div class="col-sm-10">
-                        {{ form.grade}}
-                    </div> 
-                </div>
-                <div class="mb-3 row">
-                    <label class="col-sm-2 col-form-label">官方網站</label>
-                    <div class="col-sm-10">
-                        {{ form.official_site  }}
-                    </div> 
-                </div>
-                <div class="mb-3 row">
-                    <label class="col-sm-2 col-form-label">簡介</label>
-                    <div class="col-sm-10">
-                        {{ form.content }}
-                    </div> 
-                </div>
-                <div class="mb-3 row">
-                    <label class="col-sm-2 col-form-label">上傳圖片</label>
-                    <div class="col-sm-10">
-                        {{ form.image }}
-                        <!-- <input class="form-control" type="file" id="formFile"> -->
-                    </div> 
-                </div>
-
-                <div class="modal-footer">
-                    <input type="submit" value='完成編輯' class="btn btn-custom-primary"/>
-                </div>
-        </div>
-    </div>
-</div>
- 
-
 {% endblock %}
