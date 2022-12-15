@@ -118,7 +118,7 @@
 
             <hr>
             <!-- 新增評論區塊 -->
-            {% if request.user.is_superuser  or request.user.is_authenticated%}              
+            {% if request.user.is_authenticated %}              
                 <div class="container">
                     <form action="{% url 'review:create' %}" method="POST">{% csrf_token %}
                         <input type="hidden" name="userID" value="{{request.user.id}}" />
@@ -200,14 +200,28 @@
 
                         <div class="d-flex justify-content-between">
                             <p>評論分數: {{review.rating}}/5</p>
+
                         </div>
                         <div class="d-flex justify-content-between">
                             <p>評論內容: {{review.content}}</p>
                         </div>  
                         <div class="d-flex justify-content-between">
-                            <p>獲得愛心數: {{review.heart_number}}</p>
-                        </div>                              
+                            <p>獲得愛心數: {{review.heart_number}}</p>  
+                        </div> 
+                        <!-- 評論星星區塊 -->
+                        <div class="  justify-content-between">
+                            <i class="fa fa-star" {% if review.rating > 0 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
+                            <i class="fa fa-star" {% if review.rating > 1 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
+                            <i class="fa fa-star" {% if review.rating > 2 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
+                            <i class="fa fa-star" {% if review.rating > 3 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
+                            <i class="fa fa-star" {% if review.rating > 4 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
+
+
+                        </div> 
                         
+                        
+
+ 
                         {% if request.user.username == review.user.username %}
 
                             <div class="collapse" id="collapseExample">
