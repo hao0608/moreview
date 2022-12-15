@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'base.html' %}
 
 {% block content %}
@@ -161,4 +162,71 @@
         </div> 
     </div>
 </div>
+=======
+{% extends 'base.html' %}
+
+{% block content %}
+    {% load i18n %}
+
+    <style>
+        .line-clamp {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+        }
+    </style>
+
+    <div class="align-self-center px-2 col-12 col-lg-8">
+        <div class="row">
+            <div class="col-12 col-lg-4 d-flex justify-content-center mb-2">
+                <img src="{{ movie.image.url }}" class="mx-auto w-100" style="height: 400px; object-fit: contain;">
+            </div>
+
+            <div class="col-12 col-lg-8">
+                <h1>{{ movie.name }}</h1>
+
+                <p>
+                    <i class="fa fa-star text-custom-primary" aria-hidden="true"></i>
+                    {% if 'no rating' == 'no rating' %}
+                        {% trans 'No rating yet' %}
+                    {% else %}
+                        {{ 'rating' }} / 5
+                    {% endif %}
+                </p>
+                <p><span class="rounded-pill text-bg-custom-primary px-2 py-1">{{ movie.tag_id.name }}</span></p>
+                <p class="text-capitalize">{% trans 'release date' %}: {{ movie.date_released|date:'Y/m/d' }}</p>
+                <p class="text-capitalize">{% trans 'time' %}: {{ movie.time }}</p>
+                <p class="text-capitalize">{% trans 'grade' %}: {{ movie.grade }}</p>
+                <p>
+                    <a href='{{ movie.official_site }}' class="text-custom-primary text-capitalize">
+                        {% trans 'official site' %}
+                        <i class="fa fa-external-link"></i>
+                    </a>
+                </p>
+                <p class="line-clamp text-break mb-0">{{ movie.content }}</p>
+                <a class="text-muted text-decoration-underline" id="toggle-content">{% trans 'Show more' %}</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script type="application/javascript">
+        const toggleContent = document.getElementById('toggle-content')
+        const content = toggleContent.previousElementSibling
+
+        toggleContent.addEventListener('click', function (event) {
+            event.preventDefault()
+
+            if (content.classList.contains('line-clamp')) {
+                content.classList.remove('line-clamp')
+                toggleContent.innerText = "{% trans 'Show less' %}"
+            } else {
+                content.classList.add('line-clamp')
+                toggleContent.innerText = "{% trans 'Show more' %}"
+            }
+        })
+    </script>
+>>>>>>> 3fa14064c2b48f115fdb9680131c32aa570cbe77
 {% endblock %}
