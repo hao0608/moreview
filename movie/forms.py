@@ -12,11 +12,11 @@ class MovieModelForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            'tag_id',
+            "tag_id",
             "name",
             "content",
             "official_site",
-            AppendedText("time", _('minutes')),
+            AppendedText("time", _("minutes")),
             "grade",
             "date_released",
             "image",

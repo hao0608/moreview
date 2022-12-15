@@ -6,28 +6,32 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('movie', '0006_alter_movie_time'),
+        ("movie", "0006_alter_movie_time"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='movie',
-            name='content',
-            field=models.TextField(max_length=500, verbose_name='簡介'),
+            model_name="movie",
+            name="content",
+            field=models.TextField(max_length=500, verbose_name="簡介"),
         ),
         migrations.AlterField(
-            model_name='movie',
-            name='image',
-            field=models.ImageField(upload_to='movies/', verbose_name='圖片'),
+            model_name="movie",
+            name="image",
+            field=models.ImageField(upload_to="movies/", verbose_name="圖片"),
         ),
         migrations.AlterField(
-            model_name='movie',
-            name='tag_id',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='movie.tag', verbose_name='種類'),
+            model_name="movie",
+            name="tag_id",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="movie.tag",
+                verbose_name="種類",
+            ),
         ),
         migrations.AlterField(
-            model_name='tag',
-            name='description',
-            field=models.TextField(verbose_name='敘述'),
+            model_name="tag",
+            name="description",
+            field=models.TextField(verbose_name="敘述"),
         ),
     ]

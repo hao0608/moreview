@@ -5,13 +5,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('movie', '0005_alter_movie_tag_id'),
+        ("movie", "0005_alter_movie_tag_id"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='movie',
-            name='time',
-            field=models.PositiveSmallIntegerField(verbose_name='時長'),
+            model_name="movie",
+            name="time",
+            field=models.PositiveSmallIntegerField(verbose_name="時長"),
         ),
     ]
