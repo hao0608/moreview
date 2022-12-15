@@ -33,7 +33,7 @@ class MovieDetailView(DetailView):
         order_query = "-date_created"
         if order == "oldest":
             order_query = "date_created"
-        review_list = Review.objects.filter(movie_id=self.object.id).order_by(order_query)
+        review_list = Review.objects.filter(movie_id=self.object.id).annotate(count=Count('heart')).order_by(order_query)
 
         #According to number of heart
         if order == "heart":  
@@ -41,11 +41,6 @@ class MovieDetailView(DetailView):
 
         context['review_list'] = review_list
         context["order"]=order
-
-        # number of heart
-        context['number_of_heart']=[]
-        for review in context["review_list"]:
-            context["number_of_heart"].append(Heart.objects.filter(review=review.id).count())
 
         # Displays the hearts that the user has clicked
         heart_list=Heart.objects.all()

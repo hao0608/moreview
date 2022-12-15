@@ -175,7 +175,7 @@
                             <p>{{review.content}}</p>
                             <p>{{review.rating}}</p>
                             <p>{{review.user.username}}</p>
-                            <p>{{number_of_heart}}</p>
+                            <p>{{review.count}}</p>
                             {% if request.user.username == review.user.username %}
                                 <form method="POST" action="{% url 'review:delete' review.id %}">{% csrf_token %}
                                     <input type="hidden" name="movieID" value="{{movie.id}}" />
