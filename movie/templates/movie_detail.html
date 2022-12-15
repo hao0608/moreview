@@ -180,13 +180,12 @@ label[for=heart] {  font-size: 3em;
                 <div class="card mb-3">
                     <div class="card-body">
                         <div class=" d-flex justify-content-between">
-                            <h5 class="card-title"><b>使用者: {{review.user.username}}</b></h5>
+                            <h3 class="card-title"><b>使用者: {{review.user.username}}</b></h3>
+                            <h5 class="card-title"></h5>
                             <h5 class="card-title">
-                                
                                 <div class="dropdown" >
-                                    <button   style="  border: none;  color: black; background-color:white;" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
-
+                                    <button style="border:none;color:black;background-color:white;"type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <h2><i class="fa fa-ellipsis-h"  ></i></h2>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                         {% if request.user.username == review.user.username %}
@@ -210,7 +209,7 @@ label[for=heart] {  font-size: 3em;
                         </div>
 
                         <!-- 評論星星區塊 -->
-                        <div class="  justify-content-between">
+                        <div class="  justify-content-between mb-3">
                             <i class="fa fa-star" {% if review.rating > 0 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
                             <i class="fa fa-star" {% if review.rating > 1 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
                             <i class="fa fa-star" {% if review.rating > 2 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
@@ -220,9 +219,7 @@ label[for=heart] {  font-size: 3em;
                         <div class="d-flex justify-content-between">
                             <p>評論內容: {{review.content}}</p>
                         </div>  
-                        <div class="d-flex justify-content-between">
-                            <p>獲得愛心數: {{review.heart_number}}</p>  
-                        </div> 
+
  
                         {% if request.user.username == review.user.username %}
                             <div class="collapse" id="collapseExample">
@@ -246,7 +243,8 @@ label[for=heart] {  font-size: 3em;
                             </div>
                         {% endif %}
  
-                        <div class="d-flex justify-content-between">
+                         
+                        <div class="modal-footer  ">
                                 <!-- 按讚功能 -->
                                 <form method="POST" action="{% url 'review:heart' review.id %}">{% csrf_token %}
                                     <input type="hidden" name="movieID" value="{{movie.id}}" />
@@ -260,8 +258,10 @@ label[for=heart] {  font-size: 3em;
                                                 {% endif %}
                                             {% endif %}
                                         {% endfor %}
-                                    /> <label for="heart" id="heart_label" >&#9829</label>
+                                    /> <label for="heart" id="heart_label" >&#9829</label>{{review.heart_number}}
+                                    
                                 </form>
+                             
                         </div>    
                     </div>              
                 </div>
