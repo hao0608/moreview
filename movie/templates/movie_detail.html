@@ -103,6 +103,7 @@
                     <form action="{% url 'review:create' %}" method="POST">{% csrf_token %}
                         <input type="hidden" name="movieID" value="{{movie.id}}" />
                         {{ form.as_p }}
+                        <button  type="submit">評論</button>
                         
                     </form>
                 </div>
@@ -115,7 +116,10 @@
                   <select class="form-select w-auto" name="order" onchange="this.form.submit();">
                     <option value='latest' {% if order == 'latest' %}selected{% endif %}> 最新評論 </option>
                     <option value='oldest' {% if order == 'oldest' %}selected{% endif %}> 最舊評論 </option>
-                    <option value='heart' {% if order == 'heart' %}selected{% endif %}> 愛心最多 </option>
+                    <option value='heart_highest' {% if order == 'heart_highest' %}selected{% endif %}> 愛心最多 </option>
+                    <option value='heart_lowest' {% if order == 'heart_lowest' %}selected{% endif %}> 愛心最少 </option>
+                    <option value='rating_highest' {% if order == 'rating_highest' %}selected{% endif %}> 評分最高 </option>
+                    <option value='rating_lowest' {% if order == 'rating_lowest' %}selected{% endif %}> 評分最低 </option>
                   </select>
                 </form>
             </div>
