@@ -2,6 +2,7 @@ from django.shortcuts import render,get_object_or_404
 from django.urls import reverse
 from review.models import Review,Heart
 from django.db.models import Count
+
 from django.views.generic import (
     CreateView,
     DetailView,
@@ -16,6 +17,19 @@ from review.models import Review
 from movie.models import Movie
 
 # Create your views here.
+
+# from time import time
+# from django.http import JsonResponse
+# from django.views.generic import View
+# class AjaxHandlerView(View):
+#     def get(self, request):
+#         text = request.GET.get('button_text')
+#         print(text)
+#         t = time()
+
+#         return JsonResponse({'seconds':t}, status =200)
+
+
 class MovieCreateView(CreateView):
     model = Movie
     template_name = "movie_create_form.html"
@@ -67,6 +81,13 @@ class MovieDetailView(DetailView):
                         context["heart_list"].append(Heart.objects.get(user=self.request.user.id,review=review.id))  
         
         return context
+
+    # def get(self, request):
+    #     text = request.GET.get('button_text')
+    #     print(text)
+    #     t = time()
+
+    #     return JsonResponse({'seconds':t}, status =200)
 
 
 class MovieListView(ListView):
