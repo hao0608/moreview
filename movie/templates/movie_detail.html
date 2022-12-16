@@ -60,23 +60,24 @@ input[name=heart]:checked ~ label {
 
 /* for styling purpose only */
 label[for=heart] {  font-size: 3em;
-}
-
- 
-    
-    
+}    
 </style>
 
- 
+
+<script>
+    // 編輯後隱藏原評論
+    function hideDiv() {
+        document.getElementById('comment').style.display = "none";
+}
+</script>
+
+
 <div class="content-pad-top container px-4 px-lg-5">
  
      <div class="row gx-4 gx-lg-5 justify-content-center">
         
         <div class="col-8 col-md-8 col-lg-6 col-xl-5">
                 <h1><b>{{ movie.name }}</b>  </h1>
-                
-                
-
         </div>
         <div class="col-1 col-md-1 col-lg-2 col-xl-2">
  
@@ -163,11 +164,12 @@ label[for=heart] {  font-size: 3em;
                     </form>
                 </div>
             {% endif %}
-
+            <hr>
             <!-- 排序選單 -->
-            <div>
+            <div class="d-flex justify-content-end align-items-center gap-1 mb-4">
+                <span>排序方式</span>
                 <form class="d-flex" method="GET" name="sort">
-                  <select  name="order" onchange="this.form.submit();">
+                  <select class="form-select w-auto" name="order" onchange="this.form.submit();">
                     <!-- <option> 請選擇 </option> -->
                     <option value='latest' {% if order == 'latest' %}selected{% endif %}> 最新評論 </option>
                     <option value='oldest' {% if order == 'oldest' %}selected{% endif %}> 最舊評論 </option>
@@ -175,12 +177,13 @@ label[for=heart] {  font-size: 3em;
                   </select>
                 </form>
             </div>
+            
             <!-- 評論清單 -->
             {% for review in review_list %}
                 <div class="card mb-3">
                     <div class="card-body">
                         <div class=" d-flex justify-content-between">
-                            <h3 class="card-title"><b>使用者: {{review.user.username}}</b></h3>
+                            <h3 class="card-title"><b>{{review.user.username}}</b></h3>
                             <h5 class="card-title"></h5>
                             <h5 class="card-title">
                                 <div class="dropdown" >
@@ -190,7 +193,7 @@ label[for=heart] {  font-size: 3em;
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                         {% if request.user.username == review.user.username %}
                                             <li>
-                                                <button class="dropdown-item" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                                <button class="dropdown-item" id="edit" type="button"onclick="hideDiv()" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                                                     修改評論
                                                 </button>
                                             </li>
@@ -208,38 +211,52 @@ label[for=heart] {  font-size: 3em;
                             </h5>
                         </div>
 
-                        <!-- 評論星星區塊 -->
-                        <div class="  justify-content-between mb-3">
-                            <i class="fa fa-star" {% if review.rating > 0 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
-                            <i class="fa fa-star" {% if review.rating > 1 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
-                            <i class="fa fa-star" {% if review.rating > 2 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
-                            <i class="fa fa-star" {% if review.rating > 3 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
-                            <i class="fa fa-star" {% if review.rating > 4 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
-                        </div> 
-                        <div class="d-flex justify-content-between">
-                            <p>評論內容: {{review.content}}</p>
-                        </div>  
+                        <!-- 顯示評論星星&內容區塊 -->
+                        <div id="comment">
+                            <div class="  justify-content-between mb-3">
+                                <i class="fa fa-star" {% if review.rating > 0 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
+                                <i class="fa fa-star" {% if review.rating > 1 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
+                                <i class="fa fa-star" {% if review.rating > 2 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
+                                <i class="fa fa-star" {% if review.rating > 3 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
+                                <i class="fa fa-star" {% if review.rating > 4 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
+                            </div> 
+                            <div class="d-flex justify-content-between">
+                                <p>{{review.content}}</p>
+                            </div>     
+                        </div>
 
- 
+                        
+
+                        <!-- 修改評論區塊 -->
                         {% if request.user.username == review.user.username %}
                             <div class="collapse" id="collapseExample">
-                                <div class="card card-body">
                                     <form action="{% url 'review:edit' review.id%}" method="POST">{% csrf_token %}
                                         <input type="hidden" name="movieID" value="{{movie.id}}" />
                                         <input type="hidden" name="reviewID" value="{{review.id}}" />
-                                        <input name="content" value="{{review.content}}"/>
-                                        <select name="rating">
-                                            <option value='1'{%if review.rating == 1%}selected{%endif%}> 1 </option>
-                                            <option value='2'{%if review.rating == 2%}selected{%endif%}> 2 </option>
-                                            <option value='3'{%if review.rating == 3%}selected{%endif%}> 3 </option>
-                                            <option value='4'{%if review.rating == 4%}selected{%endif%}> 4 </option>
-                                            <option value='5'{%if review.rating == 5%}selected{%endif%}> 5 </option>
-                                        </select>
-                    
-                                        <button type="submit">修改</button>
-                                        
+                                        <div class="d-flex justify-content align-items-center gap-1 mb-4">
+                                            <span>評分: </span>
+                                            <div class="col-2 mb-2">
+                                                <select  class="form-select w-auto" name="rating">
+                                                    <option value='1'{%if review.rating == 1%}selected{%endif%}> 1 </option>
+                                                    <option value='2'{%if review.rating == 2%}selected{%endif%}> 2 </option>
+                                                    <option value='3'{%if review.rating == 3%}selected{%endif%}> 3 </option>
+                                                    <option value='4'{%if review.rating == 4%}selected{%endif%}> 4 </option>
+                                                    <option value='5'{%if review.rating == 5%}selected{%endif%}> 5 </option>
+                                                </select>   
+                                            </div>
+
+                                        </div>
+                                        <div class="mb-2">
+                                            <textarea class="form-control"name="content" rows="5">{{review.content}}</textarea>
+                                        </div>
+
+
+
+                                        <div class="modal-footer  ">
+                                            <button type="submit" class="btn btn-custom-primary">修改</button>
+                                        </div>
                                     </form>                                
-                                </div>
+                                 
                             </div>
                         {% endif %}
  
