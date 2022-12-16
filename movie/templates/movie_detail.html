@@ -143,16 +143,8 @@
 
             <div>
                 <form action="{% url 'review:create' %}" method="POST">{% csrf_token %}
-                    <input type="hidden" name="userID" value="{{request.user.id}}" />
                     <input type="hidden" name="movieID" value="{{movie.id}}" />
-                    <input name="content" />
-                    <select name="rating">
-                        <option value='1'> 1 </option>
-                        <option value='2'> 2 </option>
-                        <option value='3' selected> 3 </option>
-                        <option value='4'> 4 </option>
-                        <option value='5'> 5 </option>
-                    </select>
+                    {{ form.as_p }}
 
                     <button type="submit">評論</button>
                     
@@ -189,13 +181,14 @@
                                     <input type="hidden" name="movieID" value="{{movie.id}}" />
                                     <input type="hidden" name="reviewID" value="{{review.id}}" />
                                     <input name="content" value="{{review.content}}"/>
-                                    <select name="rating">
+                                     <select name="rating">
                                         <option value='1'{%if review.rating == 1%}selected{%endif%}> 1 </option>
                                         <option value='2'{%if review.rating == 2%}selected{%endif%}> 2 </option>
                                         <option value='3'{%if review.rating == 3%}selected{%endif%}> 3 </option>
                                         <option value='4'{%if review.rating == 4%}selected{%endif%}> 4 </option>
                                         <option value='5'{%if review.rating == 5%}selected{%endif%}> 5 </option>
                                     </select>
+                                    <!-- {{update_form.as_p}} -->
                 
                                     <button type="submit">修改</button>
                                     
@@ -204,7 +197,6 @@
                             <form method="POST" action="{% url 'review:heart' review.id %}">{% csrf_token %}
                                 <input type="hidden" name="movieID" value="{{movie.id}}" />
                                 <input type="hidden" name="reviewID" value="{{review.id}}" />
-                                <input type="hidden" name="userID" value="{{request.user.id}}" />
                                 <input type="checkbox" onchange="this.form.submit();" name="heart" 
                                     {% for heart in heart_list %}
                                         {% if request.user.id == heart.user.id %}

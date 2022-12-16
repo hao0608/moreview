@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 from django.urls import reverse
 from review.models import Review,Heart
 from django.db.models import Count
@@ -11,6 +11,8 @@ from django.views.generic import (
 )
 
 from .forms import MovieModelForm
+from review.forms import ReviewModelForm
+from review.models import Review
 from movie.models import Movie
 
 # Create your views here.
@@ -26,7 +28,8 @@ class MovieDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(MovieDetailView, self).get_context_data(**kwargs)
-        
+        context["form"]=ReviewModelForm()
+
         # sort, default : "latest"
         order = self.request.GET.get("order")
         # According to date_created

@@ -13,7 +13,7 @@ from .forms import ReviewModelForm
 class ReviewCreateView(View):
     def post(self, request, *args, **kwargs):
         movie=Movie.objects.get(id=request.POST['movieID'])
-        user=User.objects.get(id=request.POST['userID'])        
+        user=User.objects.get(id=self.request.user.id)        
         content=request.POST['content']
         rating=int(request.POST['rating'])
         Review.objects.create(
@@ -37,7 +37,7 @@ class HeartView(View):
     def post(self, request, *args, **kwargs):
         movie=Movie.objects.get(id=request.POST['movieID'])
         review=Review.objects.get(id=request.POST['reviewID'])
-        user=User.objects.get(id=request.POST['userID'])
+        user=User.objects.get(id=self.request.user.id)        
         print(request.POST.keys())
         post_keys=request.POST.keys()
         if 'heart' in post_keys:
