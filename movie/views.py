@@ -35,9 +35,21 @@ class MovieDetailView(DetailView):
             order_query = "date_created"
         review_list = Review.objects.filter(movie_id=self.object.id).annotate(heart_number=Count('heart')).order_by(order_query)
 
-        #According to number of heart
-        if order == "heart":  
+        # According to number of heart
+        # highest
+        if order == "heart_highest":  
             review_list = Review.objects.filter(movie_id=self.object.id).annotate(heart_number=Count('heart')).order_by('-heart_number')
+        # lowest
+        elif order == "heart_lowest":
+            review_list = Review.objects.filter(movie_id=self.object.id).annotate(heart_number=Count('heart')).order_by('heart_number')
+
+        # According to rating
+        # highest
+        if order == "rating_highest":
+            review_list = Review.objects.filter(movie_id=self.object.id).annotate(heart_number=Count('heart')).order_by('-rating')
+        # lowest
+        elif order == "rating_lowest":
+            review_list = Review.objects.filter(movie_id=self.object.id).annotate(heart_number=Count('heart')).order_by('rating')
 
         context['review_list'] = review_list
         context["order"]=order

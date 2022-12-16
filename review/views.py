@@ -1,17 +1,19 @@
 from django.urls import reverse
-from django.http import HttpResponseRedirect
+from django.shortcuts import render
+from django.http import HttpResponseRedirect,HttpResponse
 
 from django.views import View
 
 from users.models import User
 from movie.models import Movie
 from review.models import Review, Heart
+from .forms import ReviewModelForm
 
 # Create your views here.
 class ReviewCreateView(View):
     def post(self, request, *args, **kwargs):
         movie=Movie.objects.get(id=request.POST['movieID'])
-        user=User.objects.get(id=request.POST['userID'])
+        user=User.objects.get(id=request.POST['userID'])        
         content=request.POST['content']
         rating=int(request.POST['rating'])
         Review.objects.create(
@@ -21,6 +23,8 @@ class ReviewCreateView(View):
             rating=rating
         )
         return HttpResponseRedirect(reverse("movie:detail", kwargs={"pk": movie.pk}))
+        
+
 
 class ReviewDeleteView(View):
     def post(self, request, *args, **kwargs):
