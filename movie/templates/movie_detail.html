@@ -1,80 +1,42 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<style>
-    *{
-        margin:0;
-        padding: 0 ;
-        box-sizing: border-box;
-    }
+    {% load i18n %}
 
-    #check{
-        display: none;
-    }
-    label{
-        display: inline-block;
-        text-decoration: underline;
-        cursor: pointer;
-        font-weight: 600;
-    }
-    #check:checked ~ .content{
-        display: block;
-    }
-    #check:checked ~ label{
-        visibility: hidden;    
-    }
+    <style>
+        .line-clamp {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+        }
+    </style>
 
-    #check:checked ~ label:after{   
-        content: 'Show Less';
-        display: block;
-        visibility: visible;
-    }
+    <div class="align-self-center px-2 col-12 col-lg-8">
+        <div class="row">
+            <div class="col-12 col-lg-4 d-flex justify-content-center mb-2">
+                <img src="{{ movie.image.url }}" class="mx-auto w-100" style="height: 400px; object-fit: contain;">
+            </div>
 
-    #check:checked ~ p{
-        display:none
-         /* visibility:hidden; */
-    }
-    #check:checked ~ p:after{
-    
-        visibility:visible;
-    }
-    .content{
-        display: none;
-    }
- 
-    .dropdown-toggle::after {
-    display:none;
-    }
-    
-</style>
- 
-<div class="content-pad-top container px-4 px-lg-5">
- 
-     <div class="row gx-4 gx-lg-5 justify-content-center">
-        
-        <div class="col-8 col-md-8 col-lg-6 col-xl-5">
-                <h1>{{ movie.name }}  </h1>
-        </div>
-        <div class="col-1 col-md-1 col-lg-2 col-xl-2">
-            <!-- <h1><i class="fa fa-ellipsis-h" aria-hidden="true"></i></h1> -->
-            <!-- Example single danger button -->
-            <!-- <div class="btn-group">
-                <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"  >
-                 <h2><i class="fa fa-ellipsis-h" aria-hidden="true"></i></h2>
-                </button>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a class="dropdown-item" href="#">                        
-                            <form method="POST" action="{% url 'movie:delete' movie.id %}">{% csrf_token %}
-                                <button type="submit" style="border: none; background: none; width: 100%; text-align: left;">刪除</button>
-                            </form>
-                        </a>
-                    </li>
-                <li>
-                    <a class="dropdown-item" href="#">                        
-                        <form action="{% url 'movie:edit' movie.id %}">
-                            <button type="submit" style="border: none; background: none; width: 100%; text-align: left;">修改</button>
-                        </form>
+            <div class="col-12 col-lg-8">
+                <h1>{{ movie.name }}</h1>
+
+                <p>
+                    <i class="fa fa-star text-custom-primary" aria-hidden="true"></i>
+                    {% if 'no rating' == 'no rating' %}
+                        {% trans 'No rating yet' %}
+                    {% else %}
+                        {{ 'rating' }} / 5
+                    {% endif %}
+                </p>
+                <p><span class="rounded-pill text-bg-custom-primary px-2 py-1">{{ movie.tag_id.name }}</span></p>
+                <p class="text-capitalize">{% trans 'release date' %}: {{ movie.date_released|date:'Y/m/d' }}</p>
+                <p class="text-capitalize">{% trans 'time' %}: {{ movie.time }}</p>
+                <p class="text-capitalize">{% trans 'grade' %}: {{ movie.grade }}</p>
+                <p>
+                    <a href='{{ movie.official_site }}' class="text-custom-primary text-capitalize">
+                        {% trans 'official site' %}
+                        <i class="fa fa-external-link"></i>
                     </a>
                 </li>
                 <li><hr class="dropdown-divider"></li>

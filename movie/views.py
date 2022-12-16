@@ -102,7 +102,7 @@ class MovieListView(ListView):
             else:  # not search
                 movie_obj = Movie.objects.filter(image__contains="movies/").order_by(order_query)
             context["object_list"] = movie_obj
-            context["order"]=order
+            context["order"] = order
             return context
         else:
             # get request
