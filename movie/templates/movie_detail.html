@@ -1,14 +1,28 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {% load i18n %}
+    {% load i18n crispy_forms_tags %}
     <style>
+        
         .line-clamp {
             overflow: hidden;
             display: -webkit-box;
             -webkit-box-orient: vertical;
             -webkit-line-clamp: 3;
         }
+
+        /* hides the checkbox */
+#heart {
+  display: none;
+}
+/* changes the color when selected */
+input[name=heart]:checked ~ label {
+  color: red;
+}
+
+/* for styling purpose only */
+label[for=heart] {  font-size: 3em;
+}    
     </style>
     <script>
         // 編輯後隱藏原評論
@@ -50,17 +64,15 @@
         </div>
     </div>
 
-    <div class="row gx-4 gx-lg-5 justify-content-center pt-3">
-        <div class="col-md-10 col-lg-8 col-xl-7">
-            <hr>
-            <!-- 新增評論區塊 -->
+    <div class="align-self-center px-2 col-12 col-lg-8">
+        <div>
+             <!-- 新增評論區塊 -->
             {% if request.user.is_authenticated %}              
                 <div class="container">
-                    <form action="{% url 'review:create' %}" method="POST">{% csrf_token %}
+                    <form action="{% url 'review:create' %}" method="POST" >{% csrf_token %}
                         <input type="hidden" name="movieID" value="{{movie.id}}" />
-                        {{ form.as_p }}
-                        <button  type="submit">評論</button>
-                        
+                        {% crispy form %}
+                        <input type="submit" value='{% trans 'create' %}' class="btn btn-custom-primary "/>
                     </form>
                 </div>
             {% endif %}
