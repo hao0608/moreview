@@ -2,7 +2,6 @@
 
 {% block content %}
     {% load i18n %}
-
     <style>
         .line-clamp {
             overflow: hidden;
@@ -11,7 +10,12 @@
             -webkit-line-clamp: 3;
         }
     </style>
-
+    <script>
+        // 編輯後隱藏原評論
+        function hideDiv() {
+            document.getElementById('comment').style.display = "none";
+    }
+    </script>
     <div class="align-self-center px-2 col-12 col-lg-8">
         <div class="row">
             <div class="col-12 col-lg-4 d-flex justify-content-center mb-2">
@@ -42,60 +46,12 @@
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="#">Separated link</a></li>
                 </ul>
-            </div> -->
-        </div>
-     
-        <div class="col-md-10 col-lg-8 col-xl-7">
-            <h4>
-                <i class="fa fa-star" style="color:#7DCE94"aria-hidden="true"></i>平均星星:   
-                
-            </h4>
-            
- 
-        </div>        
-        <div class="col-md-10 col-lg-8 col-xl-7">
-            <h5><span class="badge rounded-pill text-bg-success"  >{{movie.tag_id.name}}</span> </h5>
-
+            </div> 
         </div>
     </div>
 
     <div class="row gx-4 gx-lg-5 justify-content-center pt-3">
         <div class="col-md-10 col-lg-8 col-xl-7">
-            <div class="container">
-                <div class="mb-3 row justify-content-between  ">
-                    <div class="col-auto me-auto">
-                        <p class="fs-4">上映日:  {{movie.date_released}}</p>
-                    </div>
-                </div>
-                <div class="mb-3 row justify-content-between  ">
-                    <div class="col-auto me-auto">
-                        <p class="fs-4">時長:   {{movie.time}}</p>
-                    </div>
-                </div>
-                <div class="mb-3 row justify-content-between  ">
-                    <div class="col-auto me-auto">
-                        <p class="fs-4">分級:   {{movie.grade}}</p>
-                    </div>
-                </div>
-                <div class="mb-3 row justify-content-between  ">
-                    <div class="col-auto me-auto">
-                        <p class="fs-4"><a href='{{movie.official_site}}'class="text-custom-primary">官方網站</a><i class="fa fa-external-link fa-lg " style="color:#7DCE94"aria-hidden="true"></i>
-                        </p>
-                    </div>
-                </div>
-                <div class="mb-3 row justify-content-between  ">
-                    <div class="col-auto me-auto">
-                        <div class="container">
-                            <input type="checkbox" id="check">
-                            <p>{{movie.content | slice:85}}...</p>
-                            <div class="content">
-                                <p>{{movie.content}}</p>
-                            </div>
-                            <label for="check" class = "more">Read more</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <hr>
             <!-- 新增評論區塊 -->
             {% if request.user.is_authenticated %}              
