@@ -1,10 +1,8 @@
 from django.urls import reverse
-from django.http import HttpResponseRedirect
-
-from .forms import ReviewModelForm
+from django.shortcuts import render
+from django.http import HttpResponseRedirect,HttpResponse
 
 from django.views import View
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 from users.models import User
 from movie.models import Movie
@@ -15,7 +13,7 @@ from .forms import ReviewModelForm
 class ReviewCreateView(View):
     def post(self, request, *args, **kwargs):
         movie=Movie.objects.get(id=request.POST['movieID'])
-        user=User.objects.get(id=request.POST['userID'])
+        user=User.objects.get(id=self.request.user.id)        
         content=request.POST['content']
         rating=int(request.POST['rating'])
         Review.objects.create(
@@ -25,6 +23,8 @@ class ReviewCreateView(View):
             rating=rating
         )
         return HttpResponseRedirect(reverse("movie:detail", kwargs={"pk": movie.pk}))
+        
+
 
 class ReviewDeleteView(View):
     def post(self, request, *args, **kwargs):
@@ -37,7 +37,7 @@ class HeartView(View):
     def post(self, request, *args, **kwargs):
         movie=Movie.objects.get(id=request.POST['movieID'])
         review=Review.objects.get(id=request.POST['reviewID'])
-        user=User.objects.get(id=request.POST['userID'])
+        user=User.objects.get(id=self.request.user.id)        
         print(request.POST.keys())
         post_keys=request.POST.keys()
         if 'heart' in post_keys:

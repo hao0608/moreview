@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 from django.urls import reverse
 from review.models import Review,Heart
 from django.db.models import Count
@@ -12,6 +12,8 @@ from django.views.generic import (
 )
 
 from .forms import MovieModelForm
+from review.forms import ReviewModelForm
+from review.models import Review
 from movie.models import Movie
 
 # Create your views here.
@@ -40,7 +42,8 @@ class MovieDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(MovieDetailView, self).get_context_data(**kwargs)
-        
+        context["form"]=ReviewModelForm()
+
         # sort, default : "latest"
         order = self.request.GET.get("order")
         # According to date_created
@@ -49,9 +52,21 @@ class MovieDetailView(DetailView):
             order_query = "date_created"
         review_list = Review.objects.filter(movie_id=self.object.id).annotate(heart_number=Count('heart')).order_by(order_query)
 
-        #According to number of heart
-        if order == "heart":  
+        # According to number of heart
+        # highest
+        if order == "heart_highest":  
             review_list = Review.objects.filter(movie_id=self.object.id).annotate(heart_number=Count('heart')).order_by('-heart_number')
+        # lowest
+        elif order == "heart_lowest":
+            review_list = Review.objects.filter(movie_id=self.object.id).annotate(heart_number=Count('heart')).order_by('heart_number')
+
+        # According to rating
+        # highest
+        if order == "rating_highest":
+            review_list = Review.objects.filter(movie_id=self.object.id).annotate(heart_number=Count('heart')).order_by('-rating')
+        # lowest
+        elif order == "rating_lowest":
+            review_list = Review.objects.filter(movie_id=self.object.id).annotate(heart_number=Count('heart')).order_by('rating')
 
         context['review_list'] = review_list
         context["order"]=order
@@ -93,32 +108,30 @@ class MovieListView(ListView):
         context = super(MovieListView, self).get_context_data(**kwargs)
 
         if self.request.path == reverse("movie:list"):
-            # 取得request
+            # get request
             query = self.request.GET.get("q")
             order = self.request.GET.get("order")
             order_query = "-date_released"
             movie_obj = None
-            if order == "Asc":
+            if order == "oldest":
                 order_query = "date_released"
 
-            if query is not None:  # 搜尋
+            if query is not None:  # search
                 movie_obj = Movie.objects.filter(
                     name__contains=query, image__contains="movies/"
                 ).order_by(order_query)
-            else:  # 沒有搜尋
-                movie_obj = Movie.objects.filter(image__contains="movies/").order_by(
-                    order_query
-                )
+            else:  # not search
+                movie_obj = Movie.objects.filter(image__contains="movies/").order_by(order_query)
             context["object_list"] = movie_obj
-            context["order"]=order
+            context["order"] = order
             return context
         else:
-            # 取得request
+            # get request
             query = self.request.GET.get("q")
             movie_obj = None
-            if query is not None:  # 搜尋
+            if query is not None:  # serch
                 movie_obj = Movie.objects.filter(name__contains=query)
-            else:  # 沒有搜尋
+            else:  # not search
                 movie_obj = Movie.objects.all()
             context["object_list"] = movie_obj
             return context

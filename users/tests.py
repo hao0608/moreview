@@ -1,12 +1,9 @@
-import time
-
 from django import forms
 from django.contrib import auth
 from django.contrib.auth.forms import PasswordChangeForm
 from django.db import models
 from django.test import Client, TestCase, RequestFactory
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.translation import gettext as _
 from faker import Faker
 
@@ -61,22 +58,11 @@ class UserModelTest(TestCase):
         field = self.model._meta.get_field("date_updated")
 
         self.assertEqual(models.DateTimeField, field.__class__)
-        self.assertEqual(timezone.now, field.default)
+        self.assertTrue(field.auto_now)
 
     def test_required_fields_for_creating_superuser_have_correct_fields(self):
         self.assertEqual(
             ["first_name", "last_name", "email"], self.model.REQUIRED_FIELDS
-        )
-
-    def test_date_updated_field_updates_when_record_updates(self):
-        self.user.email = self.faker.unique.safe_email()
-        # date_joined and date_updated is difference in nanoseconds when created
-        time.sleep(1)
-        self.user.save()
-
-        self.assertNotEqual(
-            self.user.date_joined.strftime("%Y-%m-%d %H:%M:%S"),
-            self.user.date_updated.strftime("%Y-%m-%d %H:%M:%S"),
         )
 
 
@@ -116,7 +102,7 @@ class RegisterFormTest(TestCase):
 
         self.assertFalse(form.is_valid())
         self.assertTrue(
-            _("Password does not match confirm_password") in form["password"].errors
+            _("Password does not match confirm password") in form["password"].errors
         )
 
 
