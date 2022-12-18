@@ -38,29 +38,194 @@
                         {% trans 'official site' %}
                         <i class="fa fa-external-link"></i>
                     </a>
-                </p>
-                <p class="line-clamp text-break mb-0">{{ movie.content }}</p>
-                <a class="text-muted text-decoration-underline" id="toggle-content">{% trans 'Show more' %}</a>
-            </div>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">Separated link</a></li>
+                </ul>
+            </div> -->
+        </div>
+     
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            <h4>
+                <i class="fa fa-star" style="color:#7DCE94"aria-hidden="true"></i>平均星星:   
+                
+            </h4>
+            
+ 
+        </div>        
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            <h5><span class="badge rounded-pill text-bg-success"  >{{movie.tag_id.name}}</span> </h5>
+
         </div>
     </div>
-{% endblock %}
 
-{% block script %}
-    <script type="application/javascript">
-        const toggleContent = document.getElementById('toggle-content')
-        const content = toggleContent.previousElementSibling
+    <div class="row gx-4 gx-lg-5 justify-content-center pt-3">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            <div class="container">
+                <div class="mb-3 row justify-content-between  ">
+                    <div class="col-auto me-auto">
+                        <p class="fs-4">上映日:  {{movie.date_released}}</p>
+                    </div>
+                </div>
+                <div class="mb-3 row justify-content-between  ">
+                    <div class="col-auto me-auto">
+                        <p class="fs-4">時長:   {{movie.time}}</p>
+                    </div>
+                </div>
+                <div class="mb-3 row justify-content-between  ">
+                    <div class="col-auto me-auto">
+                        <p class="fs-4">分級:   {{movie.grade}}</p>
+                    </div>
+                </div>
+                <div class="mb-3 row justify-content-between  ">
+                    <div class="col-auto me-auto">
+                        <p class="fs-4"><a href='{{movie.official_site}}'class="text-custom-primary">官方網站</a><i class="fa fa-external-link fa-lg " style="color:#7DCE94"aria-hidden="true"></i>
+                        </p>
+                    </div>
+                </div>
+                <div class="mb-3 row justify-content-between  ">
+                    <div class="col-auto me-auto">
+                        <div class="container">
+                            <input type="checkbox" id="check">
+                            <p>{{movie.content | slice:85}}...</p>
+                            <div class="content">
+                                <p>{{movie.content}}</p>
+                            </div>
+                            <label for="check" class = "more">Read more</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!-- 新增評論區塊 -->
+            {% if request.user.is_authenticated %}              
+                <div class="container">
+                    <form action="{% url 'review:create' %}" method="POST">{% csrf_token %}
+                        <input type="hidden" name="movieID" value="{{movie.id}}" />
+                        {{ form.as_p }}
+                        <button  type="submit">評論</button>
+                        
+                    </form>
+                </div>
+            {% endif %}
+            <hr>
+            <!-- 排序選單 -->
+            <div class="d-flex justify-content-end align-items-center gap-1 mb-4">
+                <span>排序方式</span>
+                <form class="d-flex" method="GET" name="sort">
+                  <select class="form-select w-auto" name="order" onchange="this.form.submit();">
+                    <option value='latest' {% if order == 'latest' %}selected{% endif %}> 最新評論 </option>
+                    <option value='oldest' {% if order == 'oldest' %}selected{% endif %}> 最舊評論 </option>
+                    <option value='heart_highest' {% if order == 'heart_highest' %}selected{% endif %}> 愛心最多 </option>
+                    <option value='heart_lowest' {% if order == 'heart_lowest' %}selected{% endif %}> 愛心最少 </option>
+                    <option value='rating_highest' {% if order == 'rating_highest' %}selected{% endif %}> 評分最高 </option>
+                    <option value='rating_lowest' {% if order == 'rating_lowest' %}selected{% endif %}> 評分最低 </option>
+                  </select>
+                </form>
+            </div>
+            
+            <!-- 評論清單 -->
+            {% for review in review_list %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class=" d-flex justify-content-between">
+                            <h3 class="card-title"><b>{{review.user.username}}</b></h3>
+                            <h5 class="card-title"></h5>
+                            <h5 class="card-title">
+                                <div class="dropdown" >
+                                    <button style="border:none;color:black;background-color:white;"type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <h2><i class="fa fa-ellipsis-h"  ></i></h2>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                        {% if request.user.username == review.user.username %}
+                                            <li>
+                                                <button class="dropdown-item" id="edit" type="button"onclick="hideDiv()" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                                    修改評論
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <form method="POST" action="{% url 'review:delete' review.id %}">{% csrf_token %}
+                                                    <input type="hidden" name="movieID" value="{{movie.id}}" />
+                                                    <input type="hidden" name="reviewID" value="{{review.id}}" />
+                                                    <button  class="dropdown-item" type="submit">刪除</button>
+                                                </form>
+                                            </li>
+                                      {% endif %}
+                                      <li><a class="dropdown-item" href="#">檢舉</a></li>
+                                    </ul>
+                                  </div>
+                            </h5>
+                        </div>
 
-        toggleContent.addEventListener('click', function (event) {
-            event.preventDefault()
+                        <!-- 顯示評論星星&內容區塊 -->
+                        <div id="comment">
+                            <div class="  justify-content-between mb-3">
+                                <i class="fa fa-star" {% if review.rating > 0 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
+                                <i class="fa fa-star" {% if review.rating > 1 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
+                                <i class="fa fa-star" {% if review.rating > 2 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
+                                <i class="fa fa-star" {% if review.rating > 3 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
+                                <i class="fa fa-star" {% if review.rating > 4 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
+                            </div> 
+                            <div class="d-flex justify-content-between">
+                                <p>{{review.content}}</p>
+                            </div>     
+                        </div>
 
-            if (content.classList.contains('line-clamp')) {
-                content.classList.remove('line-clamp')
-                toggleContent.innerText = "{% trans 'Show less' %}"
-            } else {
-                content.classList.add('line-clamp')
-                toggleContent.innerText = "{% trans 'Show more' %}"
-            }
-        })
-    </script>
+                        
+
+                        <!-- 修改評論區塊 -->
+                        {% if request.user.username == review.user.username %}
+                            <div class="collapse" id="collapseExample">
+                                <form action="{% url 'review:edit' review.id%}" method="POST">{% csrf_token %}
+                                    <input type="hidden" name="movieID" value="{{movie.id}}" />
+                                    <input type="hidden" name="reviewID" value="{{review.id}}" />
+                                    <div class="d-flex justify-content align-items-center gap-1 mb-4">
+                                        <span>評分: </span>
+                                        <div class="col-2 mb-2">
+                                            <select  class="form-select w-auto" name="rating">
+                                                <option value='1'{%if review.rating == 1%}selected{%endif%}> 1 </option>
+                                                <option value='2'{%if review.rating == 2%}selected{%endif%}> 2 </option>
+                                                <option value='3'{%if review.rating == 3%}selected{%endif%}> 3 </option>
+                                                <option value='4'{%if review.rating == 4%}selected{%endif%}> 4 </option>
+                                                <option value='5'{%if review.rating == 5%}selected{%endif%}> 5 </option>
+                                            </select>   
+                                        </div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <textarea class="form-control"name="content" rows="5">{{review.content}}</textarea>
+                                    </div>
+                                    <div class="modal-footer  ">
+                                        <button type="submit" class="btn btn-custom-primary">修改</button>
+                                    </div>
+                                </form>                                
+                            </div>
+                        {% endif %}
+ 
+                        <!-- 按讚功能 -->
+                        <div class="modal-footer  ">
+                            <form method="POST" action="{% url 'review:heart' review.id %}">{% csrf_token %}
+                                <input type="hidden" name="movieID" value="{{movie.id}}" />
+                                <input type="hidden" name="reviewID" value="{{review.id}}" />
+                                <input type="hidden" name="userID" value="{{request.user.id}}" />
+                                <input type="checkbox" onchange="this.form.submit();" name="heart"  id="heart"
+                                    {% for heart in heart_list %}
+                                        {% if request.user.id == heart.user.id %}
+                                            {% if review.id == heart.review.id %}
+                                                checked
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                /> <label for="heart" id="heart_label" >&#9829</label>{{review.heart_number}}
+                            </form>
+                        </div>    
+                    </div>              
+                </div>
+            {% endfor %}
+
+            
+            
+ 
+        </div> 
+    </div>
+</div>
 {% endblock %}
