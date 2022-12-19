@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load i18n %}
+
+<form method="GET">
+    <section class="mb-4">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control" placeholder="{% trans 'Search by name' %}">
+            <div class="d-flex justify-content-end align-items-center gap-1 mb-4">
+                <select class="form-select w-auto" name="status" >
+                    <option value='all'>
+                        請選擇
+                    </option>
+                    <option value='0' {% if status == '0' %} selected {% endif %}>
+                        underprocess
+                    </option>
+                    <option value='1' {% if status == '1' %} selected {% endif %}>
+                        success
+                    </option>
+                    <option value='2' {% if status == '2' %} selected {% endif %}>
+                        failed
+                    </option>
+                </select>
+            </div>
+            <button class="btn btn-custom-primary text-capitalize" type="submit">
+                {% trans "search" %} <i class="fa fa-search" aria-hidden="true"></i>
+            </button>
+        </div>
+    </section>
+
+    
+</form>
+    {% for report in object_list %}
+    
+        <p>{{report.review.movie}}</p>
+        <p>{{report.review.user}}</p>
+        <p>{{report.review.content}}</p>
+        <p>{{report.user}}</p>
+        <p>{{report.content}}</p>
+        <p>{{report.status}}</p>
+        <p>{{report.handler}}</p>
+        <form action="{% url 'reports:edit' report.pk %}" method="POST">
+            {% csrf_token %}
+            <button class="btn btn-link" type="submit" name="accept_report" value="accept">
+                <span class="badge rounded-pill bg-custom-primary text-capitalize">接受</span>
+            </button>
+            <button class="btn btn-link" type="submit" name="refuse_report" value="refuse">
+                <span class="badge rounded-pill bg-danger text-capitalize">拒絕</span>
+            </button>
+
+        </form>
+        <hr>
+    {% endfor %}
+{% endblock %}

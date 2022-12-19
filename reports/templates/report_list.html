@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% for report in object_list %}
+    <p>{{report.review.movie}}</p>
+    <p>{{report.review.user}}</p>
+    <p>{{report.review.content}}</p>
+    <p>{{report.user}}</p>
+    <p>{{report.content}}</p>
+    <p>{{report.status}}</p>
+    <p>{{report.handler}}</p>
+        <form method="POST" action="{% url 'reports:delete' report.id %}">
+            {% csrf_token %}
+            <button type="submit">刪除</button>
+        </form>
+        <hr>
+    {% endfor %}
+{% endblock %}
