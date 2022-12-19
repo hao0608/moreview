@@ -64,17 +64,27 @@ label[for=heart] {  font-size: 3em;
         </div>
     </div>
 
+
+    <!-- {% for review in review_list %}
+        {% if not request.user.username == review.user.username %}
+            <p> {{ forloop.counter }}</p>
+
+        {% endif %}
+    {% endfor %} -->
     <div class="align-self-center px-2 col-12 col-lg-8">
         <div>
              <!-- 新增評論區塊 -->
-            {% if request.user.is_authenticated %}              
-                <div class="container">
-                    <form action="{% url 'review:create' %}" method="POST" >{% csrf_token %}
-                        <input type="hidden" name="movieID" value="{{movie.id}}" />
-                        {% crispy form %}
-                        <input type="submit" value='{% trans 'create' %}' class="btn btn-custom-primary "/>
-                    </form>
-                </div>
+            {% if request.user.is_authenticated %} 
+ 
+                    
+                    <div class="container">
+                        <form action="{% url 'review:create' %}" method="POST" >{% csrf_token %}
+                            <input type="hidden" name="movieID" value="{{movie.id}}" />
+                            {{ form|crispy}}
+                            <input type="submit" value='{% trans 'create' %}' class="btn btn-custom-primary "/>
+                        </form>
+                    </div>
+ 
             {% endif %}
             <hr>
             <!-- 排序選單 -->
@@ -175,7 +185,7 @@ label[for=heart] {  font-size: 3em;
                                 <input type="hidden" name="movieID" value="{{movie.id}}" />
                                 <input type="hidden" name="reviewID" value="{{review.id}}" />
                                 <input type="hidden" name="userID" value="{{request.user.id}}" />
-                                <input type="checkbox" onchange="this.form.submit();" name="heart"  id="heart"
+                                <input type="checkbox" onchange="this.form.submit();" name="heart"  id={{review.id}} style="display:none;"
                                     {% for heart in heart_list %}
                                         {% if request.user.id == heart.user.id %}
                                             {% if review.id == heart.review.id %}
@@ -183,7 +193,7 @@ label[for=heart] {  font-size: 3em;
                                             {% endif %}
                                         {% endif %}
                                     {% endfor %}
-                                /> <label for="heart" id="heart_label" >&#9829</label>{{review.heart_number}}
+                                /> <label for={{review.id}} id="heart_label" ><h2>&#9829</h2></label>{{review.heart_number}}
                             </form>
                         </div>    
                     </div>              
