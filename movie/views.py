@@ -15,6 +15,7 @@ from .forms import MovieModelForm
 from review.forms import ReviewModelForm
 from review.models import Review
 from movie.models import Movie
+from reports.models import Report
 from reports.forms import ReportModelForm
 
 # Create your views here.
@@ -108,10 +109,26 @@ class MovieDetailView(DetailView):
 
         context["self_review_list"] = []
         for review in context["review_list"]:
-            context["self_review_list"].append(Review.objects.get(
+            if self.request.user.id == review.user.id:
+                if not self.request.user.is_superuser:
+                    context["self_review_list"].append(Review.objects.get(
                                 user=self.request.user.id, movie_id=self.object.id
                                 )
                         )
+        report_list = (
+            Report.objects.filter(user=self.request.user.id)
+        )
+        context["report_list"] = report_list
+        context["self_report_list"] = []
+        for report in report_list:
+            for review in context["review_list"]:
+                if report.review.id == review.id:
+                    if not self.request.user.is_superuser:
+                        context["self_report_list"].append(Report.objects.get(
+                                user=self.request.user.id, review=review.id,
+                                )
+                        )
+
         return context
 
     # def get(self, request):

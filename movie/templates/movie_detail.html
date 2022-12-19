@@ -91,6 +91,7 @@
                             <h3 class="card-title"><b>{{review.user.username}}</b></h3>
                             <h5 class="card-title"></h5>
                             <h5 class="card-title">
+				{% if request.user.is_authenticated and not request.user.is_superuser %}
                                 <div class="dropdown" >
                                     <button style="border:none;color:black;background-color:white;"type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                         <h2><i class="fa fa-ellipsis-h"  ></i></h2>
@@ -110,14 +111,17 @@
                                                 </form>
                                             </li>
                                         {% endif %}
-                                        {% if request.user.username != review.user.username %}
+					{% if request.user.username != review.user.username%}
+					{% if not self_report_list %}
                                             <li><a class="dropdown-item" type="button" data-bs-toggle="modal"
                                             data-bs-target="#create_report_form">檢舉</a></li>
-                                            
-
+                                         {% else %} 
+					    <li><button class="dropdown-item" disabled>已檢舉</button></li>
                                         {% endif %}
+					{% endif %}
                                     </ul>
                                   </div>
+				  {% endif %}
                             </h5>
                         </div>
 
@@ -193,8 +197,9 @@
                             </div>
                         {% endif %}
  
+			{% if request.user.is_authenticated and not request.user.is_superuser %}
                         <!-- 按讚功能 -->
-                        <div class="modal-footer  ">
+                        <div class="modal-footer">
                             <form method="POST" action="{% url 'review:heart' review.id %}">{% csrf_token %}
                                 <input type="hidden" name="movieID" value="{{movie.id}}" />
                                 <input type="hidden" name="reviewID" value="{{review.id}}" />
@@ -209,7 +214,8 @@
                                     {% endfor %}
                                 /> <label for="heart" id="heart_label" >&#9829</label>{{review.heart_number}}
                             </form>
-                        </div>    
+                        </div>
+			{% endif %}
                     </div>              
                 </div>
             {% endfor %}
