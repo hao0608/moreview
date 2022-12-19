@@ -19,7 +19,9 @@
 input[name=heart]:checked ~ label {
   color: red;
 }
-
+input[name=heart]:hover ~ label {
+  color: red;
+}
 /* for styling purpose only */
 label[for=heart] {  font-size: 3em;
 }    
@@ -85,7 +87,12 @@ label[for=heart] {  font-size: 3em;
                         </form>
                     </div>
  
+            {% else %}
+            <div class="need-login">
+                <a href="">登录后即可评论</a>
+            </div>
             {% endif %}
+                     
             <hr>
             <!-- 排序選單 -->
             <div class="d-flex justify-content-end align-items-center gap-1 mb-4">
