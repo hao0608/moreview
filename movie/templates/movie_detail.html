@@ -197,9 +197,9 @@
                             </div>
                         {% endif %}
  
-			{% if request.user.is_authenticated and not request.user.is_superuser %}
                         <!-- 按讚功能 -->
                         <div class="modal-footer">
+			    {% if request.user.is_authenticated and not request.user.is_superuser %}
                             <form method="POST" action="{% url 'review:heart' review.id %}">{% csrf_token %}
                                 <input type="hidden" name="movieID" value="{{movie.id}}" />
                                 <input type="hidden" name="reviewID" value="{{review.id}}" />
@@ -212,10 +212,12 @@
                                             {% endif %}
                                         {% endif %}
                                     {% endfor %}
-                                /> <label for="heart" id="heart_label" >&#9829</label>{{review.heart_number}}
+                                /><label for="heart" id="heart_label" >&#9829</label>{{review.heart_number}} 
                             </form>
+			    {% else %}
+			    	<label for="heart" id="heart_label" >&#9829</label>{{review.heart_number}}
+			    {% endif %}
                         </div>
-			{% endif %}
                     </div>              
                 </div>
             {% endfor %}
