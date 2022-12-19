@@ -2,45 +2,71 @@
 
 {% block content %}
 {% load i18n %}
-
-<form method="GET">
-    <section class="mb-4">
-        <div class="input-group">
-            <input type="text" name="q" class="form-control" placeholder="{% trans 'Search by name' %}">
-            <div class="d-flex justify-content-end align-items-center gap-1 mb-4">
-                <select class="form-select w-auto" name="status" >
-                    <option value='all'>
-                        請選擇
-                    </option>
-                    <option value='0' {% if status == '0' %} selected {% endif %}>
-                        underprocess
-                    </option>
-                    <option value='1' {% if status == '1' %} selected {% endif %}>
-                        success
-                    </option>
-                    <option value='2' {% if status == '2' %} selected {% endif %}>
-                        failed
-                    </option>
-                </select>
-            </div>
-            <button class="btn btn-custom-primary text-capitalize" type="submit">
-                {% trans "search" %} <i class="fa fa-search" aria-hidden="true"></i>
-            </button>
-        </div>
-    </section>
-
-    
-</form>
-    {% for report in object_list %}
-    
-        <p>{{report.review.movie}}</p>
-        <p>{{report.review.user}}</p>
-        <p>{{report.review.content}}</p>
-        <p>{{report.user}}</p>
-        <p>{{report.content}}</p>
-        <p>{{report.status}}</p>
-        <p>{{report.handler}}</p>
-        <form action="{% url 'reports:edit' report.pk %}" method="POST">
+<div class="container px-2">
+	<h1 class="text-center text-capitalize mb-4">{% trans 'report list' %}</h1>
+    </div>
+    {% if request.user.is_superuser %}
+    <div class="container px-2">
+	<form method="GET">
+    		<section class="mb-4">
+        		<div class="input-group">
+            			<input type="text" name="q" class="form-control" placeholder="{% trans 'Search by name' %}">
+				<div class="d-flex justify-content-end align-items-center gap-1 mx-1">
+                			<select class="form-select w-auto" name="status" >
+                    				<option value='all'>請選擇</option>
+                    				<option value='0' {% if status == '0' %} selected {% endif %}>
+                        			underprocess
+                    				</option>
+                    				<option value='1' {% if status == '1' %} selected {% endif %}>
+                        			success
+                    				</option>
+                    				<option value='2' {% if status == '2' %} selected {% endif %}>
+                        			failed
+                    				</option>
+                			</select>
+				</div>
+            			<button class="btn btn-custom-primary text-capitalize" type="submit">
+                			{% trans "search" %} <i class="fa fa-search" aria-hidden="true"></i>
+            			</button>
+        		</div>
+    		</section>
+	</form>
+    </div>
+    <div class="container px-2">
+	    {% if object_list %}
+    	<div class="table-responsive">
+            <table class="table table-hover align-middle">
+		    <thead>
+			    <tr>
+			    	<th>被檢舉人</th>
+			    	<th>電影名稱</th>
+			    	<th>被檢舉評論</th>
+			    	<th>檢舉者</th>
+			    	<th>檢舉理由</th>
+			    	<th>審核狀態</th>
+			    	<th>審核者</th>
+		    	</tr>
+		    </thead>
+		    <tbody>
+			    {% for report in object_list %}
+			    {% if report.status < 3 %}
+			    <tr>
+				<td>{{report.review.user}}</td>
+        			<td>{{report.review.movie}}</td>
+        			<td>{{report.review.content}}</td>
+        			<td>{{report.user}}</td>
+        			<td>{{report.content}}</td>
+        			<td>
+					{% if report.status == 1 %} <!-- 檢舉成功 -->
+					<span class="badge rounded-pill bg-custom-primary text-capitalize">{% trans 'success' %}</span>
+					{% elif report.status == 2 %} <!-- 檢舉失敗 -->
+					<span class="badge rounded-pill bg-danger text-capitalize">{% trans 'failed' %}</span>
+					{% else %} <!-- 待處理 -->
+					<span class="badge rounded-pill bg-secondary text-capitalize">{% trans 'underprocess' %}</span>
+               				{% endif %}
+	</td>
+        <td>{% if not report.handler %}
+	<form action="{% url 'reports:edit' report.pk %}" method="POST">
             {% csrf_token %}
             <button class="btn btn-link" type="submit" name="accept_report" value="accept">
                 <span class="badge rounded-pill bg-custom-primary text-capitalize">接受</span>
@@ -50,6 +76,19 @@
             </button>
 
         </form>
-        <hr>
-    {% endfor %}
+	{% else %}
+		{{report.handler}}
+	{% endif %}
+	</td>
+			    </tr>{% endif %}
+			    {% endfor %}
+	</tbody>
+
+	    </table></div>
+
+	{% else %}
+		<p class="text-center">{% trans 'Sorry, no reports match the condition.' %}</p>
+    {% endif %}
+
+    {% endif %}
 {% endblock %}
