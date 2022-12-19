@@ -106,6 +106,12 @@ class MovieDetailView(DetailView):
                             )
                         )
 
+        context["self_review_list"] = []
+        for review in context["review_list"]:
+            context["self_review_list"].append(Review.objects.get(
+                                user=self.request.user.id, movie_id=self.object.id
+                                )
+                        )
         return context
 
     # def get(self, request):

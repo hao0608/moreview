@@ -55,9 +55,8 @@
 
 	    <div class="row">
             <!-- 新增評論區塊 -->
-            {% if request.user.is_authenticated %}
-	    {% for review in review_list %}
-	    {% if not review.movie.id == movie.id and not review.user.pk == request.user.pk %}
+            {% if request.user.is_authenticated and not request.user.is_superuser %}
+	    {% if not self_review_list %}
                 <div class="container">
                     <form action="{% url 'review:create' %}" method="POST">{% csrf_token %}
                         <input type="hidden" name="movieID" value="{{movie.id}}" />
@@ -67,8 +66,7 @@
                     </form>
                 </div>
 		<hr>
-            {% endif %}
-	    {% endfor %}
+	    {% endif %}
 	    {% endif %}
             <!-- 排序選單 -->
             <div class="d-flex justify-content-end align-items-center gap-1 mb-4">
@@ -170,7 +168,7 @@
                         <!-- 修改評論區塊 -->
                         {% if request.user.username == review.user.username %}
                             <div class="collapse" id="collapseExample">
-                                <form action="{% url 'review:edit' review.id%}" method="POST">{% csrf_token %}
+                                <form action="{% url 'review:edit' review.id %}" method="POST">{% csrf_token %}
                                     <input type="hidden" name="movieID" value="{{movie.id}}" />
                                     <input type="hidden" name="reviewID" value="{{review.id}}" />
                                     <div class="d-flex justify-content align-items-center gap-1 mb-4">
