@@ -22,6 +22,10 @@ input[name=heart]:checked ~ label {
 input[name=heart]:hover ~ label {
   color: red;
 }
+input[name=unlgin_heart]:hover ~ label {
+  color: red;
+}
+
 /* for styling purpose only */
 label[for=heart] {  font-size: 3em;
 }    
@@ -188,20 +192,47 @@ label[for=heart] {  font-size: 3em;
  
                         <!-- 按讚功能 -->
                         <div class="modal-footer  ">
-                            <form method="POST" action="{% url 'review:heart' review.id %}">{% csrf_token %}
-                                <input type="hidden" name="movieID" value="{{movie.id}}" />
-                                <input type="hidden" name="reviewID" value="{{review.id}}" />
-                                <input type="hidden" name="userID" value="{{request.user.id}}" />
-                                <input type="checkbox" onchange="this.form.submit();" name="heart"  id={{review.id}} style="display:none;"
-                                    {% for heart in heart_list %}
-                                        {% if request.user.id == heart.user.id %}
-                                            {% if review.id == heart.review.id %}
-                                                checked
+                            {% if request.user.is_authenticated %} 
+                                <form method="POST" action="{% url 'review:heart' review.id %}">{% csrf_token %}
+                                    <input type="hidden" name="movieID" value="{{movie.id}}" />
+                                    <input type="hidden" name="reviewID" value="{{review.id}}" />
+                                    <input type="hidden" name="userID" value="{{request.user.id}}" />
+                                    <input type="checkbox" onchange="this.form.submit();" name="heart"  id={{review.id}} style="display:none;"
+                                        {% for heart in heart_list %}
+                                            {% if request.user.id == heart.user.id %}
+                                                {% if review.id == heart.review.id %}
+                                                    checked
+                                                {% endif %}
                                             {% endif %}
-                                        {% endif %}
-                                    {% endfor %}
-                                /> <label for={{review.id}} id="heart_label" ><h2>&#9829</h2></label>{{review.heart_number}}
-                            </form>
+                                        {% endfor %}
+                                    /> <label for={{review.id}} id="heart_label" ><h2>&#9829</h2></label>{{review.heart_number}}
+                                </form>
+                            {% else %}
+                                <input type="checkbox"   name="unlgin_heart"  id={{review.id}} style="display:none;"  data-bs-toggle="modal" data-bs-target="#exampleModal"
+ 
+                            /> <label for={{review.id}} id="heart_label" ><h2>&#9829</h2></label>{{review.heart_number}}
+                            {% endif %}
+
+
+                            <!-- Button trigger modal -->
+ 
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">登入後即可留言</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+ 
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+          <button type="button" class="btn btn-custom-primary">登入</button>
+        </div>
+      </div>
+    </div>
+  </div>
                         </div>    
                     </div>              
                 </div>
