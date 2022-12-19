@@ -16,35 +16,33 @@ class ReviewCreateView(View):
         user=User.objects.get(id=self.request.user.id)        
         content=request.POST['content']
         rating=int(request.POST['rating'])
-        Review.objects.create(
+        review=Review.objects.create(
             user=user,
             movie=movie,
             content=content,
             rating=rating
         )
-        return HttpResponseRedirect(reverse("movie:detail", kwargs={"pk": movie.pk}))
+        return HttpResponseRedirect(reverse("movie:detail", kwargs={"pk": review.movie.pk}))
         
 class ReviewDeleteView(View):
     def post(self, request, *args, **kwargs):
         movie=Movie.objects.get(id=request.POST['movieID'])
-        Review.objects.get(id=request.POST['reviewID']).delete()
+        review=Review.objects.get(id=request.POST['reviewID']).delete()
         
         return HttpResponseRedirect(reverse("movie:detail", kwargs={"pk": movie.pk}))
 
 class ReviewEditView(View):
     def post(self, request, *args, **kwargs):
-        movie=Movie.objects.get(id=request.POST['movieID'])
         content=request.POST['content']
         rating=int(request.POST['rating'])
-        Review.objects.filter(id=request.POST['reviewID']).update(
+        review=Review.objects.filter(id=request.POST['reviewID']).update(
             content=content,
             rating=rating
         )
-        return HttpResponseRedirect(reverse("movie:detail", kwargs={"pk": movie.pk}))
+        return HttpResponseRedirect(reverse("movie:detail", kwargs={"pk": review.movie.pk}))
 
 class HeartView(View):
     def post(self, request, *args, **kwargs):
-        movie=Movie.objects.get(id=request.POST['movieID'])
         review=Review.objects.get(id=request.POST['reviewID'])
         user=User.objects.get(id=self.request.user.id)        
         post_keys=request.POST.keys()
@@ -56,5 +54,5 @@ class HeartView(View):
         else:
             Heart.objects.get(user=user,review=review).delete()
 
-        return HttpResponseRedirect(reverse("movie:detail", kwargs={"pk": movie.pk}))
+        return HttpResponseRedirect(reverse("movie:detail", kwargs={"pk": review.movie.pk}))
 

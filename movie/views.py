@@ -15,6 +15,7 @@ from .forms import MovieModelForm
 from review.forms import ReviewModelForm
 from review.models import Review
 from movie.models import Movie
+from reports.forms import ReportModelForm
 
 # Create your views here.
 
@@ -43,6 +44,7 @@ class MovieDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(MovieDetailView, self).get_context_data(**kwargs)
         context["form"]=ReviewModelForm()
+        context["report_create_form"]=ReportModelForm()
 
         # sort, default : "latest"
         order = self.request.GET.get("order")
@@ -130,9 +132,9 @@ class MovieListView(ListView):
             query = self.request.GET.get("q")
             movie_obj = None
             if query is not None:  # serch
-                movie_obj = Movie.objects.filter(name__contains=query)
+                movie_obj = Movie.objects.filter(name__contains=query).order_by("-date_created")
             else:  # not search
-                movie_obj = Movie.objects.all()
+                movie_obj = Movie.objects.all().order_by("-date_created")
             context["object_list"] = movie_obj
             return context
 

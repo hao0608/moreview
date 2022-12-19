@@ -29,6 +29,7 @@ urlpatterns = [
     path("", include("users.urls")),
     path("", include("movie.urls")),
     path("", include("review.urls")),
+    path("", include("reports.urls")),
     # path("admin/", admin.site.urls),
 ]
 

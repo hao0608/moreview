@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {% load i18n %}
+    {% load i18n crispy_forms_tags %}
 
     <style>
         .line-clamp {
@@ -150,11 +150,44 @@
                                                     <button  class="dropdown-item" type="submit">刪除</button>
                                                 </form>
                                             </li>
-                                      {% endif %}
-                                      <li><a class="dropdown-item" href="#">檢舉</a></li>
+                                        {% endif %}
+                                        {% if request.user.username != review.user.username %}
+                                            <li><a class="dropdown-item" type="button" data-bs-toggle="modal"
+                                            data-bs-target="#create_report_form">檢舉</a></li>
+                                            
+
+                                        {% endif %}
                                     </ul>
                                   </div>
                             </h5>
+                        </div>
+
+                        <!-- Modal 新增檢舉 -->
+                        <div class="modal fade" id="create_report_form" tabindex="-1" aria-labelledby="ReportConentLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                            <div class="modal-header">
+                                                    <p class="modal-title fs-5 text-capitalize" id="ReportConentLabel">{% trans 'create report' %}</p>
+
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                            </div>
+
+                                            <form method="post" action="{% url 'reports:create' %}">
+                                                    <div class="modal-body">{% csrf_token %}
+                                                            <input type="hidden" name="reviewID" value="{{review.id}}" />
+                                                            {{ report_create_form|crispy }}
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary text-capitalize" data-bs-dismiss="modal">
+                                                            {% trans 'cancel' %}
+                                                            </button>
+                                                            <button type="submit" class="btn btn-custom-primary" data-bs-dismiss="toast" data-bs-target="#send_success">{% trans 'confirm' %}</button>
+                                                    </div>
+                                            </form>
+                                    </div>
+                            </div>
                         </div>
 
                         <!-- 顯示評論星星&內容區塊 -->
@@ -228,4 +261,7 @@
         </div> 
     </div>
 </div>
+
+
+
 {% endblock %}
