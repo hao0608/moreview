@@ -70,19 +70,10 @@ label[for=heart] {  font-size: 3em;
         </div>
     </div>
 
-
-    <!-- {% for review in review_list %}
-        {% if not request.user.username == review.user.username %}
-            <p> {{ forloop.counter }}</p>
-
-        {% endif %}
-    {% endfor %} -->
     <div class="align-self-center px-2 col-12 col-lg-8">
         <div>
              <!-- 新增評論區塊 -->
             {% if request.user.is_authenticated %} 
- 
-                    
                     <div class="container">
                         <form action="{% url 'review:create' %}" method="POST" >{% csrf_token %}
                             <input type="hidden" name="movieID" value="{{movie.id}}" />
@@ -92,8 +83,12 @@ label[for=heart] {  font-size: 3em;
                     </div>
  
             {% else %}
-            <div class="need-login">
-                <a href="">登录后即可评论</a>
+            <div class="container">
+                <form action="" method="POST" >{% csrf_token %}
+                    <input type="hidden" name="movieID" value="{{movie.id}}" />
+                    {{ form|crispy}}
+                    <input type="button" value='{% trans 'login' %}' class="btn btn-custom-primary "/>
+                </form>
             </div>
             {% endif %}
                      
@@ -158,9 +153,7 @@ label[for=heart] {  font-size: 3em;
                             <div class="d-flex justify-content-between">
                                 <p>{{review.content}}</p>
                             </div>     
-                        </div>
-
-                        
+                        </div>                    
 
                         <!-- 修改評論區塊 -->
                         {% if request.user.username == review.user.username %}
@@ -208,31 +201,29 @@ label[for=heart] {  font-size: 3em;
                                     /> <label for={{review.id}} id="heart_label" ><h2>&#9829</h2></label>{{review.heart_number}}
                                 </form>
                             {% else %}
-                                <input type="checkbox"   name="unlgin_heart"  id={{review.id}} style="display:none;"  data-bs-toggle="modal" data-bs-target="#exampleModal"
- 
-                            /> <label for={{review.id}} id="heart_label" ><h2>&#9829</h2></label>{{review.heart_number}}
+                                <input type="checkbox"   name="unlgin_heart"  id={{review.id}} style="display:none;"  data-bs-toggle="modal" data-bs-target="#exampleModal"/> 
+                                <label for={{review.id}} id="heart_label" >
+                                    <h2>&#9829</h2>
+                                </label>{{review.heart_number}}
+                                <!-- Unlogin Alert Modal -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">訪客與管理者無權新增留言</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                        登入或換隻帳號試試
+                                        </div>
+                                        <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                                        <button type="button" class="btn btn-custom-primary" onclick="location. href='{% url 'users:login' %}'">登入</a></button>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
                             {% endif %}
-
-
-                            <!-- Button trigger modal -->
- 
-  
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">登入後即可留言</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
- 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
-          <button type="button" class="btn btn-custom-primary">登入</button>
-        </div>
-      </div>
-    </div>
-  </div>
                         </div>    
                     </div>              
                 </div>
