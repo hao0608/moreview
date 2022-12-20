@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-from review.models import Review,Heart
-from django.db.models import Count,Avg,Func
+from review.models import Review, Heart
+from django.db.models import Count, Avg, Func
 
 from django.views.generic import (
     CreateView,
@@ -18,9 +18,11 @@ from movie.models import Movie
 
 # Create your views here.
 
+
 class Round(Func):
-    function = 'Round'
-    template='%(function)s(%(expressions)s, 2)'
+    function = "Round"
+    template = "%(function)s(%(expressions)s, 2)"
+
 
 class MovieCreateView(CreateView):
     model = Movie
@@ -37,7 +39,9 @@ class MovieDetailView(DetailView):
         context["form"] = ReviewModelForm()
 
         # movie average rating
-        context['movie']=Movie.objects.annotate(average_rating=Round(Avg('review__rating'))).get(id=self.kwargs['pk'])
+        context["movie"] = Movie.objects.annotate(
+            average_rating=Round(Avg("review__rating"))
+        ).get(id=self.kwargs["pk"])
 
         # sort, default : "latest"
         order = self.request.GET.get("order")
