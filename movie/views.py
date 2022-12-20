@@ -113,17 +113,15 @@ class MovieDetailView(DetailView):
         report_list = (
             Report.objects.filter(user=self.request.user.id)
         )
+
         context["report_list"] = report_list
         context["self_report_list"] = []
         for report in report_list:
             for review in context["review_list"]:
                 if report.review.id == review.id:
                     if not self.request.user.is_superuser:
-                        context["self_report_list"].append(Report.objects.get(
-                                user=self.request.user.id, review=review.id,
-                                )
-                        )
-
+                        context["self_report_list"].append(review)
+        
         return context
 
 

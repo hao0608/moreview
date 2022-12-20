@@ -84,8 +84,8 @@ label[for=heart] {  font-size: 3em;
                 <div class="container">
                     <form action="{% url 'review:create' %}" method="POST">{% csrf_token %}
                         <input type="hidden" name="movieID" value="{{movie.id}}" />
-                        {{ form.as_p }}
-                        <button  type="submit">評論</button>
+                        {{ form|crispy}}
+                        <input type="submit" value='{% trans 'create' %}' class="btn btn-custom-primary "/>
                         
                     </form>
                 </div>
@@ -142,7 +142,7 @@ label[for=heart] {  font-size: 3em;
                                             </li>
                                         {% endif %}
 					{% if request.user.username != review.user.username%}
-					{% if not self_report_list %}
+					{% if review not in self_report_list %}
                                             <li><a class="dropdown-item" type="button" data-bs-toggle="modal"
                                             data-bs-target="#create_report_form">檢舉</a></li>
                                          {% else %} 
