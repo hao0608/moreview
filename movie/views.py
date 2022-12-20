@@ -1,4 +1,4 @@
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from review.models import Review,Heart
 from django.db.models import Count,Avg,Func
@@ -34,7 +34,7 @@ class MovieDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(MovieDetailView, self).get_context_data(**kwargs)
-        context["form"]=ReviewModelForm()
+        context["form"] = ReviewModelForm()
 
         # movie average rating
         context['movie']=Movie.objects.annotate(average_rating=Round(Avg('review__rating'))).get(id=self.kwargs['pk'])
@@ -45,37 +45,60 @@ class MovieDetailView(DetailView):
         order_query = "-date_created"
         if order == "oldest":
             order_query = "date_created"
-        review_list = Review.objects.filter(movie_id=self.object.id).annotate(heart_number=Count('heart')).order_by(order_query)
+        review_list = (
+            Review.objects.filter(movie_id=self.object.id)
+            .annotate(heart_number=Count("heart"))
+            .order_by(order_query)
+        )
 
         # According to number of heart
         # highest
-        if order == "heart_highest":  
-            review_list = Review.objects.filter(movie_id=self.object.id).annotate(heart_number=Count('heart')).order_by('-heart_number')
+        if order == "heart_highest":
+            review_list = (
+                Review.objects.filter(movie_id=self.object.id)
+                .annotate(heart_number=Count("heart"))
+                .order_by("-heart_number")
+            )
         # lowest
         elif order == "heart_lowest":
-            review_list = Review.objects.filter(movie_id=self.object.id).annotate(heart_number=Count('heart')).order_by('heart_number')
+            review_list = (
+                Review.objects.filter(movie_id=self.object.id)
+                .annotate(heart_number=Count("heart"))
+                .order_by("heart_number")
+            )
 
         # According to rating
         # highest
         if order == "rating_highest":
-            review_list = Review.objects.filter(movie_id=self.object.id).annotate(heart_number=Count('heart')).order_by('-rating')
+            review_list = (
+                Review.objects.filter(movie_id=self.object.id)
+                .annotate(heart_number=Count("heart"))
+                .order_by("-rating")
+            )
         # lowest
         elif order == "rating_lowest":
-            review_list = Review.objects.filter(movie_id=self.object.id).annotate(heart_number=Count('heart')).order_by('rating')
+            review_list = (
+                Review.objects.filter(movie_id=self.object.id)
+                .annotate(heart_number=Count("heart"))
+                .order_by("rating")
+            )
 
-        context['review_list'] = review_list
-        context["order"]=order
+        context["review_list"] = review_list
+        context["order"] = order
 
         # Displays the hearts that the user has clicked
-        heart_list=Heart.objects.all()
-        context['heart_list']=[]
+        heart_list = Heart.objects.all()
+        context["heart_list"] = []
         for heart in heart_list:
             if heart.user.id == self.request.user.id:
                 for review in context["review_list"]:
                     if heart.review.id == review.id:
-                        context["heart_list"].append(Heart.objects.get(user=self.request.user.id,review=review.id))  
-        
-        print(context['movie'].average_rating)
+                        context["heart_list"].append(
+                            Heart.objects.get(
+                                user=self.request.user.id, review=review.id
+                            )
+                        )
+
         return context
 
 
@@ -110,7 +133,9 @@ class MovieListView(ListView):
                     name__contains=query, image__contains="movies/"
                 ).order_by(order_query)
             else:  # not search
-                movie_obj = Movie.objects.filter(image__contains="movies/").order_by(order_query)
+                movie_obj = Movie.objects.filter(image__contains="movies/").order_by(
+                    order_query
+                )
             context["object_list"] = movie_obj
             context["order"] = order
             return context
