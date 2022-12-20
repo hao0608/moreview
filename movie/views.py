@@ -108,7 +108,7 @@ class MovieListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(MovieListView, self).get_context_data(**kwargs)
-
+        
         if self.request.path == reverse("movie:list"):
             # get request
             query = self.request.GET.get("q")
@@ -126,6 +126,7 @@ class MovieListView(ListView):
                 movie_obj = Movie.objects.filter(image__contains="movies/").order_by(order_query)
             context["object_list"] = movie_obj
             context["order"] = order
+            
             return context
         else:
             # get request
