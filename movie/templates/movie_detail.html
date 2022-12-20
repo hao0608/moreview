@@ -47,10 +47,10 @@ label[for=heart] {  font-size: 3em;
 
                 <p>
                     <i class="fa fa-star text-custom-primary" aria-hidden="true"></i>
-                    {% if 'no rating' == 'no rating' %}
-                        {% trans 'No rating yet' %}
+                    {% if movie.average_rating %}
+                        {{ movie.average_rating }} / 5
                     {% else %}
-                        {{ 'rating' }} / 5
+                        {% trans 'No rating yet' %}
                     {% endif %}
                 </p>
                 <p><span class="rounded-pill text-bg-custom-primary px-2 py-1">{{ movie.tag_id.name }}</span></p>
