@@ -1,6 +1,6 @@
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-from review.models import Review,Heart
+from review.models import Review, Heart
 from django.db.models import Count
 
 from django.views.generic import (
@@ -15,6 +15,7 @@ from .forms import MovieModelForm
 from review.forms import ReviewModelForm
 from review.models import Review
 from movie.models import Movie
+from reports.models import Report
 from reports.forms import ReportModelForm
 
 # Create your views here.
@@ -52,36 +53,82 @@ class MovieDetailView(DetailView):
         order_query = "-date_created"
         if order == "oldest":
             order_query = "date_created"
-        review_list = Review.objects.filter(movie_id=self.object.id).annotate(heart_number=Count('heart')).order_by(order_query)
+        review_list = (
+            Review.objects.filter(movie_id=self.object.id)
+            .annotate(heart_number=Count("heart"))
+            .order_by(order_query)
+        )
 
         # According to number of heart
         # highest
-        if order == "heart_highest":  
-            review_list = Review.objects.filter(movie_id=self.object.id).annotate(heart_number=Count('heart')).order_by('-heart_number')
+        if order == "heart_highest":
+            review_list = (
+                Review.objects.filter(movie_id=self.object.id)
+                .annotate(heart_number=Count("heart"))
+                .order_by("-heart_number")
+            )
         # lowest
         elif order == "heart_lowest":
-            review_list = Review.objects.filter(movie_id=self.object.id).annotate(heart_number=Count('heart')).order_by('heart_number')
+            review_list = (
+                Review.objects.filter(movie_id=self.object.id)
+                .annotate(heart_number=Count("heart"))
+                .order_by("heart_number")
+            )
 
         # According to rating
         # highest
         if order == "rating_highest":
-            review_list = Review.objects.filter(movie_id=self.object.id).annotate(heart_number=Count('heart')).order_by('-rating')
+            review_list = (
+                Review.objects.filter(movie_id=self.object.id)
+                .annotate(heart_number=Count("heart"))
+                .order_by("-rating")
+            )
         # lowest
         elif order == "rating_lowest":
-            review_list = Review.objects.filter(movie_id=self.object.id).annotate(heart_number=Count('heart')).order_by('rating')
+            review_list = (
+                Review.objects.filter(movie_id=self.object.id)
+                .annotate(heart_number=Count("heart"))
+                .order_by("rating")
+            )
 
-        context['review_list'] = review_list
-        context["order"]=order
+        context["review_list"] = review_list
+        context["order"] = order
 
         # Displays the hearts that the user has clicked
-        heart_list=Heart.objects.all()
-        context['heart_list']=[]
+        heart_list = Heart.objects.all()
+        context["heart_list"] = []
         for heart in heart_list:
             if heart.user.id == self.request.user.id:
                 for review in context["review_list"]:
                     if heart.review.id == review.id:
-                        context["heart_list"].append(Heart.objects.get(user=self.request.user.id,review=review.id))  
-        
+                        context["heart_list"].append(
+                            Heart.objects.get(
+                                user=self.request.user.id, review=review.id
+                            )
+                        )
+
+        context["self_review_list"] = []
+        for review in context["review_list"]:
+            if self.request.user.id == review.user.id:
+                if not self.request.user.is_superuser:
+                    context["self_review_list"].append(Review.objects.get(
+                                user=self.request.user.id, movie_id=self.object.id
+                                )
+                        )
+        report_list = (
+            Report.objects.filter(user=self.request.user.id)
+        )
+        context["report_list"] = report_list
+        context["self_report_list"] = []
+        for report in report_list:
+            for review in context["review_list"]:
+                if report.review.id == review.id:
+                    if not self.request.user.is_superuser:
+                        context["self_report_list"].append(Report.objects.get(
+                                user=self.request.user.id, review=review.id,
+                                )
+                        )
+
         return context
 
     # def get(self, request):
@@ -123,7 +170,9 @@ class MovieListView(ListView):
                     name__contains=query, image__contains="movies/"
                 ).order_by(order_query)
             else:  # not search
-                movie_obj = Movie.objects.filter(image__contains="movies/").order_by(order_query)
+                movie_obj = Movie.objects.filter(image__contains="movies/").order_by(
+                    order_query
+                )
             context["object_list"] = movie_obj
             context["order"] = order
             

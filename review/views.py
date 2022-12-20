@@ -1,6 +1,6 @@
 from django.urls import reverse
 from django.shortcuts import render
-from django.http import HttpResponseRedirect,HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse
 
 from django.views import View
 
@@ -31,15 +31,18 @@ class ReviewDeleteView(View):
         
         return HttpResponseRedirect(reverse("movie:detail", kwargs={"pk": movie.pk}))
 
+
 class ReviewEditView(View):
     def post(self, request, *args, **kwargs):
+        movie=Movie.objects.get(id=request.POST['movieID'])
         content=request.POST['content']
         rating=int(request.POST['rating'])
         review=Review.objects.filter(id=request.POST['reviewID']).update(
             content=content,
             rating=rating
         )
-        return HttpResponseRedirect(reverse("movie:detail", kwargs={"pk": review.movie.pk}))
+        return HttpResponseRedirect(reverse("movie:detail", kwargs={"pk": movie.pk}))
+
 
 class HeartView(View):
     def post(self, request, *args, **kwargs):
@@ -52,7 +55,7 @@ class HeartView(View):
                 review=review,
             )
         else:
-            Heart.objects.get(user=user,review=review).delete()
+            Heart.objects.get(user=user, review=review).delete()
 
         return HttpResponseRedirect(reverse("movie:detail", kwargs={"pk": review.movie.pk}))
 
