@@ -114,6 +114,7 @@ label[for=heart] {  font-size: 3em;
             
             <!-- 評論清單 -->
             {% for review in review_list %}
+            {% if review.existed == False %}
                 <div class="card mb-3">
                     <div class="card-body">
                         <div class=" d-flex justify-content-between">
@@ -268,6 +269,8 @@ label[for=heart] {  font-size: 3em;
                         </div>    
                     </div>              
                 </div>
+
+                {% endif %}
             {% endfor %}
  
         </div> 
