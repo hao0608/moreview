@@ -185,7 +185,7 @@ label[for=heart] {  font-size: 3em;
  
                         <!-- 按讚功能 -->
                         <div class="modal-footer  ">
-                            {% if request.user.is_authenticated %} 
+                            {% if request.user.is_authenticated and not request.user.is_superuser %} 
                                 <form method="POST" action="{% url 'review:heart' review.id %}">{% csrf_token %}
                                     <input type="hidden" name="movieID" value="{{movie.id}}" />
                                     <input type="hidden" name="reviewID" value="{{review.id}}" />
@@ -210,11 +210,11 @@ label[for=heart] {  font-size: 3em;
                                     <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">訪客與管理者無權新增留言</h5>
+                                        <h5 class="modal-title" id="exampleModalLabel">{% if request.user.is_superuser %}管理者無權按讚{% else %}訪客無權按讚{% endif %}</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                        登入或換隻帳號試試
+                                            {% if request.user.is_superuser %}請切換為非管理帳號即可按讚{% else %}請登入後即可按讚{% endif %}
                                         </div>
                                         <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
