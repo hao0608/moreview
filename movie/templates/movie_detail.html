@@ -117,7 +117,7 @@
                                             </li>
                                         {% endif %}
 					{% if request.user.username != review.user.username%}
-					{% if not self_report_list %}
+					{% if not self_report_list.review.pk %}
                                             <li><a class="dropdown-item" type="button" data-bs-toggle="modal"
                                             data-bs-target="#create_report_form">檢舉</a></li>
                                          {% else %} 

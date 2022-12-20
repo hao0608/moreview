@@ -66,25 +66,60 @@
                				{% endif %}
 	</td>
         <td>{% if not report.handler %}
-	<form action="{% url 'reports:edit' report.pk %}" method="POST">
-            {% csrf_token %}
-            <button class="btn btn-link" type="submit" name="accept_report" value="accept">
-                <span class="badge rounded-pill bg-custom-primary text-capitalize">接受</span>
-            </button>
-            <button class="btn btn-link" type="submit" name="refuse_report" value="refuse">
-                <span class="badge rounded-pill bg-danger text-capitalize">拒絕</span>
-            </button>
 
-        </form>
+		<span class="badge rounded-pill bg-custom-primary text-capitalize" type="button" data-bs-toggle="modal" data-bs-target="#accept_report">接受</span>
+        <span class="badge rounded-pill bg-danger text-capitalize" type="button" data-bs-toggle="modal" data-bs-target="#refuse_report">拒絕</span>
+
+<!-- Accept Report Modal -->
+        <div class="modal fade" id="accept_report" tabindex="-1" aria-labelledby="acceptReportLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                         <div class="modal-header">
+                               <p class="modal-title fs-5 text-capitalize" id="acceptReportLabel">審核檢舉</p>                               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                         </div>
+                         <div class="modal-body">
+                               <p>是否確認該筆檢舉？</p>
+                         </div>
+                         <div class="modal-footer">
+                               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'cancel' %}</button>
+                                <form action="{% url 'reports:edit' report.pk %}" method="POST">
+                                     {% csrf_token %}
+                                     <button class="btn bg-custom-primary" type="submit" name="accept_report" value="accept">{% trans 'confirm' %}</button>
+                               </form>
+                         </div>
+                  </div>
+                </div>
+        </div>
+
+	<!-- Refuse Report Modal -->
+        <div class="modal fade" id="refuse_report" tabindex="-1" aria-labelledby="refuseReportLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                         <div class="modal-header">
+                               <p class="modal-title fs-5 text-capitalize" id="refuseReportLabel">審核檢舉</p>                               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                         </div>
+                         <div class="modal-body">
+                               <p>是否拒絕該筆檢舉？</p>
+                         </div>
+                         <div class="modal-footer">
+                               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'cancel' %}</button>
+                                <form action="{% url 'reports:edit' report.pk %}" method="POST">
+                                     {% csrf_token %}
+                                     <button class="btn btn-danger" type="submit" name="refuse_report" value="refuse">{% trans 'confirm' %}</button>
+                               </form>
+                         </div>
+                  </div>
+                </div>
+        </div>
 	{% else %}
-		{{report.handler}}
-	{% endif %}
-	</td>
-			    </tr>{% endif %}
-			    {% endfor %}
-	</tbody>
+                {{report.handler}}
+        {% endif %}
+        </td>
+                            </tr>{% endif %}
+                            {% endfor %}
+        </tbody>
 
-	    </table></div>
+            </table>
 
 	{% else %}
 		<p class="text-center">{% trans 'Sorry, no reports match the condition.' %}</p>

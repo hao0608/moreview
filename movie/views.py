@@ -119,7 +119,7 @@ class MovieDetailView(DetailView):
             Report.objects.filter(user=self.request.user.id)
         )
         context["report_list"] = report_list
-        context["self_report_list"] = []
+        context["self_report_list"] = {}
         for report in report_list:
             for review in context["review_list"]:
                 if report.review.id == review.id:
