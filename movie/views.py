@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from review.models import Review, Heart
-from django.db.models import Count
+from django.db.models import Count, Avg, Func
 
 from django.views.generic import (
     CreateView,
@@ -18,16 +18,10 @@ from movie.models import Movie
 
 # Create your views here.
 
-# from time import time
-# from django.http import JsonResponse
-# from django.views.generic import View
-# class AjaxHandlerView(View):
-#     def get(self, request):
-#         text = request.GET.get('button_text')
-#         print(text)
-#         t = time()
 
-#         return JsonResponse({'seconds':t}, status =200)
+class Round(Func):
+    function = "Round"
+    template = "%(function)s(%(expressions)s, 2)"
 
 
 class MovieCreateView(CreateView):
@@ -43,6 +37,11 @@ class MovieDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(MovieDetailView, self).get_context_data(**kwargs)
         context["form"] = ReviewModelForm()
+
+        # movie average rating
+        context["movie"] = Movie.objects.annotate(
+            average_rating=Round(Avg("review__rating"))
+        ).get(id=self.kwargs["pk"])
 
         # sort, default : "latest"
         order = self.request.GET.get("order")
@@ -105,13 +104,6 @@ class MovieDetailView(DetailView):
                         )
 
         return context
-
-    # def get(self, request):
-    #     text = request.GET.get('button_text')
-    #     print(text)
-    #     t = time()
-
-    #     return JsonResponse({'seconds':t}, status =200)
 
 
 class MovieListView(ListView):
