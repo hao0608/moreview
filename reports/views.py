@@ -38,6 +38,10 @@ class ReportListView(ListView):
                     review__movie__name__contains=query,
                     status=status
                 ).order_by("-date_updated")
+            elif query is not None:
+                 report_obj=Report.objects.filter(
+                    review__movie__name__contains=query
+                ).order_by("-date_updated")
             else:
                 report_obj=Report.objects.all().order_by("-date_updated")
             
@@ -70,9 +74,10 @@ class ReportDeleteView(View):
 class ReportReviewView(View):
     def post(self, request, *args, **kwargs):
         report=Report.objects.filter(id=self.kwargs['pk'])
-        print(request.POST.keys())
+        review=Review.objects.filter(id=report[0].review.id)
         if "accept_report" in request.POST.keys():
             report.update(status=1,handler=self.request.user)
+            review.update(existed=True)
         elif "refuse_report" in request.POST.keys():
             report.update(status=2,handler=self.request.user)
         

@@ -2,8 +2,8 @@
 
 {% block content %}
     {% load i18n crispy_forms_tags %}
-
     <style>
+        
         .line-clamp {
             overflow: hidden;
             display: -webkit-box;
@@ -13,6 +13,25 @@
 	#readmore {
 		display: none;
 	}
+
+        /* hides the checkbox */
+	#heart {
+	  display: none;
+	}
+	/* changes the color when selected */
+	input[name=heart]:checked ~ label {
+	  color: red;
+	}
+	input[name=heart]:hover ~ label {
+	  color: red;
+	}
+	input[name=unlgin_heart]:hover ~ label {
+	  color: red;
+	}
+
+	/* for styling purpose only */
+	label[for=heart] {  font-size: 3em;
+	}    
     </style>
 
     <div class="align-self-center px-2 col-12 col-lg-8">
@@ -22,20 +41,23 @@
             </div>
 
             <div class="col-12 col-lg-8">
-                <h1>{{ movie.name }}</h1>
+		<div class="w-100 w-md-auto d-flex justify-content-between">
+                <p class="fs-1 fw-bold text-capitalize">{{ movie.name }}</p>
 
-                <p>
-                    <i class="fa fa-star text-custom-primary" aria-hidden="true"></i>
-                    {% if 'no rating' == 'no rating' %}
-                        {% trans 'No rating yet' %}
+                <p class="fs-3 text-capitalize d-flex justify-content-center align-items-center">
+                    <i class="fa fa-star text-custom-primary mx-2" aria-hidden="true"></i>
+                    {% if movie.average_rating %}
+                        {{ movie.average_rating }}
                     {% else %}
-                        {{ 'rating' }} / 5
+                        {% trans 'No rating yet' %}
                     {% endif %}
                 </p>
-                <p><span class="rounded-pill text-bg-custom-primary px-2 py-1">{{ movie.tag_id.name }}</span></p>
-                <p class="text-capitalize">{% trans 'release date' %}: {{ movie.date_released|date:'Y/m/d' }}</p>
-                <p class="text-capitalize">{% trans 'time' %}: {{ movie.time }}</p>
-                <p class="text-capitalize">{% trans 'grade' %}: {{ movie.grade }}</p>
+		</div>
+		 <p><span class="rounded-pill text-bg-custom-primary px-2 py-1">{{ movie.tag_id.name }}</span></p>
+		<div class="row border rounded py-2">
+                <p class="text-capitalize">{% trans 'release date' %} : {{ movie.date_released|date:'Y/m/d' }}</p>
+                <p class="text-capitalize">{% trans 'time' %} : {{ movie.time }}</p>
+                <p class="text-capitalize">{% trans 'grade' %} : {{ movie.grade }}</p>
                 <p>
                     <a href='{{ movie.official_site }}' class="text-custom-primary text-capitalize">
                         {% trans 'official site' %}
@@ -43,25 +65,31 @@
                     </a>
                 </p>
 		<div class="row">
+			<p class="text-capitalize border-bottom">{% trans 'description' %}</p>
         		<div class="span4 collapse-group">
+				{% if movie.content|length > 80 %}
 				<p>{{movie.content | slice:80}}<span id="dots"> ... </span><span id="readmore">{{movie.content| slice:"80:"}}</span> 
 			<a type="button" class="text-capitalize text-custom-primary" onclick="Readmore()" id="readbtn">Read More</a></p>
-        		</div>
+        			{% else %}
+				<p>{{movie.content}}</p>
+				{% endif %}
+			</div>
       		</div>
-
+		</div>
             </div>
         </div>
 	<hr>
 
-	    <div class="row">
+	    <div class="row py-2">
             <!-- 新增評論區塊 -->
             {% if request.user.is_authenticated and not request.user.is_superuser %}
 	    	{% if not self_review_list %}
-                <div class="container">
+		<h3>新增評論</h3>
+                <div class="container pb-2">
                     <form action="{% url 'review:create' %}" method="POST">{% csrf_token %}
                         <input type="hidden" name="movieID" value="{{movie.id}}" />
-                        {{ form.as_p }}
-                        <button  type="submit">評論</button>
+                        {{ form|crispy}}
+                        <input type="submit" value='{% trans 'create' %}' class="btn btn-custom-primary "/>
                         
                     </form>
                 </div>
@@ -90,6 +118,7 @@
             
             <!-- 評論清單 -->
             {% for review in review_list %}
+            {% if review.existed == False %}
                 <div class="card mb-3">
                     <div class="card-body">
                         <div class=" d-flex justify-content-between">
@@ -117,7 +146,7 @@
                                             </li>
                                         {% endif %}
 					{% if request.user.username != review.user.username%}
-					{% if not self_report_list.review.pk %}
+					{% if review not in self_report_list %}
                                             <li><a class="dropdown-item" type="button" data-bs-toggle="modal"
                                             data-bs-target="#create_report_form">檢舉</a></li>
                                          {% else %} 
@@ -170,9 +199,7 @@
                             <div class="d-flex justify-content-between">
                                 <p>{{review.content}}</p>
                             </div>     
-                        </div>
-
-                        
+                        </div>                    
 
                         <!-- 修改評論區塊 -->
                         {% if request.user.username == review.user.username %}
@@ -203,28 +230,59 @@
                         {% endif %}
  
                         <!-- 按讚功能 -->
-                        <div class="modal-footer">
-			    {% if request.user.is_authenticated and not request.user.is_superuser %}
-                            <form method="POST" action="{% url 'review:heart' review.id %}">{% csrf_token %}
-                                <input type="hidden" name="movieID" value="{{movie.id}}" />
-                                <input type="hidden" name="reviewID" value="{{review.id}}" />
-                                <input type="hidden" name="userID" value="{{request.user.id}}" />
-                                <input type="checkbox" onchange="this.form.submit();" name="heart"  id="heart"
-                                    {% for heart in heart_list %}
-                                        {% if request.user.id == heart.user.id %}
-                                            {% if review.id == heart.review.id %}
-                                                checked
+                        <div class="modal-footer  ">
+                            {% if request.user.is_authenticated and not request.user.is_superuser %} 
+                                <form method="POST" action="{% url 'review:heart' review.id %}">{% csrf_token %}
+                                    <input type="hidden" name="movieID" value="{{movie.id}}" />
+                                    <input type="hidden" name="reviewID" value="{{review.id}}" />
+                                    <input type="hidden" name="userID" value="{{request.user.id}}" />
+                                    <input type="checkbox" onchange="this.form.submit();" name="heart"  id={{review.id}} style="display:none;"
+                                        {% for heart in heart_list %}
+                                            {% if request.user.id == heart.user.id %}
+                                                {% if review.id == heart.review.id %}
+                                                    checked
+                                                {% endif %}
                                             {% endif %}
-                                        {% endif %}
-                                    {% endfor %}
-                                /><label for="heart" id="heart_label" >&#9829</label>{{review.heart_number}} 
-                            </form>
-			    {% else %}
-			    	<label for="heart" id="heart_label" >&#9829</label>{{review.heart_number}}
-			    {% endif %}
-                        </div>
+                                        {% endfor %}
+                                    /> <label for={{review.id}} id="heart_label" ><h2>&#9829</h2></label>{{review.heart_number}}
+                                </form>
+                            {% else %}
+                                <input type="checkbox"   name="unlgin_heart"  id={{review.id}} style="display:none;"  data-bs-toggle="modal" data-bs-target="#exampleModal"/> 
+                                <label for={{review.id}} id="heart_label" >
+                                    <h2>&#9829</h2>
+                                </label>{{review.heart_number}}
+                                <!-- Unlogin Alert Modal -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">{% if request.user.is_superuser %}管理者無權按讚{% else %}訪客無權按讚{% endif %}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            {% if request.user.is_superuser %}請切換為非管理帳號即可按讚{% else %}請登入後即可按讚{% endif %}
+                                        </div>
+                                        <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+					{% if request.user.is_superuser %}
+					<form method="post" action="{% url 'users:logout' %}">
+                            		{% csrf_token %}
+					<button type="submit" class="btn btn-custom-primary">{% trans 'login' %}
+                            		</button>
+                        		</form>
+					{% else %}
+					<button type="button" class="btn btn-custom-primary" onclick="location. href='{% url 'users:login' %}'">{% trans 'login' %}</a></button>
+					{% endif %}
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>    
                     </div>              
                 </div>
+
+                {% endif %}
             {% endfor %}
  
         </div> 
@@ -234,6 +292,7 @@
 
 {% block script %}
 	<script type="application/javascript">
+	// Readmore / Readless button
 	function Readmore() {
 	  var dots = document.getElementById("dots");
 	  var moreText = document.getElementById("readmore");
@@ -247,7 +306,11 @@
 	    dots.style.display = "none";
 	    btnText.innerHTML = "Read less";
 	    moreText.style.display = "inline";
-  }
-}
+  	  }
+	}
+        // 編輯後隱藏原評論
+        function hideDiv() {
+            document.getElementById('comment').style.display = "none";
+    	}
 	</script>
 {% endblock %}

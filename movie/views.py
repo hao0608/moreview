@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-from review.models import Review, Heart
-from django.db.models import Count
+from review.models import Review,Heart
+from django.db.models import Count,Avg,Func
 
 from django.views.generic import (
     CreateView,
@@ -20,17 +20,9 @@ from reports.forms import ReportModelForm
 
 # Create your views here.
 
-# from time import time
-# from django.http import JsonResponse
-# from django.views.generic import View
-# class AjaxHandlerView(View):
-#     def get(self, request):
-#         text = request.GET.get('button_text')
-#         print(text)
-#         t = time()
-
-#         return JsonResponse({'seconds':t}, status =200)
-
+class Round(Func):
+    function = 'Round'
+    template='%(function)s(%(expressions)s, 2)'
 
 class MovieCreateView(CreateView):
     model = Movie
@@ -47,12 +39,16 @@ class MovieDetailView(DetailView):
         context["form"]=ReviewModelForm()
         context["report_create_form"]=ReportModelForm()
 
+        # movie average rating
+        context['movie']=Movie.objects.annotate(average_rating=Round(Avg('review__rating'))).get(id=self.kwargs['pk'])
+
         # sort, default : "latest"
         order = self.request.GET.get("order")
         # According to date_created
         order_query = "-date_created"
         if order == "oldest":
             order_query = "date_created"
+
         review_list = (
             Review.objects.filter(movie_id=self.object.id)
             .annotate(heart_number=Count("heart"))
@@ -118,25 +114,16 @@ class MovieDetailView(DetailView):
         report_list = (
             Report.objects.filter(user=self.request.user.id)
         )
+
         context["report_list"] = report_list
-        context["self_report_list"] = {}
+        context["self_report_list"] = []
         for report in report_list:
             for review in context["review_list"]:
                 if report.review.id == review.id:
                     if not self.request.user.is_superuser:
-                        context["self_report_list"].append(Report.objects.get(
-                                user=self.request.user.id, review=review.id,
-                                )
-                        )
-
+                        context["self_report_list"].append(review)
+        
         return context
-
-    # def get(self, request):
-    #     text = request.GET.get('button_text')
-    #     print(text)
-    #     t = time()
-
-    #     return JsonResponse({'seconds':t}, status =200)
 
 
 class MovieListView(ListView):
@@ -155,7 +142,7 @@ class MovieListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(MovieListView, self).get_context_data(**kwargs)
-
+        
         if self.request.path == reverse("movie:list"):
             # get request
             query = self.request.GET.get("q")
@@ -175,6 +162,7 @@ class MovieListView(ListView):
                 )
             context["object_list"] = movie_obj
             context["order"] = order
+            
             return context
         else:
             # get request
