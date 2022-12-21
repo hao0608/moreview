@@ -15,30 +15,25 @@
 	}
 
         /* hides the checkbox */
-#heart {
-  display: none;
-}
-/* changes the color when selected */
-input[name=heart]:checked ~ label {
-  color: red;
-}
-input[name=heart]:hover ~ label {
-  color: red;
-}
-input[name=unlgin_heart]:hover ~ label {
-  color: red;
-}
+	#heart {
+	  display: none;
+	}
+	/* changes the color when selected */
+	input[name=heart]:checked ~ label {
+	  color: red;
+	}
+	input[name=heart]:hover ~ label {
+	  color: red;
+	}
+	input[name=unlgin_heart]:hover ~ label {
+	  color: red;
+	}
 
-/* for styling purpose only */
-label[for=heart] {  font-size: 3em;
-}    
+	/* for styling purpose only */
+	label[for=heart] {  font-size: 3em;
+	}    
     </style>
-    <script>
-        // 編輯後隱藏原評論
-        function hideDiv() {
-            document.getElementById('comment').style.display = "none";
-    }
-    </script>
+
     <div class="align-self-center px-2 col-12 col-lg-8">
         <div class="row">
             <div class="col-12 col-lg-4 d-flex justify-content-center mb-2">
@@ -46,20 +41,23 @@ label[for=heart] {  font-size: 3em;
             </div>
 
             <div class="col-12 col-lg-8">
-                <h1>{{ movie.name }}</h1>
+		<div class="w-100 w-md-auto d-flex justify-content-between">
+                <p class="fs-1 fw-bold text-capitalize">{{ movie.name }}</p>
 
-                <p>
-                    <i class="fa fa-star text-custom-primary" aria-hidden="true"></i>
+                <p class="fs-3 text-capitalize d-flex justify-content-center align-items-center">
+                    <i class="fa fa-star text-custom-primary mx-2" aria-hidden="true"></i>
                     {% if movie.average_rating %}
-                        {{ movie.average_rating }} / 5
+                        {{ movie.average_rating }}
                     {% else %}
                         {% trans 'No rating yet' %}
                     {% endif %}
                 </p>
-                <p><span class="rounded-pill text-bg-custom-primary px-2 py-1">{{ movie.tag_id.name }}</span></p>
-                <p class="text-capitalize">{% trans 'release date' %}: {{ movie.date_released|date:'Y/m/d' }}</p>
-                <p class="text-capitalize">{% trans 'time' %}: {{ movie.time }}</p>
-                <p class="text-capitalize">{% trans 'grade' %}: {{ movie.grade }}</p>
+		</div>
+		 <p><span class="rounded-pill text-bg-custom-primary px-2 py-1">{{ movie.tag_id.name }}</span></p>
+		<div class="row border rounded py-2">
+                <p class="text-capitalize">{% trans 'release date' %} : {{ movie.date_released|date:'Y/m/d' }}</p>
+                <p class="text-capitalize">{% trans 'time' %} : {{ movie.time }}</p>
+                <p class="text-capitalize">{% trans 'grade' %} : {{ movie.grade }}</p>
                 <p>
                     <a href='{{ movie.official_site }}' class="text-custom-primary text-capitalize">
                         {% trans 'official site' %}
@@ -67,21 +65,27 @@ label[for=heart] {  font-size: 3em;
                     </a>
                 </p>
 		<div class="row">
+			<p class="text-capitalize border-bottom">{% trans 'description' %}</p>
         		<div class="span4 collapse-group">
+				{% if movie.content|length > 80 %}
 				<p>{{movie.content | slice:80}}<span id="dots"> ... </span><span id="readmore">{{movie.content| slice:"80:"}}</span> 
 			<a type="button" class="text-capitalize text-custom-primary" onclick="Readmore()" id="readbtn">Read More</a></p>
-        		</div>
+        			{% else %}
+				<p>{{movie.content}}</p>
+				{% endif %}
+			</div>
       		</div>
-
+		</div>
             </div>
         </div>
 	<hr>
 
-	    <div class="row">
+	    <div class="row py-2">
             <!-- 新增評論區塊 -->
             {% if request.user.is_authenticated and not request.user.is_superuser %}
 	    	{% if not self_review_list %}
-                <div class="container">
+		<h3>新增評論</h3>
+                <div class="container pb-2">
                     <form action="{% url 'review:create' %}" method="POST">{% csrf_token %}
                         <input type="hidden" name="movieID" value="{{movie.id}}" />
                         {{ form|crispy}}
@@ -249,7 +253,7 @@ label[for=heart] {  font-size: 3em;
                                 </label>{{review.heart_number}}
                                 <!-- Unlogin Alert Modal -->
                                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
+                                    <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel">{% if request.user.is_superuser %}管理者無權按讚{% else %}訪客無權按讚{% endif %}</h5>
@@ -260,7 +264,15 @@ label[for=heart] {  font-size: 3em;
                                         </div>
                                         <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
-                                        <button type="button" class="btn btn-custom-primary" onclick="location. href='{% url 'users:login' %}'">登入</a></button>
+					{% if request.user.is_superuser %}
+					<form method="post" action="{% url 'users:logout' %}">
+                            		{% csrf_token %}
+					<button type="submit" class="btn btn-custom-primary">{% trans 'login' %}
+                            		</button>
+                        		</form>
+					{% else %}
+					<button type="button" class="btn btn-custom-primary" onclick="location. href='{% url 'users:login' %}'">{% trans 'login' %}</a></button>
+					{% endif %}
                                         </div>
                                     </div>
                                     </div>
@@ -280,6 +292,7 @@ label[for=heart] {  font-size: 3em;
 
 {% block script %}
 	<script type="application/javascript">
+	// Readmore / Readless button
 	function Readmore() {
 	  var dots = document.getElementById("dots");
 	  var moreText = document.getElementById("readmore");
@@ -293,7 +306,11 @@ label[for=heart] {  font-size: 3em;
 	    dots.style.display = "none";
 	    btnText.innerHTML = "Read less";
 	    moreText.style.display = "inline";
-  }
-}
+  	  }
+	}
+        // 編輯後隱藏原評論
+        function hideDiv() {
+            document.getElementById('comment').style.display = "none";
+    	}
 	</script>
 {% endblock %}

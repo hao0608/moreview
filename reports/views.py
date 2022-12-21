@@ -38,6 +38,10 @@ class ReportListView(ListView):
                     review__movie__name__contains=query,
                     status=status
                 ).order_by("-date_updated")
+            elif query is not None:
+                 report_obj=Report.objects.filter(
+                    review__movie__name__contains=query
+                ).order_by("-date_updated")
             else:
                 report_obj=Report.objects.all().order_by("-date_updated")
             
