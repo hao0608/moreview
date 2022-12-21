@@ -12,44 +12,43 @@ from .forms import ReviewModelForm
 # Create your views here.
 class ReviewCreateView(View):
     def post(self, request, *args, **kwargs):
-        movie=Movie.objects.get(id=request.POST['movieID'])
-        user=User.objects.get(id=self.request.user.id)        
-        content=request.POST['content']
-        rating=int(request.POST['rating'])
-        review=Review.objects.create(
-            user=user,
-            movie=movie,
-            content=content,
-            rating=rating
+        movie = Movie.objects.get(id=request.POST["movieID"])
+        user = User.objects.get(id=self.request.user.id)
+        content = request.POST["content"]
+        rating = int(request.POST["rating"])
+        review = Review.objects.create(
+            user=user, movie=movie, content=content, rating=rating
         )
-        return HttpResponseRedirect(reverse("movie:detail", kwargs={"pk": review.movie.pk}))
-        
+        return HttpResponseRedirect(
+            reverse("movie:detail", kwargs={"pk": review.movie.pk})
+        )
+
+
 class ReviewDeleteView(View):
     def post(self, request, *args, **kwargs):
-        movie=Movie.objects.get(id=request.POST['movieID'])
-        review=Review.objects.get(id=request.POST['reviewID']).delete()
-        
+        movie = Movie.objects.get(id=request.POST["movieID"])
+        review = Review.objects.get(id=request.POST["reviewID"]).delete()
+
         return HttpResponseRedirect(reverse("movie:detail", kwargs={"pk": movie.pk}))
 
 
 class ReviewEditView(View):
     def post(self, request, *args, **kwargs):
-        movie=Movie.objects.get(id=request.POST['movieID'])
-        content=request.POST['content']
-        rating=int(request.POST['rating'])
-        review=Review.objects.filter(id=request.POST['reviewID']).update(
-            content=content,
-            rating=rating
+        movie = Movie.objects.get(id=request.POST["movieID"])
+        content = request.POST["content"]
+        rating = int(request.POST["rating"])
+        review = Review.objects.filter(id=request.POST["reviewID"]).update(
+            content=content, rating=rating
         )
         return HttpResponseRedirect(reverse("movie:detail", kwargs={"pk": movie.pk}))
 
 
 class HeartView(View):
     def post(self, request, *args, **kwargs):
-        review=Review.objects.get(id=request.POST['reviewID'])
-        user=User.objects.get(id=self.request.user.id)        
-        post_keys=request.POST.keys()
-        if 'heart' in post_keys:
+        review = Review.objects.get(id=request.POST["reviewID"])
+        user = User.objects.get(id=self.request.user.id)
+        post_keys = request.POST.keys()
+        if "heart" in post_keys:
             Heart.objects.create(
                 user=user,
                 review=review,
@@ -57,5 +56,6 @@ class HeartView(View):
         else:
             Heart.objects.get(user=user, review=review).delete()
 
-        return HttpResponseRedirect(reverse("movie:detail", kwargs={"pk": review.movie.pk}))
-
+        return HttpResponseRedirect(
+            reverse("movie:detail", kwargs={"pk": review.movie.pk})
+        )

@@ -14,8 +14,4 @@ class ReportModelForm(forms.ModelForm):
     )
     class Meta:
         model = Report
-        fields = [
-            "content"
-        ]
-    
-
+        fields = ["content"]
