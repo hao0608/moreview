@@ -8,6 +8,7 @@ from faker import Faker
 from movie.models import Movie, Tag
 from movie.factories import MovieFactory, TagFactory
 from movie.views import *
+from users.factories import UserFactory
 
 
 # Create your tests here.
@@ -42,11 +43,13 @@ class MovieCreateViewTest(TestCase):
     def setUp(self) -> None:
         self.view = MovieCreateView()
         self.client = Client()
+        self.admin = UserFactory().is_superuser().create()
 
     def test_template_is_correct(self):
         self.assertEqual("movie_create_form.html", self.view.template_name)
 
     def test_movie_create_page_can_render(self):
+        self.client.login(username=self.admin.username, password="Passw0rd!")
         response = self.client.get(reverse("movie:create"))
         self.assertEqual(200, response.status_code)
 
@@ -86,10 +89,9 @@ class MovieListViewTest(TestCase):
 
 
 class MovieDetailViewTest(TestCase):
-    view = MovieDetailView()
-    client = Client()
-
     def setUp(self):
+        self.view = MovieDetailView()
+        self.client = Client()
         self.tag = Tag.objects.create(name="test")
         self.movie = Movie.objects.create(
             tag_id=self.tag,
@@ -113,10 +115,10 @@ class MovieDetailViewTest(TestCase):
 
 
 class MovieDeleteViewTest(TestCase):
-    client = Client()
-    view = MovieDeleteView
-
-    def setUp(self) -> None:
+    def setUp(self):
+        self.client = Client()
+        self.view = MovieDeleteView
+        self.admin = UserFactory().is_superuser().create()
         self.tag = Tag.objects.create(name="test")
         self.movie = Movie.objects.create(
             tag_id=self.tag,
@@ -133,6 +135,7 @@ class MovieDeleteViewTest(TestCase):
         self.assertEqual(reverse("movie:manage-list"), self.view.success_url)
 
     def test_delete_can_work(self):
+        self.client.login(username=self.admin.username, password="Passw0rd!")
         response = self.client.post(
             reverse("movie:delete", kwargs={"pk": self.movie.id})
         )
@@ -142,10 +145,10 @@ class MovieDeleteViewTest(TestCase):
 
 
 class MovieEditViewTest(TestCase):
-    client = Client()
-    view = MovieEditView
-
     def setUp(self) -> None:
+        self.view = MovieEditView
+        self.client = Client()
+        self.admin = UserFactory().is_superuser().create()
         self.tag = Tag.objects.create(name="test")
         self.movie = Movie.objects.create(
             tag_id=self.tag,
@@ -161,6 +164,7 @@ class MovieEditViewTest(TestCase):
     def test_template_is_correct(self):
         self.assertEqual("movie_edit_form.html", self.view.template_name)
 
-    def test_detail_page_can_render(self):
+    def test_edit_page_can_render(self):
+        self.client.login(username=self.admin.username, password="Passw0rd!")
         response = self.client.get(reverse("movie:edit", kwargs={"pk": self.movie.pk}))
         self.assertEqual(200, response.status_code)

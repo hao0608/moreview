@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404
-from django.urls import reverse
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+from django.urls import reverse,reverse_lazy
 from review.models import Review, Heart
-from django.db.models import Count, Avg, Func
+from django.db.models import Count, Avg, Func,IntegerField, Case, When
 
 from django.views.generic import (
     CreateView,
@@ -26,10 +27,14 @@ class Round(Func):
     template = "%(function)s(%(expressions)s, 2)"
 
 
-class MovieCreateView(CreateView):
+class MovieCreateView(UserPassesTestMixin,CreateView):
     model = Movie
     template_name = "movie_create_form.html"
     form_class = MovieModelForm
+    login_url = reverse_lazy("users:login")
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
 
 class MovieDetailView(DetailView):
@@ -43,7 +48,11 @@ class MovieDetailView(DetailView):
 
         # movie average rating
         context["movie"] = Movie.objects.annotate(
-            average_rating=Round(Avg("review__rating"))
+            average_rating=Round(Avg(
+                Case(
+                    When(review__existed = False, then="review__rating"),
+                    output_field=IntegerField()
+                )))
         ).get(id=self.kwargs["pk"])
 
         # sort, default : "latest"
@@ -109,15 +118,11 @@ class MovieDetailView(DetailView):
 
         context["self_review_list"] = []
         for review in context["review_list"]:
-            if self.request.user.id == review.user.id:
+            if self.request.user.id == review.user.id and review.existed != True:
                 if not self.request.user.is_superuser:
-                    context["self_review_list"].append(Review.objects.get(
-                                user=self.request.user.id, movie_id=self.object.id
-                                )
-                        )
-        report_list = (
-            Report.objects.filter(user=self.request.user.id)
-        )
+                    context["self_review_list"].append(review)
+
+        report_list = (Report.objects.filter(user=self.request.user.id))
 
         context["report_list"] = report_list
         context["self_report_list"] = []
@@ -180,15 +185,23 @@ class MovieListView(ListView):
             return context
 
 
-class MovieEditView(UpdateView):
+class MovieEditView(UserPassesTestMixin,UpdateView):
     form_class = MovieModelForm
     template_name = "movie_edit_form.html"
     queryset = Movie.objects.all()
+    login_url = reverse_lazy("users:login")
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
 
-class MovieDeleteView(DeleteView):
+class MovieDeleteView(UserPassesTestMixin,DeleteView):
     model = Movie
     success_url = "/movies"
+    login_url = reverse_lazy("users:login")
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
     def get_success_url(self):
         return reverse("movie:manage-list")

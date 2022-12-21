@@ -13,15 +13,15 @@
             			<input type="text" name="q" class="form-control" placeholder="{% trans 'Search by name' %}">
 				<div class="d-flex justify-content-end align-items-center gap-1 mx-1">
                 			<select class="form-select w-auto" name="status" >
-						<option value='all'>{% trans 'choose filters' %}</option>
+                    				<option value='all'>請選擇</option>
                     				<option value='0' {% if status == '0' %} selected {% endif %}>
-                        			{% trans 'underprocess' %}
+                        			underprocess
                     				</option>
                     				<option value='1' {% if status == '1' %} selected {% endif %}>
-                        			{% trans 'success' %}
+                        			success
                     				</option>
                     				<option value='2' {% if status == '2' %} selected {% endif %}>
-                        			{% trans 'failed' %}
+                        			failed
                     				</option>
                 			</select>
 				</div>
@@ -38,13 +38,13 @@
             <table class="table table-hover align-middle">
 		    <thead>
 			    <tr>
-				<th>{% trans 'repoted reviewer' %}</th>
-			    	<th>{% trans 'movie name' %}</th>
-			    	<th>{% trans 'repoted review' %}</th>
-			    	<th>{% trans 'repoter' %}</th>
-			    	<th>{% trans 'report cause' %}</th>
-			    	<th>{% trans 'report status' %}</th>
-			    	<th>{% trans 'validator' %}</th>
+			    	<th>被檢舉人</th>
+			    	<th>電影名稱</th>
+			    	<th>被檢舉評論</th>
+			    	<th>檢舉者</th>
+			    	<th>檢舉理由</th>
+			    	<th>審核狀態</th>
+			    	<th>審核者</th>
 		    	</tr>
 		    </thead>
 		    <tbody>
@@ -67,18 +67,18 @@
 	</td>
         <td>{% if not report.handler %}
 
-		<span class="badge rounded-pill bg-custom-primary text-capitalize" type="button" data-bs-toggle="modal" data-bs-target="#accept_report">{% trans 'accept' %}</span>
-		<span class="badge rounded-pill bg-danger text-capitalize" type="button" data-bs-toggle="modal" data-bs-target="#refuse_report">{% trans 'refuse' %}</span>
+		<span class="badge rounded-pill bg-custom-primary text-capitalize" type="button" data-bs-toggle="modal" data-bs-target="#accept_report_{{report.id}}">接受</span>
+        <span class="badge rounded-pill bg-danger text-capitalize" type="button" data-bs-toggle="modal" data-bs-target="#refuse_report_{{report.id}}">拒絕</span>
 
 <!-- Accept Report Modal -->
-        <div class="modal fade" id="accept_report" tabindex="-1" aria-labelledby="acceptReportLabel" aria-hidden="true">
+        <div class="modal fade" id="accept_report_{{report.id}}" tabindex="-1" aria-labelledby="acceptReportLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                   <div class="modal-content">
                          <div class="modal-header">
-				 <p class="modal-title fs-5 text-capitalize" id="acceptReportLabel">{% trans 'validate report' %}</p>                               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                               <p class="modal-title fs-5 text-capitalize" id="acceptReportLabel">審核檢舉</p>                               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                          </div>
                          <div class="modal-body">
-				 <p>{% trans 'check confirming report' %}</p>
+                               <p>是否確認該筆檢舉？</p>
                          </div>
                          <div class="modal-footer">
                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'cancel' %}</button>
@@ -92,15 +92,14 @@
         </div>
 
 	<!-- Refuse Report Modal -->
-        <div class="modal fade" id="refuse_report" tabindex="-1" aria-labelledby="refuseReportLabel" aria-hidden="true">
+        <div class="modal fade" id="refuse_report_{{report.id}}" tabindex="-1" aria-labelledby="refuseReportLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                   <div class="modal-content">
                          <div class="modal-header">
-				 <p class="modal-title fs-5 text-capitalize" id="refuseReportLabel">{% trans 'validate report' %}</p>
-			       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                               <p class="modal-title fs-5 text-capitalize" id="refuseReportLabel">審核檢舉</p>                               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                          </div>
                          <div class="modal-body">
-				 <p>{% trans 'check refusing report' %}</p>
+                               <p>是否拒絕該筆檢舉？</p>
                          </div>
                          <div class="modal-footer">
                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'cancel' %}</button>
