@@ -50,7 +50,7 @@ class ReportListView(ListView):
         else:
             context["object_list"]=Report.objects.filter(
                 user=self.request.user
-            ).exclude(status=3).order_by("-date_updated")
+            ).order_by("-date_updated")
         return context
 
 class ReportCreatetView(View):
