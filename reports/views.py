@@ -55,6 +55,7 @@ class ReportListView(ListView):
 
 class ReportCreatetView(View):
     def post(self, request, *args, **kwargs):
+        print(self.request.POST['reviewID'])
         user=User.objects.get(id=self.request.user.id)
         review=Review.objects.get(id=request.POST['reviewID'])
         content=request.POST['content']

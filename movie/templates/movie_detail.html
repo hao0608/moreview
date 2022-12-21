@@ -148,7 +148,7 @@
 					{% if request.user.username != review.user.username%}
 					{% if review not in self_report_list %}
                                             <li><a class="dropdown-item" type="button" data-bs-toggle="modal"
-                                            data-bs-target="#create_report_form">檢舉</a></li>
+                                            data-bs-target="#create_report_form{{review.id}}">檢舉</a></li>
                                          {% else %} 
 					    <li><button class="dropdown-item" disabled>已檢舉</button></li>
                                         {% endif %}
@@ -160,7 +160,7 @@
                         </div>
 
                         <!-- Modal 新增檢舉 -->
-                        <div class="modal fade" id="create_report_form" tabindex="-1" aria-labelledby="ReportConentLabel" aria-hidden="true">
+                        <div class="modal fade" id="create_report_form{{review.id}}" tabindex="-1" aria-labelledby="ReportConentLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                             <div class="modal-header">
