@@ -30,6 +30,8 @@
                 			<span class="badge rounded-pill bg-success text-capitalize">{% trans 'success' %}</span>
 					{% elif report.status == 2 %}
                 			<span class="badge rounded-pill bg-danger text-capitalize">{% trans 'failed' %}</span>
+					{% elif report.status == 3 %}
+                                        <span class="badge rounded-pill bg-secondary text-capitalize">{% trans 'already takeback' %}</span>
 					{% else %}
 					<span class="badge rounded-pill bg-custom-primary text-capitalize" type="button" data-bs-toggle="modal" 
 		    			data-bs-target="#disabled_report">{% trans 'takeback' %}

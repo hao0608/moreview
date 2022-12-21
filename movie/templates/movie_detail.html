@@ -150,7 +150,7 @@
 					{% if request.user.username != review.user.username%}
 					{% if review not in self_report_list %}
                                             <li><a class="dropdown-item" type="button" data-bs-toggle="modal"
-                                            data-bs-target="#create_report_form">檢舉</a></li>
+										       data-bs-target="#create_report_form_{{review.id}}">檢舉</a></li>
                                          {% else %} 
 					    <li><button class="dropdown-item" disabled>已檢舉</button></li>
                                         {% endif %}
@@ -162,7 +162,7 @@
                         </div>
 
                         <!-- Modal 新增檢舉 -->
-                        <div class="modal fade" id="create_report_form" tabindex="-1" aria-labelledby="ReportConentLabel" aria-hidden="true">
+			<div class="modal fade" id="create_report_form_{{review.id}}" tabindex="-1" aria-labelledby="ReportConentLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                             <div class="modal-header">
@@ -182,7 +182,7 @@
                                                             <button type="button" class="btn btn-secondary text-capitalize" data-bs-dismiss="modal">
                                                             {% trans 'cancel' %}
                                                             </button>
-                                                            <button type="submit" class="btn btn-custom-primary" data-bs-dismiss="toast" data-bs-target="#send_success">{% trans 'confirm' %}</button>
+                                                            <button type="submit" class="btn btn-custom-primary">{% trans 'confirm' %}</button>
                                                     </div>
                                             </form>
                                     </div>
@@ -266,13 +266,7 @@
                                         </div>
                                         <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
-					{% if request.user.is_superuser %}
-					<form method="post" action="{% url 'users:logout' %}">
-                            		{% csrf_token %}
-					<button type="submit" class="btn btn-custom-primary">{% trans 'login' %}
-                            		</button>
-                        		</form>
-					{% else %}
+					{% if not request.user.is_superuser %}
 					<button type="button" class="btn btn-custom-primary" onclick="location. href='{% url 'users:login' %}'">{% trans 'login' %}</a></button>
 					{% endif %}
                                         </div>
@@ -290,6 +284,7 @@
         </div> 
     </div>
 </div>
+
 {% endblock %}
 
 {% block script %}

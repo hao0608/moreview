@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-21 15:19+0800\n"
+"POT-Creation-Date: 2022-12-22 00:22+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -113,9 +113,9 @@ msgstr "新增檢舉"
 
 #: var/www/movie/templates/movie_detail.html:183
 #: var/www/movie/templates/movie_list.html:84
-#: var/www/reports/templates/report_list.html:52
+#: var/www/reports/templates/report_list.html:54
 #: var/www/reports/templates/report_review_form.html:84
-#: var/www/reports/templates/report_review_form.html:105
+#: var/www/reports/templates/report_review_form.html:106
 #: var/www/users/templates/profile.html:53
 #: var/www/users/templates/profile.html:84
 msgid "cancel"
@@ -123,9 +123,9 @@ msgstr "取消"
 
 #: var/www/movie/templates/movie_detail.html:185
 #: var/www/movie/templates/movie_edit_form.html:14
-#: var/www/reports/templates/report_list.html:55
+#: var/www/reports/templates/report_list.html:57
 #: var/www/reports/templates/report_review_form.html:87
-#: var/www/reports/templates/report_review_form.html:108
+#: var/www/reports/templates/report_review_form.html:109
 #: var/www/users/templates/profile.html:86
 msgid "confirm"
 msgstr "確認"
@@ -183,44 +183,100 @@ msgid "report list"
 msgstr "檢舉清單"
 
 #: var/www/reports/templates/report_list.html:16
-msgid "movie list"
-msgstr "電影清單"
+#: var/www/reports/templates/report_review_form.html:42
+msgid "movie name"
+msgstr "電影名稱"
 
 #: var/www/reports/templates/report_list.html:17
-msgid "reported list"
-msgstr "檢舉清單"
+#: var/www/reports/templates/report_review_form.html:43
+msgid "reported review"
+msgstr "被檢舉評論"
 
 #: var/www/reports/templates/report_list.html:18
+#: var/www/reports/templates/report_review_form.html:45
 msgid "report cause"
 msgstr "檢舉原因"
 
 #: var/www/reports/templates/report_list.html:19
+#: var/www/reports/templates/report_review_form.html:46
 msgid "report status"
 msgstr "檢舉狀態"
 
 #: var/www/reports/templates/report_list.html:30
+#: var/www/reports/templates/report_review_form.html:21
 #: var/www/reports/templates/report_review_form.html:61
 msgid "success"
 msgstr "檢舉成功"
 
 #: var/www/reports/templates/report_list.html:32
+#: var/www/reports/templates/report_review_form.html:24
 #: var/www/reports/templates/report_review_form.html:63
 msgid "failed"
 msgstr "檢舉失敗"
 
-#: var/www/reports/templates/report_list.html:35
+#: var/www/reports/templates/report_list.html:34
+msgid "already takeback"
+msgstr "已撤回"
+
+#: var/www/reports/templates/report_list.html:37
 msgid "takeback"
 msgstr "撤回"
 
-#: var/www/reports/templates/report_list.html:64
+#: var/www/reports/templates/report_list.html:47
+msgid "takeback report"
+msgstr "撤回檢舉"
+
+#: var/www/reports/templates/report_list.html:51
+msgid "confirm to takeback report"
+msgstr "確認要撤回檢舉嗎？"
+
+#: var/www/reports/templates/report_list.html:66
 msgid "You did not have any reports."
 msgstr "你尚未有任何檢舉紀錄"
 
+#: var/www/reports/templates/report_review_form.html:16
+msgid "choose filters"
+msgstr "請選擇"
+
+#: var/www/reports/templates/report_review_form.html:18
 #: var/www/reports/templates/report_review_form.html:65
 msgid "underprocess"
 msgstr "處理中"
 
-#: var/www/reports/templates/report_review_form.html:125
+#: var/www/reports/templates/report_review_form.html:41
+msgid "repoted reviewer"
+msgstr "被檢舉人"
+
+#: var/www/reports/templates/report_review_form.html:44
+msgid "repoter"
+msgstr "檢舉者"
+
+#: var/www/reports/templates/report_review_form.html:47
+msgid "validator"
+msgstr "審核者"
+
+#: var/www/reports/templates/report_review_form.html:70
+msgid "accept"
+msgstr "接受檢舉"
+
+#: var/www/reports/templates/report_review_form.html:71
+msgid "refuse"
+msgstr "拒絕檢舉"
+
+#: var/www/reports/templates/report_review_form.html:78
+#: var/www/reports/templates/report_review_form.html:99
+msgid "validate report"
+msgstr "審核檢舉"
+
+#: var/www/reports/templates/report_review_form.html:81
+msgid "check confirming report"
+msgstr "確定接受該筆檢舉？"
+
+#: var/www/reports/templates/report_review_form.html:103
+msgid "check refusing report"
+msgstr "確定拒絕該筆檢舉？"
+
+#: var/www/reports/templates/report_review_form.html:126
 msgid "Sorry, no reports match the condition."
 msgstr "抱歉，沒有符合條件的檢舉"
 
@@ -320,39 +376,3 @@ msgstr "活動中"
 #: var/www/users/templates/user_list.html:93
 msgid "disable"
 msgstr "已停用"
-
-#: 
-msgid "confirm to takeback report"
-msgstr "確認要撤回檢舉嗎？"
-
-#:
-msgid "takeback report"
-msgstr "撤回檢舉"
-
-#:
-msgid "repoted reviewer"
-msgstr "被檢舉人"
-
-#:
-msgid "repoted review"
-msgstr "被檢舉評論"
-
-#:
-msgid "repoter"
-msgstr "檢舉者"
-
-#:
-msgid "choose filters"
-msgstr "請選擇"
-
-#:
-msgid "validate report"
-msgstr "審核檢舉"
-
-#:
-msgid "check refusing report"
-msgstr "確定拒絕該筆檢舉？"
-
-#:
-msgid "check confirming report"
-msgstr "確定確認該筆檢舉？"

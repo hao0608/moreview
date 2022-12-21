@@ -47,16 +47,15 @@ class ReportListView(ListView):
             context["status"] = status
             context["object_list"] = report_obj
         else:
-            context["object_list"] = (
-                Report.objects.filter(user=self.request.user)
-                .exclude(status=3)
-                .order_by("-date_updated")
-            )
+            context["object_list"] = Report.objects.filter(
+                user=self.request.user
+            ).order_by("-date_updated")
         return context
 
 
 class ReportCreatetView(View):
     def post(self, request, *args, **kwargs):
+        print(self.request.POST["reviewID"])
         user = User.objects.get(id=self.request.user.id)
         review = Review.objects.get(id=request.POST["reviewID"])
         content = request.POST["content"]
