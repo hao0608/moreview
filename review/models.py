@@ -25,7 +25,7 @@ class Review(models.Model):
     rating = models.IntegerField(choices=review_rating, default=3)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
-    existed=models.BooleanField(default=False)
+    existed = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse("movie:detail", kwargs={"pk": self.movie.pk})

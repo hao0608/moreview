@@ -46,6 +46,7 @@ class ReviewModelTest(TestCase):
 
         self.assertEqual(0, review_count)
 
+
 class HeartModelTest(TestCase):
     def setUp(self):
         self.faker = Faker()
@@ -80,6 +81,7 @@ class HeartModelTest(TestCase):
 
         self.assertEqual(0, heart_count)
 
+
 class ReviewCreateTest(TestCase):
     def setUp(self):
         self.client = Client()
@@ -110,6 +112,7 @@ class ReviewCreateTest(TestCase):
         self.assertRedirects(
             response, expected_url=reverse("movie:detail", kwargs={"pk": self.movie.pk})
         )
+
 
 class ReviewDeleteTest(TestCase):
     def setUp(self):
