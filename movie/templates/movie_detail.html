@@ -182,7 +182,7 @@
                                                             <button type="button" class="btn btn-secondary text-capitalize" data-bs-dismiss="modal">
                                                             {% trans 'cancel' %}
                                                             </button>
-                                                            <button type="submit" class="btn btn-custom-primary" data-bs-dismiss="toast" data-bs-target="#send_success">{% trans 'confirm' %}</button>
+                                                            <button type="submit" class="btn btn-custom-primary">{% trans 'confirm' %}</button>
                                                     </div>
                                             </form>
                                     </div>
@@ -266,13 +266,7 @@
                                         </div>
                                         <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
-					{% if request.user.is_superuser %}
-					<form method="post" action="{% url 'users:logout' %}">
-                            		{% csrf_token %}
-					<button type="submit" class="btn btn-custom-primary">{% trans 'login' %}
-                            		</button>
-                        		</form>
-					{% else %}
+					{% if not request.user.is_superuser %}
 					<button type="button" class="btn btn-custom-primary" onclick="location. href='{% url 'users:login' %}'">{% trans 'login' %}</a></button>
 					{% endif %}
                                         </div>
@@ -290,6 +284,7 @@
         </div> 
     </div>
 </div>
+
 {% endblock %}
 
 {% block script %}
