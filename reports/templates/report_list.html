@@ -1,0 +1,68 @@
+<!--list reports (users) -->
+{% extends 'base.html' %}
+
+{% block content %}
+    {% load i18n crispy_forms_tags %}
+    
+    <div class="container px-2">
+	<h1 class="text-center text-capitalize mb-4">{% trans 'report list' %}</h1>
+    </div>
+    {% if request.user.is_authenticated %}
+    <div class="container px-2">
+	{% if object_list %}
+            <table class="table table-hover align-middle mb-4">
+                <thead>
+                <tr>
+                    <th scope="col" class="text-capitalize">{% trans 'movie name' %}</th>
+                    <th scope="col" class="text-capitalize">{% trans 'reported review' %}</th>
+                    <th scope="col" class="text-capitalize">{% trans 'report cause' %}</th>
+		    <th scope="col" class="text-capitalize">{% trans 'report status' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+    		{% for report in object_list %}
+			<tr>
+    				<td>{{report.review.movie}}</td>
+    				<td>{{report.review.content}}</td>
+    				<td>{{report.content}}</td>
+    				<td>
+                			{% if report.status == 1 %}
+                			<span class="badge rounded-pill bg-success text-capitalize">{% trans 'success' %}</span>
+					{% elif report.status == 2 %}
+                			<span class="badge rounded-pill bg-danger text-capitalize">{% trans 'failed' %}</span>
+					{% else %}
+					<span class="badge rounded-pill bg-custom-primary text-capitalize" type="button" data-bs-toggle="modal" 
+		    			data-bs-target="#disabled_report">{% trans 'takeback' %}
+                			</span>
+					{% endif %}
+				</td>
+			</tr>
+			<!-- Diabled Report Modal -->
+    			<div class="modal fade" id="disabled_report" tabindex="-1" aria-labelledby="disabledReportLabel" aria-hidden="true">
+        			<div class="modal-dialog modal-dialog-centered">
+            				<div class="modal-content">
+                    				<div class="modal-header">
+                                			<p class="modal-title fs-5 text-capitalize" id="disabledReportLabel">撤回檢舉</p>
+                        				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		    				</div>
+            	    				<div class="modal-body">
+							<p>確定要撤回檢舉嗎？</p>
+            	    				</div>
+            	    			<div class="modal-footer">
+                    				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'cancel' %}</button>
+						<form method="post" action="{% url 'reports:delete' report.id %}">
+							{% csrf_token %}
+							<button type="submit" class="btn btn-danger">{% trans 'confirm' %}</button>
+                    				</form>
+            				</div>
+            			</div>
+        		</div>
+    {% endfor %}
+    </tbody>
+	    </table>
+	    {% else %}
+	    	<p class="text-center">{% trans 'You did not have any reports.' %}</p>
+	    {% endif %}
+    </div>
+    {% endif %}
+{% endblock %}

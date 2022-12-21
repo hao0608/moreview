@@ -42,10 +42,9 @@ class ReviewModelTest(TestCase):
 
     def test_reviews_will_be_deleted_when_the_movie_deleted(self):
         self.movie.delete()
-        review_count = Review.objects.filter(content="test").count()
+        review_count = Review.objects.filter(id=self.review.id).count()
 
         self.assertEqual(0, review_count)
-
 
 class HeartModelTest(TestCase):
     def setUp(self):
@@ -81,7 +80,6 @@ class HeartModelTest(TestCase):
 
         self.assertEqual(0, heart_count)
 
-
 class ReviewCreateTest(TestCase):
     def setUp(self):
         self.client = Client()
@@ -112,7 +110,6 @@ class ReviewCreateTest(TestCase):
         self.assertRedirects(
             response, expected_url=reverse("movie:detail", kwargs={"pk": self.movie.pk})
         )
-
 
 class ReviewDeleteTest(TestCase):
     def setUp(self):

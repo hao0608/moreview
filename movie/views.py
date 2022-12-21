@@ -15,6 +15,8 @@ from .forms import MovieModelForm
 from review.forms import ReviewModelForm
 from review.models import Review
 from movie.models import Movie
+from reports.models import Report
+from reports.forms import ReportModelForm
 
 # Create your views here.
 
@@ -36,7 +38,8 @@ class MovieDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(MovieDetailView, self).get_context_data(**kwargs)
-        context["form"] = ReviewModelForm()
+        context["form"]=ReviewModelForm()
+        context["report_create_form"]=ReportModelForm()
 
         # movie average rating
         context["movie"] = Movie.objects.annotate(
@@ -49,6 +52,7 @@ class MovieDetailView(DetailView):
         order_query = "-date_created"
         if order == "oldest":
             order_query = "date_created"
+
         review_list = (
             Review.objects.filter(movie_id=self.object.id)
             .annotate(heart_number=Count("heart"))
@@ -103,6 +107,26 @@ class MovieDetailView(DetailView):
                             )
                         )
 
+        context["self_review_list"] = []
+        for review in context["review_list"]:
+            if self.request.user.id == review.user.id:
+                if not self.request.user.is_superuser:
+                    context["self_review_list"].append(Review.objects.get(
+                                user=self.request.user.id, movie_id=self.object.id
+                                )
+                        )
+        report_list = (
+            Report.objects.filter(user=self.request.user.id)
+        )
+
+        context["report_list"] = report_list
+        context["self_report_list"] = []
+        for report in report_list:
+            for review in context["review_list"]:
+                if report.review.id == review.id:
+                    if not self.request.user.is_superuser:
+                        context["self_report_list"].append(review)
+        
         return context
 
 
@@ -122,7 +146,7 @@ class MovieListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(MovieListView, self).get_context_data(**kwargs)
-
+        
         if self.request.path == reverse("movie:list"):
             # get request
             query = self.request.GET.get("q")
@@ -142,15 +166,16 @@ class MovieListView(ListView):
                 )
             context["object_list"] = movie_obj
             context["order"] = order
+            
             return context
         else:
             # get request
             query = self.request.GET.get("q")
             movie_obj = None
             if query is not None:  # serch
-                movie_obj = Movie.objects.filter(name__contains=query)
+                movie_obj = Movie.objects.filter(name__contains=query).order_by("-date_created")
             else:  # not search
-                movie_obj = Movie.objects.all()
+                movie_obj = Movie.objects.all().order_by("-date_created")
             context["object_list"] = movie_obj
             return context
 

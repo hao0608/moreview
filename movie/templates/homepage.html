@@ -31,13 +31,13 @@
             {% if object_list %}
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3">
                     {% for movie in object_list %}
-                        <div class="col">
+                        <div class="col mb-3">
                             <div class="card shadow-sm">
                                 <img style="height: 300px; object-fit: contain;" src="{{ movie.image.url }}"
                                      loading="lazy">
-                                <div class="card-body">
+                                <div class="card-body bg-secondary bg-opacity-25">
                                     <a href="{% url 'movie:detail' movie.pk %}"
-                                       class="card-text text-dark stretched-link fs-4 fw-bold">{{ movie.name }}</a>
+                                       class="text-decoration-none card-text text-dark stretched-link fs-4 fw-bold">{{ movie.name }}</a>
                                     <p class="card-text text-capitalize">
                                         {% trans 'release date' %}: {{ movie.date_released|date:'Y/m/d' }}
                                     </p>

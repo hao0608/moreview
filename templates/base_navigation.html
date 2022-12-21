@@ -28,7 +28,7 @@
                            href="{% url 'users:profile' %}">{% trans "profile" %}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-capitalize me-2" href="#">{% trans "report list" %}</a>
+                        <a class="nav-link text-capitalize me-2" href="{% url 'reports:list' %}">{% trans "report list" %}</a>
                     </li>
                     {% if request.user.is_superuser %}
                         <li class="nav-item">
