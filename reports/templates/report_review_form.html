@@ -67,11 +67,11 @@
 	</td>
         <td>{% if not report.handler %}
 
-		<span class="badge rounded-pill bg-custom-primary text-capitalize" type="button" data-bs-toggle="modal" data-bs-target="#accept_report">接受</span>
-        <span class="badge rounded-pill bg-danger text-capitalize" type="button" data-bs-toggle="modal" data-bs-target="#refuse_report">拒絕</span>
+		<span class="badge rounded-pill bg-custom-primary text-capitalize" type="button" data-bs-toggle="modal" data-bs-target="#accept_report{{report.id}}">接受</span>
+        <span class="badge rounded-pill bg-danger text-capitalize" type="button" data-bs-toggle="modal" data-bs-target="#refuse_report{{report.id}}">拒絕</span>
 
 <!-- Accept Report Modal -->
-        <div class="modal fade" id="accept_report" tabindex="-1" aria-labelledby="acceptReportLabel" aria-hidden="true">
+        <div class="modal fade" id="accept_report{{report.id}}" tabindex="-1" aria-labelledby="acceptReportLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                   <div class="modal-content">
                          <div class="modal-header">
@@ -92,7 +92,7 @@
         </div>
 
 	<!-- Refuse Report Modal -->
-        <div class="modal fade" id="refuse_report" tabindex="-1" aria-labelledby="refuseReportLabel" aria-hidden="true">
+        <div class="modal fade" id="refuse_report{{report.id}}" tabindex="-1" aria-labelledby="refuseReportLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                   <div class="modal-content">
                          <div class="modal-header">
