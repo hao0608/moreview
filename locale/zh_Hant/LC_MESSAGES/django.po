@@ -356,8 +356,3 @@ msgstr "確定拒絕該筆檢舉？"
 #:
 msgid "check confirming report"
 msgstr "確定確認該筆檢舉？"
-
-#:
-msgid ""
-msgstr ""
-
