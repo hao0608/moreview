@@ -9,7 +9,7 @@ from django.urls.base import reverse, reverse_lazy
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.views.generic.list import ListView
-
+from django.shortcuts import render
 from moreview import settings
 from .forms import RegisterForm, ProfileUpdateForm, AdminCreateForm
 from .models import User
@@ -58,6 +58,8 @@ class UserListView(UserPassesTestMixin, ListView):
             if self.request.session.get("admin-create-form")
             else AdminCreateForm()
         )
+        context["object_list"]=User.objects.all().order_by("id")
+
         return context
 
 
@@ -119,7 +121,7 @@ class AdminCreateView(UserPassesTestMixin, CreateView):
     form_class = AdminCreateForm
     success_url = reverse_lazy("users:list")
     login_url = reverse_lazy("users:login")
-
+    
     def test_func(self):
         return self.request.user.is_superuser
 
@@ -133,8 +135,9 @@ class AdminCreateView(UserPassesTestMixin, CreateView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        self.request.session["admin-create-form"] = form.data
-        return super().form_invalid(form)
+        return render(self.request, 'user_list.html', 
+            {'form': form, 'object_list':User.objects.all().order_by("id")}
+        )  
 
 
 class UserDeleteView(LoginRequiredMixin, UpdateView):

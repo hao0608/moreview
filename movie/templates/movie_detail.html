@@ -138,11 +138,9 @@
                                                 </button>
                                             </li>
                                             <li>
-                                                <form method="POST" action="{% url 'review:delete' review.id %}">{% csrf_token %}
-                                                    <input type="hidden" name="movieID" value="{{movie.id}}" />
-                                                    <input type="hidden" name="reviewID" value="{{review.id}}" />
-                                                    <button  class="dropdown-item" type="submit">刪除</button>
-                                                </form>
+                                                <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#delete_check{{review.id}}">
+                                                    刪除
+                                                </button>
                                             </li>
                                         {% endif %}
 					{% if request.user.username != review.user.username%}
@@ -158,7 +156,27 @@
 				  {% endif %}
                             </h5>
                         </div>
+                        <!-- Modal 確認刪除 -->
+                        <div class="modal fade" id="delete_check{{review.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel"> {% trans 'Confirm to delete' %} <span id="name"></span>?</p></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
 
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'cancel' %}</button>
+                                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                                <form method="POST" action="{% url 'review:delete' review.id %}">{% csrf_token %}
+                                    <input type="hidden" name="movieID" value="{{movie.id}}" />
+                                    <input type="hidden" name="reviewID" value="{{review.id}}" />
+                                    <button  class="btn btn-custom-primary" type="submit">{% trans 'delete' %}</button>
+                                </form>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
                         <!-- Modal 新增檢舉 -->
                         <div class="modal fade" id="create_report_form{{review.id}}" tabindex="-1" aria-labelledby="ReportConentLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
@@ -196,9 +214,15 @@
                                 <i class="fa fa-star" {% if review.rating > 3 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
                                 <i class="fa fa-star" {% if review.rating > 4 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
                             </div> 
-                            <div class="d-flex justify-content-between">
-                                <p>{{review.content}}</p>
-                            </div>     
+                            {% if review.content %}
+                                <div class="d-flex justify-content-between">
+                                    <p>{{review.content}}</p>
+                                </div>     
+                            {% else %}
+                                <div class="d-flex justify-content-between">
+                                    <p>{{review.user.username}}沒有留下評論</p>
+                                </div>    
+                            {% endif %}
                         </div>                    
 
                         <!-- 修改評論區塊 -->
@@ -264,15 +288,9 @@
                                         </div>
                                         <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
-					{% if request.user.is_superuser %}
-					<form method="post" action="{% url 'users:logout' %}">
-                            		{% csrf_token %}
-					<button type="submit" class="btn btn-custom-primary">{% trans 'login' %}
-                            		</button>
-                        		</form>
-					{% else %}
-					<button type="button" class="btn btn-custom-primary" onclick="location. href='{% url 'users:login' %}'">{% trans 'login' %}</a></button>
-					{% endif %}
+                                        {% if not request.user.is_superuser %}
+                                        <button type="button" class="btn btn-custom-primary" onclick="location. href='{% url 'users:login' %}'">{% trans 'login' %}</a></button>
+                                         {% endif %}
                                         </div>
                                     </div>
                                     </div>
