@@ -57,7 +57,7 @@ class UserListView(UserPassesTestMixin, ListView):
             if self.request.session.get("admin-create-form")
             else AdminCreateForm()
         )
-        context["object_list"]=User.objects.all().order_by("id")
+        context["object_list"] = User.objects.all().order_by("id")
 
         return context
 
@@ -121,7 +121,7 @@ class AdminCreateView(UserPassesTestMixin, CreateView):
     form_class = AdminCreateForm
     success_url = reverse_lazy("users:list")
     login_url = reverse_lazy("users:login")
-    
+
     def test_func(self):
         return self.request.user.is_superuser
 

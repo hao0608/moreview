@@ -64,6 +64,3 @@ class AdminCreateForm(forms.ModelForm):
             "email",
             "password",
         ]
-    
-
-
