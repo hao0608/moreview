@@ -30,6 +30,8 @@
                 			<span class="badge rounded-pill bg-success text-capitalize">{% trans 'success' %}</span>
 					{% elif report.status == 2 %}
                 			<span class="badge rounded-pill bg-danger text-capitalize">{% trans 'failed' %}</span>
+					{% elif report.status == 3 %}
+                                        <span class="badge rounded-pill bg-secondary text-capitalize">{% trans 'already takeback' %}</span>
 					{% else %}
 					<span class="badge rounded-pill bg-custom-primary text-capitalize" type="button" data-bs-toggle="modal" 
 		    			data-bs-target="#disabled_report">{% trans 'takeback' %}
@@ -42,11 +44,11 @@
         			<div class="modal-dialog modal-dialog-centered">
             				<div class="modal-content">
                     				<div class="modal-header">
-                                			<p class="modal-title fs-5 text-capitalize" id="disabledReportLabel">撤回檢舉</p>
+							<p class="modal-title fs-5 text-capitalize" id="disabledReportLabel">{% trans 'takeback report' %}</p>
                         				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		    				</div>
             	    				<div class="modal-body">
-							<p>確定要撤回檢舉嗎？</p>
+							<p>{% trans 'confirm to takeback report' %}</p>
             	    				</div>
             	    			<div class="modal-footer">
                     				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'cancel' %}</button>

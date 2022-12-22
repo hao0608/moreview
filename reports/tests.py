@@ -31,9 +31,7 @@ class ReportModelTest(TestCase):
             content="test",
         )
         self.report = Report.objects.create(
-            user = self.user,
-            review =self.review,
-            content="report test"
+            user=self.user, review=self.review, content="report test"
         )
 
     def test_data_updated_field_updates_when_record_updates(self):
@@ -48,21 +46,22 @@ class ReportModelTest(TestCase):
 
     def test_reports_will_be_deleted_when_the_movie_deleted(self):
         self.movie.delete()
-        report_count=Report.objects.filter(id=self.report.id).count()
-        
-        self.assertEqual(0,report_count)
+        report_count = Report.objects.filter(id=self.report.id).count()
+
+        self.assertEqual(0, report_count)
 
     def test_reports_will_be_deleted_when_the_review_deleted(self):
         self.review.delete()
-        report_count=Report.objects.filter(id=self.report.id).count()
+        report_count = Report.objects.filter(id=self.report.id).count()
 
-        self.assertEqual(0,report_count)
+        self.assertEqual(0, report_count)
 
     def test_reports_will_be_deleted_when_the_user_deleted(self):
         self.user.delete()
-        report_count=Report.objects.filter(id=self.report.id).count()
+        report_count = Report.objects.filter(id=self.report.id).count()
 
-        self.assertEqual(0,report_count)
+        self.assertEqual(0, report_count)
+
 
 class ReportCreateTest(TestCase):
     def setUp(self):
@@ -99,6 +98,7 @@ class ReportCreateTest(TestCase):
             response, expected_url=reverse("movie:detail", kwargs={"pk": self.movie.pk})
         )
 
+
 class ReportDeleteTest(TestCase):
     def setUp(self):
         self.client = Client()
@@ -121,19 +121,18 @@ class ReportDeleteTest(TestCase):
             content="test",
         )
         self.report = Report.objects.create(
-            user = self.user,
-            review =self.review,
-            content="report test"
+            user=self.user, review=self.review, content="report test"
         )
-        
+
     def test_report_delete_can_work(self):
         self.client.login(username=self.user.username, password="Passw0rd!")
         response = self.client.post(
             reverse("reports:delete", kwargs={"pk": self.report.id})
         )
-        updated_report=Report.objects.get(id=self.report.id)
+        updated_report = Report.objects.get(id=self.report.id)
         self.assertRedirects(response, expected_url=reverse("reports:list"))
         self.assertEqual(3, updated_report.status)
+
 
 class ReportListViewTest(TestCase):
     def setUp(self):
@@ -142,16 +141,19 @@ class ReportListViewTest(TestCase):
         self.client = Client()
 
     def test_report_lsit_template_is_correct(self):
-        self.assertEqual("report_list.html",self.view.report_template_name)
-    
+        self.assertEqual("report_list.html", self.view.report_template_name)
+
     def test_report_manage_template_is_correct(self):
-        self.assertEqual("report_review_form.html",self.view.report_manage_template_name)
+        self.assertEqual(
+            "report_review_form.html", self.view.report_manage_template_name
+        )
 
     def test_report_list_page_can_render(self):
         self.client.login(username=self.user.username, password="Passw0rd!")
         response = self.client.get(reverse("reports:list"))
 
-        self.assertEqual(200,response.status_code)
+        self.assertEqual(200, response.status_code)
+
 
 class ReportReviewViewTest(TestCase):
     def setUp(self):
@@ -176,29 +178,27 @@ class ReportReviewViewTest(TestCase):
             content="test",
         )
         self.report = Report.objects.create(
-            user = self.user,
-            review =self.review,
-            content="report test"
+            user=self.user, review=self.review, content="report test"
         )
 
     def test_accept_report_can_work(self):
         self.client.login(username=self.admin.username, password="Passw0rd!")
         response = self.client.post(
             reverse("reports:edit", kwargs={"pk": self.report.id}),
-            {"accept_report":""}
+            {"accept_report": ""},
         )
-        updated_report=Report.objects.get(id=self.report.id)
+        updated_report = Report.objects.get(id=self.report.id)
 
-        self.assertEqual(1,updated_report.status)
-        self.assertEqual(self.admin.username,updated_report.handler.username)
-    
+        self.assertEqual(1, updated_report.status)
+        self.assertEqual(self.admin.username, updated_report.handler.username)
+
     def test_accept_report_can_work(self):
         self.client.login(username=self.admin.username, password="Passw0rd!")
         response = self.client.post(
             reverse("reports:edit", kwargs={"pk": self.report.id}),
-            {"refuse_report":""}
+            {"refuse_report": ""},
         )
-        updated_report=Report.objects.get(id=self.report.id)
+        updated_report = Report.objects.get(id=self.report.id)
 
-        self.assertEqual(2,updated_report.status)
-        self.assertEqual(self.admin.username,updated_report.handler.username)
+        self.assertEqual(2, updated_report.status)
+        self.assertEqual(self.admin.username, updated_report.handler.username)

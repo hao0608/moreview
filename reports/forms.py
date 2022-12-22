@@ -9,10 +9,10 @@ from users.models import User
 
 
 class ReportModelForm(forms.ModelForm):
+    content = forms.CharField(
+        label=_("report cause"), widget=forms.Textarea(), max_length=500
+    )
+
     class Meta:
         model = Report
-        fields = [
-            "content"
-        ]
-    
-
+        fields = ["content"]
