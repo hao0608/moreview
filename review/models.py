@@ -21,7 +21,7 @@ review_rating = [
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    content = models.TextField(blank=False, null=False)
+    content = models.TextField(blank=True, null=True)
     rating = models.IntegerField(choices=review_rating, default=3)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)

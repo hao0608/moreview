@@ -31,9 +31,7 @@
 
 	/* for styling purpose only */
 	label[for=heart] {  font-size: 3em;
-	}
-	a {color: #000;}
-	a:hover {color: #7DCE94;}
+	}    
     </style>
 
     <div class="align-self-center px-2 col-12 col-lg-8">
@@ -57,23 +55,23 @@
 		</div>
 		 <p><span class="rounded-pill text-bg-custom-primary px-2 py-1">{{ movie.tag_id.name }}</span></p>
 		<div class="row border rounded py-2">
-                <p class="text-capitalize"><strong>{% trans 'release date' %}</strong> : {{ movie.date_released|date:'Y/m/d' }}</p>
-                <p class="text-capitalize"><strong>{% trans 'time' %}</strong> : {{ movie.time }} 分鐘</p>
-		<p class="text-capitalize"><strong>{% trans 'grade' %}</strong> : {{ movie.grade }}</p>
+                <p class="text-capitalize">{% trans 'release date' %} : {{ movie.date_released|date:'Y/m/d' }}</p>
+                <p class="text-capitalize">{% trans 'time' %} : {{ movie.time }}</p>
+                <p class="text-capitalize">{% trans 'grade' %} : {{ movie.grade }}</p>
                 <p>
-                    <a href='{{ movie.official_site }}' class="text-capitalize">
-                        {% trans 'official site' %} 
+                    <a href='{{ movie.official_site }}' class="text-custom-primary text-capitalize">
+                        {% trans 'official site' %}
                         <i class="fa fa-external-link"></i>
                     </a>
                 </p>
 		<div class="row">
-			<!--p class="text-capitalize border-bottom">{% trans 'description' %}</p-->
+			<p class="text-capitalize border-bottom">{% trans 'description' %}</p>
         		<div class="span4 collapse-group">
 				{% if movie.content|length > 80 %}
-				<p><strong>{% trans 'description' %}</strong> : {{movie.content | slice:80}}<span id="dots"> ... </span><span id="readmore">{{movie.content| slice:"80:"}}</span> 
+				<p>{{movie.content | slice:80}}<span id="dots"> ... </span><span id="readmore">{{movie.content| slice:"80:"}}</span> 
 			<a type="button" class="text-capitalize text-custom-primary" onclick="Readmore()" id="readbtn">Read More</a></p>
         			{% else %}
-				<p><strong>{% trans 'description' %}</strong> : {{movie.content}}</p>
+				<p>{{movie.content}}</p>
 				{% endif %}
 			</div>
       		</div>
@@ -140,17 +138,15 @@
                                                 </button>
                                             </li>
                                             <li>
-                                                <form method="POST" action="{% url 'review:delete' review.id %}">{% csrf_token %}
-                                                    <input type="hidden" name="movieID" value="{{movie.id}}" />
-                                                    <input type="hidden" name="reviewID" value="{{review.id}}" />
-                                                    <button  class="dropdown-item" type="submit">刪除</button>
-                                                </form>
+                                                <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#delete_check{{review.id}}">
+                                                    刪除
+                                                </button>
                                             </li>
                                         {% endif %}
 					{% if request.user.username != review.user.username%}
 					{% if review not in self_report_list %}
                                             <li><a class="dropdown-item" type="button" data-bs-toggle="modal"
-										       data-bs-target="#create_report_form_{{review.id}}">檢舉</a></li>
+                                            data-bs-target="#create_report_form{{review.id}}">檢舉</a></li>
                                          {% else %} 
 					    <li><button class="dropdown-item" disabled>已檢舉</button></li>
                                         {% endif %}
@@ -160,9 +156,29 @@
 				  {% endif %}
                             </h5>
                         </div>
+                        <!-- Modal 確認刪除 -->
+                        <div class="modal fade" id="delete_check{{review.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel"> {% trans 'Confirm to delete' %} <span id="name"></span>?</p></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
 
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'cancel' %}</button>
+                                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                                <form method="POST" action="{% url 'review:delete' review.id %}">{% csrf_token %}
+                                    <input type="hidden" name="movieID" value="{{movie.id}}" />
+                                    <input type="hidden" name="reviewID" value="{{review.id}}" />
+                                    <button  class="btn btn-custom-primary" type="submit">{% trans 'delete' %}</button>
+                                </form>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
                         <!-- Modal 新增檢舉 -->
-			<div class="modal fade" id="create_report_form_{{review.id}}" tabindex="-1" aria-labelledby="ReportConentLabel" aria-hidden="true">
+                        <div class="modal fade" id="create_report_form{{review.id}}" tabindex="-1" aria-labelledby="ReportConentLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                             <div class="modal-header">
@@ -182,7 +198,7 @@
                                                             <button type="button" class="btn btn-secondary text-capitalize" data-bs-dismiss="modal">
                                                             {% trans 'cancel' %}
                                                             </button>
-                                                            <button type="submit" class="btn btn-custom-primary">{% trans 'confirm' %}</button>
+                                                            <button type="submit" class="btn btn-custom-primary" data-bs-dismiss="toast" data-bs-target="#send_success">{% trans 'confirm' %}</button>
                                                     </div>
                                             </form>
                                     </div>
@@ -198,9 +214,15 @@
                                 <i class="fa fa-star" {% if review.rating > 3 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
                                 <i class="fa fa-star" {% if review.rating > 4 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
                             </div> 
-                            <div class="d-flex justify-content-between">
-                                <p>{{review.content}}</p>
-                            </div>     
+                            {% if review.content %}
+                                <div class="d-flex justify-content-between">
+                                    <p>{{review.content}}</p>
+                                </div>     
+                            {% else %}
+                                <div class="d-flex justify-content-between">
+                                    <p>{{review.user.username}}沒有留下評論</p>
+                                </div>    
+                            {% endif %}
                         </div>                    
 
                         <!-- 修改評論區塊 -->
@@ -266,9 +288,9 @@
                                         </div>
                                         <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
-					{% if not request.user.is_superuser %}
-					<button type="button" class="btn btn-custom-primary" onclick="location. href='{% url 'users:login' %}'">{% trans 'login' %}</a></button>
-					{% endif %}
+                                        {% if not request.user.is_superuser %}
+                                        <button type="button" class="btn btn-custom-primary" onclick="location. href='{% url 'users:login' %}'">{% trans 'login' %}</a></button>
+                                         {% endif %}
                                         </div>
                                     </div>
                                     </div>
@@ -284,7 +306,6 @@
         </div> 
     </div>
 </div>
-
 {% endblock %}
 
 {% block script %}
