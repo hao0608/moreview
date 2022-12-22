@@ -4,12 +4,11 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.views import PasswordChangeView
-from django.shortcuts import redirect
+from django.shortcuts import redirect,render
 from django.urls.base import reverse, reverse_lazy
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.views.generic.list import ListView
-from django.shortcuts import render
 from moreview import settings
 from .forms import RegisterForm, ProfileUpdateForm, AdminCreateForm
 from .models import User
@@ -91,6 +90,7 @@ class UserProfileView(LoginRequiredMixin, DetailView):
             if self.request.session.get("reset-password-form")
             else PasswordChangeForm(user=self.request.user)
         )
+        print(context)
         return context
 
 
@@ -135,9 +135,8 @@ class AdminCreateView(UserPassesTestMixin, CreateView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        return render(self.request, 'user_list.html', 
-            {'form': form, 'object_list':User.objects.all().order_by("id")}
-        )  
+        self.request.session["admin-create-form"] = form.data
+        return redirect(f"{reverse('users:list')}#create-admin")
 
 
 class UserDeleteView(LoginRequiredMixin, UpdateView):

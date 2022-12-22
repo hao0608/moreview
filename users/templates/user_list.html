@@ -10,7 +10,7 @@
         <div class="mb-2 d-flex justify-content-between">
             <p class="fs-2 mb-0 text-capitalize">{% trans 'admin' %}</p>
 
-            <button class="btn btn-custom-primary text-capitalize" data-bs-toggle="collapse"
+            <button id="createAdmin" class="btn btn-custom-primary text-capitalize" data-bs-toggle="collapse"
                     data-bs-target="#create_admin_form"
                     aria-expanded="false" aria-controls="create_admin_form">
                 <i class="fa-solid fa-user-plus"></i> {% trans 'create admin' %}
@@ -102,4 +102,13 @@
             </table>
         </div>
     </div>
+{% endblock %}
+
+{% block script %}
+    <script type="application/javascript">
+        var url = location.href
+        if (url.includes('#create-admin')){
+            document.getElementById("createAdmin").click();
+        } 
+    </script>
 {% endblock %}

@@ -18,7 +18,7 @@
 
             <div class="d-flex justify-content-center mt-4 gap-2">
                 <button class="btn btn-custom-primary text-capitalize" type="submit">{% trans 'save' %}</button>
-                <button class="btn btn-secondary text-capitalize" type="button" data-bs-toggle="modal"
+                <button id="resetPwdbtn" class="btn btn-secondary text-capitalize" type="button" data-bs-toggle="modal"
                         data-bs-target="#resetPwd">
                     {% trans 'reset password' %}
                 </button>
@@ -89,4 +89,16 @@
             </div>
         </div>
     </div>
+    
+{% endblock %}
+
+{% block script %}
+    <script type="application/javascript">
+        var url = location.href
+        if (url.includes('#reset-password')){
+            document.getElementById("resetPwdbtn").click();
+        } else{
+            alert("Success")
+        }
+    </script>
 {% endblock %}
