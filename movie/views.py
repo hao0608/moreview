@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
-from django.urls import reverse,reverse_lazy
+from django.urls import reverse, reverse_lazy
 from review.models import Review, Heart
-from django.db.models import Count, Avg, Func,IntegerField, Case, When
+from django.db.models import Count, Avg, Func, IntegerField, Case, When
 
 from django.views.generic import (
     CreateView,
@@ -27,7 +27,7 @@ class Round(Func):
     template = "%(function)s(%(expressions)s, 2)"
 
 
-class MovieCreateView(UserPassesTestMixin,CreateView):
+class MovieCreateView(UserPassesTestMixin, CreateView):
     model = Movie
     template_name = "movie_create_form.html"
     form_class = MovieModelForm
@@ -43,16 +43,19 @@ class MovieDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(MovieDetailView, self).get_context_data(**kwargs)
-        context["form"]=ReviewModelForm()
-        context["report_create_form"]=ReportModelForm()
+        context["form"] = ReviewModelForm()
+        context["report_create_form"] = ReportModelForm()
 
         # movie average rating
         context["movie"] = Movie.objects.annotate(
-            average_rating=Round(Avg(
-                Case(
-                    When(review__existed = False, then="review__rating"),
-                    output_field=IntegerField()
-                )))
+            average_rating=Round(
+                Avg(
+                    Case(
+                        When(review__existed=False, then="review__rating"),
+                        output_field=IntegerField(),
+                    )
+                )
+            )
         ).get(id=self.kwargs["pk"])
 
         # sort, default : "latest"
@@ -122,7 +125,7 @@ class MovieDetailView(DetailView):
                 if not self.request.user.is_superuser:
                     context["self_review_list"].append(review)
 
-        report_list = (Report.objects.filter(user=self.request.user.id))
+        report_list = Report.objects.filter(user=self.request.user.id)
 
         context["report_list"] = report_list
         context["self_report_list"] = []
@@ -131,7 +134,7 @@ class MovieDetailView(DetailView):
                 if report.review.id == review.id:
                     if not self.request.user.is_superuser:
                         context["self_report_list"].append(review)
-        
+
         return context
 
 
@@ -151,7 +154,7 @@ class MovieListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(MovieListView, self).get_context_data(**kwargs)
-        
+
         if self.request.path == reverse("movie:list"):
             # get request
             query = self.request.GET.get("q")
@@ -171,21 +174,23 @@ class MovieListView(ListView):
                 )
             context["object_list"] = movie_obj
             context["order"] = order
-            
+
             return context
         else:
             # get request
             query = self.request.GET.get("q")
             movie_obj = None
             if query is not None:  # serch
-                movie_obj = Movie.objects.filter(name__contains=query).order_by("-date_created")
+                movie_obj = Movie.objects.filter(name__contains=query).order_by(
+                    "-date_created"
+                )
             else:  # not search
                 movie_obj = Movie.objects.all().order_by("-date_created")
             context["object_list"] = movie_obj
             return context
 
 
-class MovieEditView(UserPassesTestMixin,UpdateView):
+class MovieEditView(UserPassesTestMixin, UpdateView):
     form_class = MovieModelForm
     template_name = "movie_edit_form.html"
     queryset = Movie.objects.all()
@@ -195,7 +200,7 @@ class MovieEditView(UserPassesTestMixin,UpdateView):
         return self.request.user.is_superuser
 
 
-class MovieDeleteView(UserPassesTestMixin,DeleteView):
+class MovieDeleteView(UserPassesTestMixin, DeleteView):
     model = Movie
     success_url = "/movies"
     login_url = reverse_lazy("users:login")

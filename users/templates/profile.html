@@ -3,6 +3,11 @@
 
 {% block content %}
     {% load i18n crispy_forms_tags %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
 
     <div class="align-self-center my-auto px-2 col-12 col-lg-6">
         <h1 class="mb-3 text-capitalize">{% trans 'profile' %} <i class="fa-solid fa-circle-user"></i></h1>
@@ -18,7 +23,7 @@
 
             <div class="d-flex justify-content-center mt-4 gap-2">
                 <button class="btn btn-custom-primary text-capitalize" type="submit">{% trans 'save' %}</button>
-                <button class="btn btn-secondary text-capitalize" type="button" data-bs-toggle="modal"
+                <button id="resetPwdbtn" class="btn btn-secondary text-capitalize" type="button" data-bs-toggle="modal"
                         data-bs-target="#resetPwd">
                     {% trans 'reset password' %}
                 </button>
@@ -55,7 +60,7 @@
 
                     <form method="post" action="{% url 'users:delete' %}">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">停用</button>
+                        <button type="submit" class="btn btn-danger">{% trans 'disable' %}</button>
                     </form>
                 </div>
             </div>
@@ -89,4 +94,14 @@
             </div>
         </div>
     </div>
+    
+{% endblock %}
+
+{% block script %}
+    <script type="application/javascript">
+        var url = location.href
+        if (url.includes('#reset-password')){
+            document.getElementById("resetPwdbtn").click();
+        } 
+    </script>
 {% endblock %}

@@ -374,5 +374,17 @@ msgstr "活動中"
 
 #: var/www/users/templates/user_list.html:55
 #: var/www/users/templates/user_list.html:93
-msgid "disable"
+msgid "disabled"
 msgstr "已停用"
+
+msgid "disable"
+msgstr "停用"
+
+msgid "rating"
+msgstr "評分"
+
+msgid "review content"
+msgstr "評論內容"
+
+msgid "Reset password successfully"
+msgstr "成功修改密碼"
