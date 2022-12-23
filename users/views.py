@@ -9,9 +9,11 @@ from django.urls.base import reverse, reverse_lazy
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.views.generic.list import ListView
+from django.contrib import messages
 from moreview import settings
 from .forms import RegisterForm, ProfileUpdateForm, AdminCreateForm
 from .models import User
+from django.utils.translation import gettext as _
 
 
 # Create your views here.
@@ -90,7 +92,6 @@ class UserProfileView(LoginRequiredMixin, DetailView):
             if self.request.session.get("reset-password-form")
             else PasswordChangeForm(user=self.request.user)
         )
-        print(context)
         return context
 
 
@@ -171,6 +172,7 @@ class UserResetPasswordView(LoginRequiredMixin, PasswordChangeView):
 
     def form_valid(self, form):
         self.request.session["reset-password-form"] = None
+        messages.success(self.request, _("Successfully"))
         return super().form_valid(form)
 
     def form_invalid(self, form):

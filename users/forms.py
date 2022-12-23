@@ -52,7 +52,11 @@ class ProfileUpdateForm(forms.ModelForm):
 
 class AdminCreateForm(forms.ModelForm):
     password = forms.CharField(
-        label=_("password"), widget=forms.PasswordInput(), max_length=128
+        label=_("password"),
+        widget=forms.PasswordInput(),
+        max_length=128,
+        validators=[validate_password],
+        help_text=password_validators_help_text_html(),
     )
 
     class Meta:
