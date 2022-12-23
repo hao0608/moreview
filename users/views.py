@@ -172,7 +172,7 @@ class UserResetPasswordView(LoginRequiredMixin, PasswordChangeView):
 
     def form_valid(self, form):
         self.request.session["reset-password-form"] = None
-        messages.success(self.request, _("Successfully"))
+        messages.success(self.request, _("Reset password successfully"))
         return super().form_valid(form)
 
     def form_invalid(self, form):
