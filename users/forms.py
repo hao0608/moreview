@@ -6,6 +6,7 @@ from .models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator
 
+
 class RegisterForm(forms.ModelForm):
     password = forms.CharField(
         label=_("password"),
@@ -30,6 +31,7 @@ class RegisterForm(forms.ModelForm):
             "password",
             "confirm_password",
         ]
+
     def clean(self):
         cleaned_data = super(RegisterForm, self).clean()
 
