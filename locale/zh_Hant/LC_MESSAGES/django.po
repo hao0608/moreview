@@ -388,3 +388,16 @@ msgstr "評論內容"
 
 msgid "Reset password successfully"
 msgstr "成功修改密碼"
+
+msgid "Please input a valid email"
+msgstr "請輸入有效的信箱"
+
+msgid "Please fill this field"
+msgstr "請填寫此欄位。"
+
+msgid "Please remove Chinese characters"
+msgstr "請移除中文字。"
+
+msgid "Please remove full-form English characters"
+msgstr "請移除全形字母。"
+
