@@ -18,3 +18,16 @@
         </form>
     </div>
 {% endblock %}
+{% block script %}
+    <script>
+        const email = document.getElementById('email');
+        var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+        // if (! email.value.match(mailformat)){
+        //     email.setCustomValidity('請輸入正確的email');
+        // }else{
+        //     alert("SUccess");
+        // }
+
+    </script>
+{% endblock %}
