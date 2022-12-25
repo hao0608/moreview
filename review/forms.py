@@ -9,8 +9,4 @@ class ReviewModelForm(forms.ModelForm):
         model = Review
         fields = ["rating", "content"]
 
-        labels = {
-            'rating': _("rating"),
-            'content': _("review content")
-        }
-
+        labels = {"rating": _("rating"), "content": _("review content")}
