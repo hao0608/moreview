@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% load i18n crispy_forms_tags %}
+
+    <div class="align-self-center px-2 col-12 col-lg-8">
+        <h1 class="text-capitalize">{% trans 'edit movie' %}</h1>
+
+        <form action="{% url 'movie:edit' movie.pk %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+
+            <div class="d-flex justify-content-center mt-4">
+                <input type="submit" value="{% trans 'confirm' %}" class="btn btn-custom-primary text-capitalize"/>
+            </div>
+        </form>
+    </div>
+{% endblock %}

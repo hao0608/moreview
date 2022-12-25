@@ -1,0 +1,334 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% load i18n crispy_forms_tags %}
+    <style>
+        
+        .line-clamp {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+        }
+	#readmore {
+		display: none;
+	}
+
+        /* hides the checkbox */
+	#heart {
+	  display: none;
+	}
+	/* changes the color when selected */
+	input[name=heart]:checked ~ label {
+	  color: red;
+	}
+	input[name=heart]:hover ~ label {
+	  color: red;
+	}
+	input[name=unlgin_heart]:hover ~ label {
+	  color: red;
+	}
+
+	/* for styling purpose only */
+	label[for=heart] {  font-size: 3em;
+	}    
+    </style>
+
+    <div class="align-self-center px-2 col-12 col-lg-8">
+        <div class="row">
+            <div class="col-12 col-lg-4 d-flex justify-content-center mb-2">
+                <img src="{{ movie.image.url }}" class="mx-auto w-100" style="height: 400px; object-fit: contain;">
+            </div>
+
+            <div class="col-12 col-lg-8">
+		<div class="w-100 w-md-auto d-flex justify-content-between">
+                <p class="fs-1 fw-bold text-capitalize">{{ movie.name }}</p>
+
+                <p class="fs-3 text-capitalize d-flex justify-content-center align-items-center">
+                    <i class="fa fa-star text-custom-primary mx-2" aria-hidden="true"></i>
+                    {% if movie.average_rating %}
+                        {{ movie.average_rating }}
+                    {% else %}
+                        {% trans 'No rating yet' %}
+                    {% endif %}
+                </p>
+		</div>
+		 <p><span class="rounded-pill text-bg-custom-primary px-2 py-1">{{ movie.tag_id.name }}</span></p>
+		<div class="row border rounded py-2">
+                <p class="text-capitalize">{% trans 'release date' %} : {{ movie.date_released|date:'Y/m/d' }}</p>
+                <p class="text-capitalize">{% trans 'time' %} : {{ movie.time }}</p>
+                <p class="text-capitalize">{% trans 'grade' %} : {{ movie.grade }}</p>
+                <p>
+                    <a href='{{ movie.official_site }}' class="text-custom-primary text-capitalize">
+                        {% trans 'official site' %}
+                        <i class="fa fa-external-link"></i>
+                    </a>
+                </p>
+		<div class="row">
+			<p class="text-capitalize border-bottom">{% trans 'description' %}</p>
+        		<div class="span4 collapse-group">
+				{% if movie.content|length > 80 %}
+				<p>{{movie.content | slice:80}}<span id="dots"> ... </span><span id="readmore">{{movie.content| slice:"80:"}}</span> 
+			<a type="button" class="text-capitalize text-custom-primary" onclick="Readmore()" id="readbtn">Read More</a></p>
+        			{% else %}
+				<p>{{movie.content}}</p>
+				{% endif %}
+			</div>
+      		</div>
+		</div>
+            </div>
+        </div>
+	<hr>
+
+	    <div class="row py-2">
+            <!-- 新增評論區塊 -->
+            {% if request.user.is_authenticated and not request.user.is_superuser %}
+	    	{% if not self_review_list %}
+		<h3>新增評論</h3>
+                <div class="container pb-2">
+                    <form action="{% url 'review:create' %}" method="POST">{% csrf_token %}
+                        <input type="hidden" name="movieID" value="{{movie.id}}" />
+                        {{ form|crispy}}
+                        <input type="submit" value='{% trans 'create' %}' class="btn btn-custom-primary "/>
+                        
+                    </form>
+                </div>
+		<hr>
+	    	{% endif %}
+	    {% elif not request.user.is_authenticated %}
+	        <div class="container">
+                    <a href="{% url 'users:login' %}">登入即可評論
+                    </a>
+                </div>
+	    {% endif %}
+            <!-- 排序選單 -->
+            <div class="d-flex justify-content-end align-items-center gap-1 mb-4">
+                <span>排序方式</span>
+                <form class="d-flex" method="GET" name="sort">
+                  <select class="form-select w-auto" name="order" onchange="this.form.submit();">
+                    <option value='latest' {% if order == 'latest' %}selected{% endif %}> 最新評論 </option>
+                    <option value='oldest' {% if order == 'oldest' %}selected{% endif %}> 最舊評論 </option>
+                    <option value='heart_highest' {% if order == 'heart_highest' %}selected{% endif %}> 愛心最多 </option>
+                    <option value='heart_lowest' {% if order == 'heart_lowest' %}selected{% endif %}> 愛心最少 </option>
+                    <option value='rating_highest' {% if order == 'rating_highest' %}selected{% endif %}> 評分最高 </option>
+                    <option value='rating_lowest' {% if order == 'rating_lowest' %}selected{% endif %}> 評分最低 </option>
+                  </select>
+                </form>
+            </div>
+            
+            <!-- 評論清單 -->
+            {% for review in review_list %}
+            {% if review.existed == False %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class=" d-flex justify-content-between">
+                            <h3 class="card-title"><b>{{review.user.username}}</b></h3>
+                            <h5 class="card-title"></h5>
+                            <h5 class="card-title">
+				{% if request.user.is_authenticated and not request.user.is_superuser %}
+                                <div class="dropdown" >
+                                    <button style="border:none;color:black;background-color:white;"type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <h2><i class="fa fa-ellipsis-h"  ></i></h2>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                        {% if request.user.username == review.user.username %}
+                                            <li>
+                                                <button class="dropdown-item" id="edit" type="button"onclick="hideDiv()" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                                    修改評論
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#delete_check{{review.id}}">
+                                                    刪除
+                                                </button>
+                                            </li>
+                                        {% endif %}
+					{% if request.user.username != review.user.username%}
+					{% if review not in self_report_list %}
+                                            <li><a class="dropdown-item" type="button" data-bs-toggle="modal"
+                                            data-bs-target="#create_report_form{{review.id}}">檢舉</a></li>
+                                         {% else %} 
+					    <li><button class="dropdown-item" disabled>已檢舉</button></li>
+                                        {% endif %}
+					{% endif %}
+                                    </ul>
+                                  </div>
+				  {% endif %}
+                            </h5>
+                        </div>
+                        <!-- Modal 確認刪除 -->
+                        <div class="modal fade" id="delete_check{{review.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel"> {% trans 'Confirm to delete' %} <span id="name"></span>?</p></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'cancel' %}</button>
+                                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                                <form method="POST" action="{% url 'review:delete' review.id %}">{% csrf_token %}
+                                    <input type="hidden" name="movieID" value="{{movie.id}}" />
+                                    <input type="hidden" name="reviewID" value="{{review.id}}" />
+                                    <button  class="btn btn-custom-primary" type="submit">{% trans 'delete' %}</button>
+                                </form>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        <!-- Modal 新增檢舉 -->
+                        <div class="modal fade" id="create_report_form{{review.id}}" tabindex="-1" aria-labelledby="ReportConentLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                            <div class="modal-header">
+                                                    <p class="modal-title fs-5 text-capitalize" id="ReportConentLabel">{% trans 'create report' %}</p>
+
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                            </div>
+
+                                            <form method="post" action="{% url 'reports:create' %}">
+                                                    <div class="modal-body">{% csrf_token %}
+                                                            <input type="hidden" name="reviewID" value="{{review.id}}" />
+                                                            {{ report_create_form|crispy }}
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary text-capitalize" data-bs-dismiss="modal">
+                                                            {% trans 'cancel' %}
+                                                            </button>
+                                                            <button type="submit" class="btn btn-custom-primary" data-bs-dismiss="toast" data-bs-target="#send_success">{% trans 'confirm' %}</button>
+                                                    </div>
+                                            </form>
+                                    </div>
+                            </div>
+                        </div>
+
+                        <!-- 顯示評論星星&內容區塊 -->
+                        <div id="comment">
+                            <div class="  justify-content-between mb-3">
+                                <i class="fa fa-star" {% if review.rating > 0 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
+                                <i class="fa fa-star" {% if review.rating > 1 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
+                                <i class="fa fa-star" {% if review.rating > 2 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
+                                <i class="fa fa-star" {% if review.rating > 3 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
+                                <i class="fa fa-star" {% if review.rating > 4 %} style="color: rgba(255, 183, 0, 0.916);"  {%endif%} ></i>
+                            </div> 
+                            {% if review.content %}
+                                <div class="d-flex justify-content-between">
+                                    <p>{{review.content}}</p>
+                                </div>     
+                            {% else %}
+                                <div class="d-flex justify-content-between">
+                                    <p>{{review.user.username}}沒有留下評論</p>
+                                </div>    
+                            {% endif %}
+                        </div>                    
+
+                        <!-- 修改評論區塊 -->
+                        {% if request.user.username == review.user.username %}
+                            <div class="collapse" id="collapseExample">
+                                <form action="{% url 'review:edit' review.id %}" method="POST">{% csrf_token %}
+                                    <input type="hidden" name="movieID" value="{{movie.id}}" />
+                                    <input type="hidden" name="reviewID" value="{{review.id}}" />
+                                    <div class="d-flex justify-content align-items-center gap-1 mb-4">
+                                        <span>評分: </span>
+                                        <div class="col-2 mb-2">
+                                            <select  class="form-select w-auto" name="rating">
+                                                <option value='1'{%if review.rating == 1%}selected{%endif%}> 1 </option>
+                                                <option value='2'{%if review.rating == 2%}selected{%endif%}> 2 </option>
+                                                <option value='3'{%if review.rating == 3%}selected{%endif%}> 3 </option>
+                                                <option value='4'{%if review.rating == 4%}selected{%endif%}> 4 </option>
+                                                <option value='5'{%if review.rating == 5%}selected{%endif%}> 5 </option>
+                                            </select>   
+                                        </div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <textarea class="form-control"name="content" rows="5">{{review.content}}</textarea>
+                                    </div>
+                                    <div class="modal-footer  ">
+                                        <button type="submit" class="btn btn-custom-primary">修改</button>
+                                    </div>
+                                </form>                                
+                            </div>
+                        {% endif %}
+ 
+                        <!-- 按讚功能 -->
+                        <div class="modal-footer  ">
+                            {% if request.user.is_authenticated and not request.user.is_superuser %} 
+                                <form method="POST" action="{% url 'review:heart' review.id %}">{% csrf_token %}
+                                    <input type="hidden" name="movieID" value="{{movie.id}}" />
+                                    <input type="hidden" name="reviewID" value="{{review.id}}" />
+                                    <input type="hidden" name="userID" value="{{request.user.id}}" />
+                                    <input type="checkbox" onchange="this.form.submit();" name="heart"  id={{review.id}} style="display:none;"
+                                        {% for heart in heart_list %}
+                                            {% if request.user.id == heart.user.id %}
+                                                {% if review.id == heart.review.id %}
+                                                    checked
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    /> <label for={{review.id}} id="heart_label" ><h2>&#9829</h2></label>{{review.heart_number}}
+                                </form>
+                            {% else %}
+                                <input type="checkbox"   name="unlgin_heart"  id={{review.id}} style="display:none;"  data-bs-toggle="modal" data-bs-target="#exampleModal"/> 
+                                <label for={{review.id}} id="heart_label" >
+                                    <h2>&#9829</h2>
+                                </label>{{review.heart_number}}
+                                <!-- Unlogin Alert Modal -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">{% if request.user.is_superuser %}管理者無權按讚{% else %}訪客無權按讚{% endif %}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            {% if request.user.is_superuser %}請切換為非管理帳號即可按讚{% else %}請登入後即可按讚{% endif %}
+                                        </div>
+                                        <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                                        {% if not request.user.is_superuser %}
+                                        <button type="button" class="btn btn-custom-primary" onclick="location. href='{% url 'users:login' %}'">{% trans 'login' %}</a></button>
+                                         {% endif %}
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>    
+                    </div>              
+                </div>
+
+                {% endif %}
+            {% endfor %}
+ 
+        </div> 
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+	<script type="application/javascript">
+	// Readmore / Readless button
+	function Readmore() {
+	  var dots = document.getElementById("dots");
+	  var moreText = document.getElementById("readmore");
+	  var btnText = document.getElementById("readbtn");
+
+	  if (dots.style.display === "none") {
+	    dots.style.display = "inline";
+	    btnText.innerHTML = "Read more";
+	    moreText.style.display = "none";
+	  } else {
+	    dots.style.display = "none";
+	    btnText.innerHTML = "Read less";
+	    moreText.style.display = "inline";
+  	  }
+	}
+        // 編輯後隱藏原評論
+        function hideDiv() {
+            document.getElementById('comment').style.display = "none";
+    	}
+	</script>
+{% endblock %}

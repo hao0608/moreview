@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<style>
+    .rating {
+    /* display: flex; */
+        margin-top: -10px;
+        flex-direction: row-reverse;
+        margin-left: -4px;
+        float: left;
+    }
+
+    .rating>input {
+        display: none
+    }
+
+    .rating>label {
+        position: relative;
+        width: 19px;
+        font-size: 25px;
+        color: #7DCE94;
+        cursor: pointer;
+    }
+
+    .rating>label::before {
+        content: "\2665";
+        position: absolute;
+        opacity: 0
+    }
+
+    .rating>label:hover:before,
+    .rating>label:hover~label:before {
+        opacity: 1 !important
+    }
+
+    .rating>input:checked~label:before {
+        opacity: 1
+    }
+
+    .rating:hover>input:checked~label:before {
+        opacity: 0.4
+    }
+    /* 以下為顯示更多專用 */
+    *{
+        margin:0;
+        padding: 0 ;
+        box-sizing: border-box;
+    }
+
+    #check{
+        display: none;
+    }
+    label{
+        display: inline-block;
+        text-decoration: underline;
+        cursor: pointer;
+        font-weight: 600;
+    }
+    #check:checked ~ .content{
+        display: block;
+    }
+    #check:checked ~ label{
+        visibility: hidden;    
+    }
+
+    #check:checked ~ label:after{   
+        content: '顯示較少內容';
+        display: block;
+        visibility: visible;
+    }
+
+    #check:checked ~ p{
+        display:none
+         /* visibility:hidden; */
+    }
+    #check:checked ~ p:after{
+    
+        visibility:visible;
+    }
+    .content{
+        display: none;
+    }
+</style>
+<div class="content-pad-top container px-4 px-lg-5">
+
+    <div class="row gx-4 gx-lg-5 justify-content-center pt-3">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            <form action'.' method="POST">{% csrf_token %}
+                <!-- {%crispy form%} -->
+                            
+
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label">評分</label>
+                    <div class="col-sm-4">
+                        {{ form.rating }}
+                    </div> 
+                </div>
+                <div class="mb-3 row">
+                    <label class="col-sm-6 col-form-label" >請在此輸入您的評論</label>
+                    {{ form.content }}
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" value='新增' class="btn btn-custom-primary"/>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-10 col-lg-8 col-xl-7  ">
+            <div class="modal-footer"> 
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    排序方式    
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><a class="dropdown-item" href="#">時間由遠至近</a></li>
+                    <li><a class="dropdown-item" href="#">時間由近至遠</a></li>
+                    <li><a class="dropdown-item" href="#">星級由高至低</a></li>
+                    <li><a class="dropdown-item" href="#">星級由低至高</a></li>
+                    <li><a class="dropdown-item" href="#">愛心由多至少</a></li>
+                    <li><a class="dropdown-item" href="#">愛心由少至多</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-10 col-lg-8 col-xl-7  ">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h5 class="card-title">使用者</h5>
+                        <h5 class="card-title">愛心數</h5>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div class="rating"> 
+                            <input type="radio" name="rating" value="5" id="5"><label for="5">♡</label>
+                        </div>
+                    </div>
+                    <input type="checkbox" id="check">
+                    <p>我是評...</p>
+                    <div class="content">
+                       <p>我是評論我是評論我是評論我是評論我是評論我是評論</p>
+                    </div>
+                    <label for="check">顯示完整內容</label>
+                    <div class="d-flex justify-content-between"><small class="text-muted">Last updated 3 mins ago</small></div>
+
+                </div>              
+            </div>
+            <div class="card mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h5 class="card-title">使用者</h5>
+                    <h5 class="card-title">愛心數</h5>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <div class="rating"> 
+                        <input type="radio" name="rating" value="5" id="5"><label for="5">☆</label>
+                        <input type="radio" name="rating" value="4" id="4"><label for="4">☆</label> 
+                        <input type="radio" name="rating" value="3" id="3"><label for="3">☆</label>
+                        <input type="radio" name="rating" value="2" id="2"><label for="2">☆</label>
+                        <input type="radio" name="rating" value="1" id="1"><label for="1">☆</label>
+                    </div>
+                </div>
+                <input type="checkbox" id="check">
+                <p>我是評...</p>
+                <div class="content">
+                    <p>我是評論我是評論我是評論我是評論我是評論我是評論</p>
+                </div>
+                <label for="check">顯示完整內容</label>
+                <div class="d-flex justify-content-between"><small class="text-muted">Last updated 3 mins ago</small></div>
+            </div>              
+        </div>    
+    </div>
+</div>
+
+{% endblock %}

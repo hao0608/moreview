@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load i18n %}
+<div class="container px-2">
+	<h1 class="text-center text-capitalize mb-4">{% trans 'report list' %}</h1>
+    </div>
+    {% if request.user.is_superuser %}
+    <div class="container px-2">
+	<form method="GET">
+    		<section class="mb-4">
+        		<div class="input-group">
+            			<input type="text" name="q" class="form-control" placeholder="{% trans 'Search by name' %}">
+				<div class="d-flex justify-content-end align-items-center gap-1 mx-1">
+                			<select class="form-select w-auto" name="status" >
+                    				<option value='all'>請選擇</option>
+                    				<option value='0' {% if status == '0' %} selected {% endif %}>
+                        			underprocess
+                    				</option>
+                    				<option value='1' {% if status == '1' %} selected {% endif %}>
+                        			success
+                    				</option>
+                    				<option value='2' {% if status == '2' %} selected {% endif %}>
+                        			failed
+                    				</option>
+                			</select>
+				</div>
+            			<button class="btn btn-custom-primary text-capitalize" type="submit">
+                			{% trans "search" %} <i class="fa fa-search" aria-hidden="true"></i>
+            			</button>
+        		</div>
+    		</section>
+	</form>
+    </div>
+    <div class="container px-2">
+	    {% if object_list %}
+    	<div class="table-responsive">
+            <table class="table table-hover align-middle">
+		    <thead>
+			    <tr>
+			    	<th>被檢舉人</th>
+			    	<th>電影名稱</th>
+			    	<th>被檢舉評論</th>
+			    	<th>檢舉者</th>
+			    	<th>檢舉理由</th>
+			    	<th>審核狀態</th>
+			    	<th>審核者</th>
+		    	</tr>
+		    </thead>
+		    <tbody>
+			    {% for report in object_list %}
+			    {% if report.status < 3 %}
+			    <tr>
+				<td>{{report.review.user}}</td>
+        			<td>{{report.review.movie}}</td>
+        			<td>{{report.review.content}}</td>
+        			<td>{{report.user}}</td>
+        			<td>{{report.content}}</td>
+        			<td>
+					{% if report.status == 1 %} <!-- 檢舉成功 -->
+					<span class="badge rounded-pill bg-custom-primary text-capitalize">{% trans 'success' %}</span>
+					{% elif report.status == 2 %} <!-- 檢舉失敗 -->
+					<span class="badge rounded-pill bg-danger text-capitalize">{% trans 'failed' %}</span>
+					{% else %} <!-- 待處理 -->
+					<span class="badge rounded-pill bg-secondary text-capitalize">{% trans 'underprocess' %}</span>
+               				{% endif %}
+	</td>
+        <td>{% if not report.handler %}
+
+		<span class="badge rounded-pill bg-custom-primary text-capitalize" type="button" data-bs-toggle="modal" data-bs-target="#accept_report_{{report.id}}">接受</span>
+        <span class="badge rounded-pill bg-danger text-capitalize" type="button" data-bs-toggle="modal" data-bs-target="#refuse_report_{{report.id}}">拒絕</span>
+
+<!-- Accept Report Modal -->
+        <div class="modal fade" id="accept_report_{{report.id}}" tabindex="-1" aria-labelledby="acceptReportLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                         <div class="modal-header">
+                               <p class="modal-title fs-5 text-capitalize" id="acceptReportLabel">審核檢舉</p>                               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                         </div>
+                         <div class="modal-body">
+                               <p>是否確認該筆檢舉？</p>
+                         </div>
+                         <div class="modal-footer">
+                               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'cancel' %}</button>
+                                <form action="{% url 'reports:edit' report.pk %}" method="POST">
+                                     {% csrf_token %}
+                                     <button class="btn bg-custom-primary" type="submit" name="accept_report" value="accept">{% trans 'confirm' %}</button>
+                               </form>
+                         </div>
+                  </div>
+                </div>
+        </div>
+
+	<!-- Refuse Report Modal -->
+        <div class="modal fade" id="refuse_report_{{report.id}}" tabindex="-1" aria-labelledby="refuseReportLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                         <div class="modal-header">
+                               <p class="modal-title fs-5 text-capitalize" id="refuseReportLabel">審核檢舉</p>                               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                         </div>
+                         <div class="modal-body">
+                               <p>是否拒絕該筆檢舉？</p>
+                         </div>
+                         <div class="modal-footer">
+                               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'cancel' %}</button>
+                                <form action="{% url 'reports:edit' report.pk %}" method="POST">
+                                     {% csrf_token %}
+                                     <button class="btn btn-danger" type="submit" name="refuse_report" value="refuse">{% trans 'confirm' %}</button>
+                               </form>
+                         </div>
+                  </div>
+                </div>
+        </div>
+	{% else %}
+                {{report.handler}}
+        {% endif %}
+        </td>
+                            </tr>{% endif %}
+                            {% endfor %}
+        </tbody>
+
+            </table>
+
+	{% else %}
+		<p class="text-center">{% trans 'Sorry, no reports match the condition.' %}</p>
+    {% endif %}
+
+    {% endif %}
+{% endblock %}

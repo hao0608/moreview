@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% load i18n %}
+
+    <div class="container px-2">
+        <form method="GET">
+            <section class="mb-4">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="{% trans 'Search by name' %}">
+                    <button class="btn btn-custom-primary text-capitalize" type="submit">
+                        {% trans "search" %} <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </section>
+
+            <div class="d-flex justify-content-end align-items-center gap-1 mb-4">
+                <span>{% trans 'Order by released date:' %}</span>
+                <select class="form-select w-auto" name="order" onchange="this.form.submit();">
+                    <option value='Desc' {% if order == 'Desc' %} selected {% endif %}>
+                        {% trans 'Latest to Oldest' %}
+                    </option>
+                    <option value='Asc' {% if order == 'Asc' %} selected {% endif %}>
+                        {% trans 'Oldest to Latest' %}
+                    </option>
+                </select>
+            </div>
+        </form>
+
+        <div>
+            {% if object_list %}
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3">
+                    {% for movie in object_list %}
+                        <div class="col mb-3">
+                            <div class="card shadow-sm">
+                                <img style="height: 300px; object-fit: contain;" src="{{ movie.image.url }}"
+                                     loading="lazy">
+                                <div class="card-body bg-secondary bg-opacity-25">
+                                    <a href="{% url 'movie:detail' movie.pk %}"
+                                       class="text-decoration-none card-text text-dark stretched-link fs-4 fw-bold">{{ movie.name }}</a>
+                                    <p class="card-text text-capitalize">
+                                        {% trans 'release date' %}: {{ movie.date_released|date:'Y/m/d' }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-center">{% trans 'Sorry, no movies match the condition.' %}</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

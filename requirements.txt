@@ -1,1 +1,14 @@
 django>=4.0.0
+psycopg2>=2.8.4
+django-crispy-forms>=1.13.0
+crispy-bootstrap5
+django-dirtyfields
+coverage
+django_coverage_plugin
+
+black
+
+Faker
+selenium
+
+Pillow
