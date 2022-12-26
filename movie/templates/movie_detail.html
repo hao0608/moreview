@@ -32,6 +32,8 @@
 	/* for styling purpose only */
 	label[for=heart] {  font-size: 3em;
 	}    
+	a {color: #000;}
+	a:hover {color: #7DCE94;}
     </style>
 
     <div class="align-self-center px-2 col-12 col-lg-8">
@@ -55,23 +57,22 @@
 		</div>
 		 <p><span class="rounded-pill text-bg-custom-primary px-2 py-1">{{ movie.tag_id.name }}</span></p>
 		<div class="row border rounded py-2">
-                <p class="text-capitalize">{% trans 'release date' %} : {{ movie.date_released|date:'Y/m/d' }}</p>
-                <p class="text-capitalize">{% trans 'time' %} : {{ movie.time }}</p>
-                <p class="text-capitalize">{% trans 'grade' %} : {{ movie.grade }}</p>
+                <p class="text-capitalize"><strong>{% trans 'release date' %}</strong> : {{ movie.date_released|date:'Y/m/d' }}</p>
+                <p class="text-capitalize"><strong>{% trans 'time' %}</strong> : {{ movie.time }}</p>
+                <p class="text-capitalize"><strong>{% trans 'grade' %}</strong> : {{ movie.grade }}</p>
                 <p>
-                    <a href='{{ movie.official_site }}' class="text-custom-primary text-capitalize">
+                    <a href='{{ movie.official_site }}' class="text-capitalize">
                         {% trans 'official site' %}
                         <i class="fa fa-external-link"></i>
                     </a>
                 </p>
 		<div class="row">
-			<p class="text-capitalize border-bottom">{% trans 'description' %}</p>
         		<div class="span4 collapse-group">
 				{% if movie.content|length > 80 %}
-				<p>{{movie.content | slice:80}}<span id="dots"> ... </span><span id="readmore">{{movie.content| slice:"80:"}}</span> 
+				<p><strong>{% trans 'description' %}</strong> : {{movie.content | slice:80}}<span id="dots"> ... </span><span id="readmore">{{movie.content| slice:"80:"}}</span>
 			<a type="button" class="text-capitalize text-custom-primary" onclick="Readmore()" id="readbtn">Read More</a></p>
         			{% else %}
-				<p>{{movie.content}}</p>
+				<p><strong>{% trans 'description' %}</strong> : {{movie.content}}</p>
 				{% endif %}
 			</div>
       		</div>
