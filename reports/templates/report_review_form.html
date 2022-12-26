@@ -13,15 +13,15 @@
             			<input type="text" name="q" class="form-control" placeholder="{% trans 'Search by name' %}">
 				<div class="d-flex justify-content-end align-items-center gap-1 mx-1">
                 			<select class="form-select w-auto" name="status" >
-                    				<option value='all'>請選擇</option>
+						<option value='all'>{% trans 'choose filters' %}</option>
                     				<option value='0' {% if status == '0' %} selected {% endif %}>
-                        			underprocess
+                        			{% trans 'underprocess' %}
                     				</option>
                     				<option value='1' {% if status == '1' %} selected {% endif %}>
-                        			success
+                        			{% trans 'success' %}
                     				</option>
                     				<option value='2' {% if status == '2' %} selected {% endif %}>
-                        			failed
+                        			{% trans 'failed' %}
                     				</option>
                 			</select>
 				</div>
@@ -38,13 +38,13 @@
             <table class="table table-hover align-middle">
 		    <thead>
 			    <tr>
-			    	<th>被檢舉人</th>
-			    	<th>電影名稱</th>
-			    	<th>被檢舉評論</th>
-			    	<th>檢舉者</th>
-			    	<th>檢舉理由</th>
-			    	<th>審核狀態</th>
-			    	<th>審核者</th>
+				    <th>{% trans 'reported reviewer'%}</th>
+				    <th>{% trans 'movie name' %}</th>
+				<th>{% trans 'reported review' %}</th>
+				<th>{% trans 'reporter' %}</th>
+				<th>{% trans 'report cause' %}</th>
+				<th>{% trans 'report status' %}</th>
+				<th>{% trans 'validator' %}</th>
 		    	</tr>
 		    </thead>
 		    <tbody>
