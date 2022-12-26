@@ -74,3 +74,8 @@ class AdminCreateForm(forms.ModelForm):
             "email",
             "password",
         ]
+        error_messages = {
+            "email": {
+                "invalid": _("Please input a valid email"),
+            },
+        }
