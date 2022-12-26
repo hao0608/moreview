@@ -244,11 +244,11 @@ msgid "underprocess"
 msgstr "處理中"
 
 #: var/www/reports/templates/report_review_form.html:41
-msgid "repoted reviewer"
+msgid "reported reviewer"
 msgstr "被檢舉人"
 
 #: var/www/reports/templates/report_review_form.html:44
-msgid "repoter"
+msgid "reporter"
 msgstr "檢舉者"
 
 #: var/www/reports/templates/report_review_form.html:47
