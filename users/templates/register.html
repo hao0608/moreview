@@ -22,25 +22,33 @@
 {% block script %}
 <script type="application/javascript">
         var email = document.querySelector('input[type="email"]');
-	email.setAttribute(
-    	"pattern",
-		/[^\u4e00-\u9fa5\uFF01-\uFF5E]+@[^\u4e00-\u9fa5\uFF01-\uFF5E]+\.[^\u4e00-\u9fa5\uFF01-\uFF5E]+/g
-  	)
 	email.setAttribute("maxlength", "254")
         email.oninvalid = function(e) {
 		e.target.setCustomValidity("");
-                if (!e.target.validity.valid) {
-                        if (e.target.value.length == 0) {
-                                e.target.setCustomValidity("請填寫此欄位。");
-                        }else if(e.target.value.search(/[\u4e00-\u9fa5]/g) >= 0 || e.target.value.search("xn--") >= 0){
+		if (e.target.validity.valid) {
+			comsole.log('valid')
+			if(e.target.value.search(/[.][.]/g) >= 0){
+				e.target.setCustomValidity("請輸入有效的信箱。");
+			}
+                       	if(e.target.value.search(/[\u4e00-\u9fa5]/g) >= 0 || e.target.value.search("xn--") >= 0){
+                               	e.target.setCustomValidity("請移除中文字。");
+                       	}else if(e.target.value.search(/[\uFF01-\uFF5E]/g) >= 0){
+                               	e.target.setCustomValidity("請移除全形字母。");
+                        }
+		}else if(e.target.validity.typeMismatch){
+			if(e.target.value.search(/[\u4e00-\u9fa5]/g) >= 0 || e.target.value.search("xn--") >= 0){
                                 e.target.setCustomValidity("請移除中文字。");
                         }else if(e.target.value.search(/[\uFF01-\uFF5E]/g) >= 0){
                                 e.target.setCustomValidity("請移除全形字母。");
-                        }else if (e.target.validity.tooLong){
-                                e.target.setCustomValidity("超過最大長度限制，請重新輸入。")
-                        }else {
-                                e.target.setCustomValidity("請輸入有效的信箱");
                         }
+		}else if (!e.target.validity.valid) {
+                        if (e.target.value.length == 0) {
+                                e.target.setCustomValidity("請填寫此欄位。");
+			}
+                }else if (e.target.validity.tooLong){
+                         e.target.setCustomValidity("超過最大長度限制，請重新輸入。")
+		}else {
+                         e.target.setCustomValidity("請輸入有效的信箱。");
                 }
         };
 </script>

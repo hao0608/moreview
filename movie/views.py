@@ -161,7 +161,7 @@ class MovieListView(ListView):
             order = self.request.GET.get("order")
             order_query = "-date_released"
             movie_obj = None
-            if order == "oldest":
+            if order == "Asc":
                 order_query = "date_released"
 
             if query is not None:  # search
