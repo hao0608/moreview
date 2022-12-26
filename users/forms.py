@@ -32,10 +32,11 @@ class RegisterForm(forms.ModelForm):
             "confirm_password",
         ]
         error_messages = {
-            "email":{
+            "email": {
                 "invalid": _("Please input a valid email"),
             },
         }
+
     def clean(self):
         cleaned_data = super(RegisterForm, self).clean()
 
