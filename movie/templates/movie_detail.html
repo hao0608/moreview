@@ -3,13 +3,35 @@
 {% block content %}
     {% load i18n crispy_forms_tags %}
     <style>
-        
+	/* rating star */        
+	.rating-wrapper {
+	    align-self: center;
+  	    display: flex;
+  	    direction: rtl !important;
+  	    justify-content: flex-end;
+	}
+	.rating-wrapper>input {
+    	    display: none;
+  	}
+	.rating-wrapper>label {
+    	    cursor: pointer;
+    	    display: inline-flex;
+    	    padding: .3rem;
+   	    transition: color 0.5s;
+  	}
+	.rating-wrapper>label:hover,
+  	.rating-wrapper>label:hover ~ label,
+	.rating-wrapper>input:checked ~ label  {
+    	    color: rgba(255, 183, 0, 0.916);
+  	}
+	/* ?? */
         .line-clamp {
             overflow: hidden;
             display: -webkit-box;
             -webkit-box-orient: vertical;
             -webkit-line-clamp: 3;
         }
+	/* readmore link */
 	#readmore {
 		display: none;
 	}
@@ -89,8 +111,41 @@
                 <div class="container pb-2">
                     <form action="{% url 'review:create' %}" method="POST">{% csrf_token %}
                         <input type="hidden" name="movieID" value="{{movie.id}}" />
-                        {{ form|crispy}}
-                        <input type="submit" value='{% trans 'create' %}' class="btn btn-custom-primary "/>
+			<label for="id_rating" class="form-label">{% trans 'rating' %}<span class="asteriskField">*</span></label>    
+			<div class="rating-wrapper mb-3" id="div_id_rating">
+				<!-- star 5 -->
+       				<input type="radio" id="star5" name="rating" value="5">
+        			<label for="star5">
+          			<i class="fas fa-star"></i>
+        			</label>
+
+         			<!-- star 4 -->
+        			<input type="radio" id="star4" name="rating" value="4">
+        			<label for="star4">
+          			<i class="fas fa-star"></i>
+        			</label>
+
+         			<!-- star 3 -->
+        			<input type="radio" id="star3" name="rating" value="3" checked>
+        			<label for="star3">
+          			<i class="fas fa-star"></i>
+        			</label>
+
+        			<!-- star 2 -->
+        			<input type="radio" id="star2" name="rating" value="2">
+        			<label for="star2">
+          			<i class="fas fa-star"></i>
+        			</label>
+
+        			<!-- star 1 -->
+        			<input type="radio" id="star1" name="rating" value="1">
+        			<label for="star1">
+          			<i class="fas fa-star"></i>
+        			</label>
+
+                            </div>
+			{{ form|crispy}}
+                        <input type="submit" value='{% trans 'create' %}' class="btn btn-custom-primary" style="float:right;"/>
                         
                     </form>
                 </div>
@@ -134,7 +189,7 @@
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                         {% if request.user.username == review.user.username %}
                                             <li>
-                                                <button class="dropdown-item" id="edit" type="button"onclick="hideDiv()" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                                <button class="dropdown-item" id="edit" type="button" onclick="hideDiv()" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                                                     修改評論
                                                 </button>
                                             </li>
@@ -233,16 +288,40 @@
                                     <input type="hidden" name="movieID" value="{{movie.id}}" />
                                     <input type="hidden" name="reviewID" value="{{review.id}}" />
                                     <div class="d-flex justify-content align-items-center gap-1 mb-4">
-                                        <span>評分: </span>
-                                        <div class="col-2 mb-2">
-                                            <select  class="form-select w-auto" name="rating">
-                                                <option value='1'{%if review.rating == 1%}selected{%endif%}> 1 </option>
-                                                <option value='2'{%if review.rating == 2%}selected{%endif%}> 2 </option>
-                                                <option value='3'{%if review.rating == 3%}selected{%endif%}> 3 </option>
-                                                <option value='4'{%if review.rating == 4%}selected{%endif%}> 4 </option>
-                                                <option value='5'{%if review.rating == 5%}selected{%endif%}> 5 </option>
-                                            </select>   
-                                        </div>
+					<label for="id_rating" class="form-label">{% trans 'rating' %}<span class="asteriskField">*</span></label>
+                        		<div class="rating-wrapper mb-3" id="div_id_rating">
+                               		<!-- star 5 -->
+                                	<input type="radio" id="star5" name="rating" value="5" {%if review.rating == 5%}checked{% endif %}>
+                                	<label for="star5">
+                                	<i class="fas fa-star"></i>
+                                	</label>
+
+                                	<!-- star 4 -->
+                                	<input type="radio" id="star4" name="rating" value="4" {%if review.rating == 4%}checked{% endif %}>
+                                	<label for="star4">
+                                	<i class="fas fa-star"></i>
+                                	</label>
+
+                                	<!-- star 3 -->
+                                	<input type="radio" id="star3" name="rating" value="3" {%if review.rating == 3%}checked{% endif %}>
+                                	<label for="star3">
+                                	<i class="fas fa-star"></i>
+                                	</label>
+
+                                	<!-- star 2 -->
+                                	<input type="radio" id="star2" name="rating" value="2" {%if review.rating == 2%}checked{% endif %}>
+                                	<label for="star2">
+                                	<i class="fas fa-star"></i>
+                                	</label>
+
+                                	<!-- star 1 -->
+					<input type="radio" id="star1" name="rating" value="1" {%if review.rating == 1%}checked{% endif %}>
+                                	<label for="star1">
+                                	<i class="fas fa-star"></i>
+                                	</label>
+
+                            		</div>
+
                                     </div>
                                     <div class="mb-2">
                                         <textarea class="form-control"name="content" rows="5">{{review.content}}</textarea>
@@ -331,5 +410,18 @@
         function hideDiv() {
             document.getElementById('comment').style.display = "none";
     	}
+
+	// rating star
+	const star1 = document.getElementById('star1')
+	const star2 = document.getElementById('star2')
+	const star3 = document.getElementById('star3')
+	const star4 = document.getElementById('star4')
+	const star5 = document.getElementById('star5')
+
+	console.log(star1.value)
+	const arr = [star1, star2, star3, star4, star5]
+	arr.forEach(item=> item.addEventListener('click', (event)=>{
+		console.log(event.target.value)
+	}))
 	</script>
 {% endblock %}

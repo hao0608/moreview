@@ -7,6 +7,6 @@ from django.utils.translation import gettext as _
 class ReviewModelForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields = ["rating", "content"]
+        fields = ["content"]
 
-        labels = {"rating": _("rating"), "content": _("review content")}
+        labels = {"content": _("review content")}
