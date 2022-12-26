@@ -33,7 +33,8 @@
                     {% for movie in object_list %}
                         <div class="col mb-3">
                             <div class="card shadow-sm">
-                                <img style="height: 300px; object-fit: contain;" src="{{ movie.image.url }}"
+                                <img style="height: 300px; object-fit: contain;"
+                                     src="/static/images{{ movie.image.url }}"
                                      loading="lazy">
                                 <div class="card-body bg-secondary bg-opacity-25">
                                     <a href="{% url 'movie:detail' movie.pk %}"

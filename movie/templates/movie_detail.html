@@ -51,27 +51,35 @@
 	  color: red;
 	}
 
-	/* for styling purpose only */
-	label[for=heart] {  font-size: 3em;
-	}    
-	a {color: #000;}
-	a:hover {color: #7DCE94;}
+    /* for styling purpose only */
+    label[for=heart] {
+        font-size: 3em;
+    }
+
+    a {
+        color: #000;
+    }
+
+    a:hover {
+        color: #7DCE94;
+    }
     </style>
 
     <div class="align-self-center px-2 col-12 col-lg-8">
         <div class="row">
             <div class="col-12 col-lg-4 d-flex justify-content-center mb-2">
-                <img src="{{ movie.image.url }}" class="mx-auto w-100" style="height: 400px; object-fit: contain;">
+                <img src="/static/images{{ movie.image.url }}" class="mx-auto w-100"
+                     style="height: 400px; object-fit: contain;">
             </div>
 
             <div class="col-12 col-lg-8">
-		<div class="w-100 w-md-auto d-flex justify-content-between">
-                <p class="fs-1 fw-bold text-capitalize">{{ movie.name }}</p>
+                <div class="w-100 w-md-auto d-flex justify-content-between">
+                    <p class="fs-1 fw-bold text-capitalize">{{ movie.name }}</p>
 
-                <p class="fs-3 text-capitalize d-flex justify-content-center align-items-center">
-                    <i class="fa fa-star text-custom-primary mx-2" aria-hidden="true"></i>
-                    {% if movie.average_rating %}
-                        {{ movie.average_rating }}
+                    <p class="fs-3 text-capitalize d-flex justify-content-center align-items-center">
+                        <i class="fa fa-star text-custom-primary mx-2" aria-hidden="true"></i>
+                        {% if movie.average_rating %}
+                            {{ movie.average_rating }}
                     {% else %}
                         {% trans 'No rating yet' %}
                     {% endif %}
