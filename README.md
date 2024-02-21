@@ -8,11 +8,11 @@ The system is named "Moreview" and it is a movie review system. This project aim
 ## Use Case
 ![IMBOOKSTORE Screenshot](https://i.imgur.com/ezXyCwy.png)
 ## Function
-**Member and Administrator Systems**
+### Member and Administrator Systems
 - Functions for registering, logging in, modifying, deleting, and querying members (administrators)
-**Movie System**
+### Movie System
 - Adding, viewing, Sorting and deleting maintenance movie information
-**Review System**
+### Review System
 - Adding, viewing and deleting maintenance review
-**Report System**
+### Report System
 - Adding, viewing, reviewing and deleting maintenance report
